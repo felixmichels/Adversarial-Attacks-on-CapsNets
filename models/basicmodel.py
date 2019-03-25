@@ -24,3 +24,28 @@ class BasicModel(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def prediction(self):
         raise NotImplementedError()
+
+    @property
+    @abc.abstractmethod
+    def optimizer(self):
+        raise NotImplementedError()
+        
+    @property
+    @abc.abstractmethod
+    def accuracy(self):
+        raise NotImplementedError()
+        
+    @property
+    @abc.abstractmethod
+    def loss(self):
+        raise NotImplementedError()
+        
+    @property
+    @abc.abstractmethod
+    def train_placeholder(self):
+        raise NotImplementedError()
+        
+    @property
+    @abc.abstractmethod
+    def scope(self):
+        raise NotImplementedError()
