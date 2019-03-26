@@ -23,9 +23,9 @@ def train_epoch(sess, model, init):
                         [model.optimizer, model.loss, model.accuracy, tf.train.get_global_step()],
                         feed_dict={model.training_placeholder: True})
                 
-                tf.logging.log_every_n(20,
+                tf.logging.log_every_n(tf.logging.INFO,
                                        '| Steps: %5d | Loss: %5.1f | Accuracy: %1.3f',
-                                       50,
+                                       cfg.train_log_every_n,
                                        step, loss, acc)
     except tf.errors.OutOfRangeError:
         pass
@@ -61,11 +61,11 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir):
         train_epoch(sess, model, train_init)
         tf.logging.info('Time: %5.2f', time.time()-ep_start_time)
                 
-        if ep > 0 and (ep%5 == 0 or time.time()-last_safe_time > 300):
+        if ep > 0 and (ep%cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq):
             saver.save(sess, ckpt_dir, global_step=tf.train.get_global_step())
             last_safe_time = time.time()
             
-        if ep > 0 and ep%5 == 0:
+        if ep > 0 and ep%cfg.test_every_n == 0:
             test(sess, ckpt_dir, model, test_init)
             
         sess.run(epoch_op)
