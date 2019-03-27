@@ -41,9 +41,8 @@ def test(sess, model, init):
         pass
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc_list))
     
-def train_with_test(sess, model, train_init, test_init, ckpt_dir):
-    epoch = tf.get_variable('epoch', dtype=tf.int32, initializer=0, trainable=False)
-    epoch_op = tf.assign_add(epoch, 1)
+def train_with_test(sess, model, train_init, test_init, epoch, epoch_op, ckpt_dir):
+ 
     
     sess.run(tf.global_variables_initializer())
     
@@ -93,26 +92,30 @@ def main(args):
     if not os.path.isdir(ckpt_dir):
         os.mkdir(ckpt_dir)
     
-    tf.logging.debug('Load data')
-    train_data = load_cifar10(is_train=True, batch_size=cfg.batch_size)
-    test_data  = load_cifar10(is_train=False, batch_size=cfg.batch_size)
-    
-    iterator = tf.data.Iterator.from_structure(train_data.output_types, 
-                                           train_data.output_shapes)
-    img, label = iterator.get_next()
-    
-    tf.logging.debug('Creating iterator initializer')
-    train_init = iterator.make_initializer(train_data)
-    test_init = iterator.make_initializer(test_data)	  
+    with tf.variable_scope('data'):
+        tf.logging.debug('Load data')
+        train_data = load_cifar10(is_train=True, batch_size=cfg.batch_size)
+        test_data  = load_cifar10(is_train=False, batch_size=cfg.batch_size)
+        
+        iterator = tf.data.Iterator.from_structure(train_data.output_types, 
+                                               train_data.output_shapes)
+        img, label = iterator.get_next()
+        
+        tf.logging.debug('Creating iterator initializer')
+        train_init = iterator.make_initializer(train_data)
+        test_init = iterator.make_initializer(test_data)	  
 
     tf.train.create_global_step()
+    epoch = tf.get_variable('epoch', dtype=tf.int32, initializer=0, trainable=False)
+    epoch_op = tf.assign_add(epoch, 1)
+    
     tf.logging.debug('Creating model graph')
     model = model_class(img=img, label=label)
-    
+
     tf.logging.debug('Starting session')
     with tf.Session() as sess:
         try:
-            train_with_test(sess, model, train_init, test_init, ckpt_dir)
+            train_with_test(sess, model, train_init, test_init, epoch, epoch_op, ckpt_dir)
         except KeyboardInterrupt:
             print("Manual interrupt occured")
 

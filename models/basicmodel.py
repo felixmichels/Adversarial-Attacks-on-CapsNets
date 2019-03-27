@@ -6,46 +6,25 @@ Created on Mon Mar 25 13:44:07 2019
 @author: felix
 """
 
-import abc
+import inspect
+import tensorflow as tf
+from util.lazy import lazy_scope_property
 
-class BasicModel(object, metaclass=abc.ABCMeta):
+class BasicModel(object):
     
-    @property
-    @abc.abstractmethod
-    def probabilities(self):
-         raise NotImplementedError()
-         
-    @property
-    @abc.abstractmethod
-    def logits(self):
-        raise NotImplementedError()
+    def __init__(self, img, label, scope=None):
+        self.img = img
+        self.label = label
         
-    @property
-    @abc.abstractmethod
-    def prediction(self):
-        raise NotImplementedError()
-
-    @property
-    @abc.abstractmethod
-    def optimizer(self):
-        raise NotImplementedError()
+        if scope is not None:
+            self.scope = scope
+        else:
+            self.scope = self.__class__.__name__
+            
+        with tf.variable_scope(self.scope):
+            inspect.getmembers(self)
+            
         
-    @property
-    @abc.abstractmethod
-    def accuracy(self):
-        raise NotImplementedError()
-        
-    @property
-    @abc.abstractmethod
-    def loss(self):
-        raise NotImplementedError()
-        
-    @property
-    @abc.abstractmethod
+    @lazy_scope_property
     def train_placeholder(self):
-        raise NotImplementedError()
-        
-    @property
-    @abc.abstractmethod
-    def scope(self):
-        raise NotImplementedError()
+        return tf.placeholder(dtype=tf.bool, shape=())
