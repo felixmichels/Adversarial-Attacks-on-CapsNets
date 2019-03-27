@@ -17,4 +17,6 @@ flags.DEFINE_integer('save_every_n', 5, 'Save every n epochs')
 flags.DEFINE_integer('train_log_every_n', 50, 'Log training information every n batches')
 flags.DEFINE_integer('test_every_n', 5, 'Test every n epochs')
 
+flags.DEFINE_boolean('debug', False, 'Sets logging verbosity to debug')
+
 cfg = flags.FLAGS
