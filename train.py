@@ -111,7 +111,7 @@ def main(args):
     
     tf.logging.debug('Creating model graph')
     model = model_class(img=img, label=label)
-
+    
     tf.logging.debug('Starting session')
     with tf.Session() as sess:
         try:

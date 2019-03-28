@@ -22,7 +22,7 @@ class SimpleNet(models.basicmodel.BasicModel):
     def prediction(self):
         return tf.nn.softmax(self.logits)
 
-    @lazy_scope_property
+    @lazy_scope_property(only_training=True)
     def optimizer(self):
         opt = tf.train.AdamOptimizer()
         return opt.minimize(self.loss, global_step=tf.train.get_global_step())

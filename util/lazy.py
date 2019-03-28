@@ -22,12 +22,42 @@ def lazy_property(function):
 
     return decorator
 
-def lazy_scope_property(function):
+def doublewrap(function):
+    """
+    A decorator decorator, allowing to use the decorator to be used without
+    parentheses if no arguments are provided. All arguments must be optional.
+    """
+    @functools.wraps(function)
+    def decorator(*args, **kwargs):
+        if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+            return function(args[0])
+        else:
+            return lambda wrapee: function(wrapee, *args, **kwargs)
+    return decorator
+    
+@doublewrap    
+def lazy_scope_property(function, only_training=False):
+    """
+    Only to be used within models.basicmodel and subclasses
+    Don't read, it's much too ugly
+    """
+    
     attribute = '_cache_' + function.__name__
-
+    
     @property
     @functools.wraps(function)
     def decorator(self):
+        if self.is_build:
+            if only_training:
+                self.training_vars.append(function.__name__)
+            else:
+                self.normal_vars.append(function.__name__)
+            return
+        
+        if not self.trainable and only_training:
+            raise NotImplementedError("Property {} only exists if the model is trainable".format(function.__name__))
+            return
+        
         if not hasattr(self, attribute):
             tf.logging.debug('Building graph node %s-%s', self.__class__.__name__, function.__name__)
             with tf.variable_scope(function.__name__):
