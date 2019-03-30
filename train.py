@@ -95,9 +95,6 @@ def main(args):
         tf.logging.set_verbosity(tf.logging.INFO)
         
     model_name, model_class = get_model(args[1])   
-
-    ckpt_dir = get_dir(cfg.ckpt_dir, model_name)
-    log_dir = get_dir(cfg.log_dir, model_name)
     
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
@@ -119,6 +116,9 @@ def main(args):
     
     tf.logging.debug('Creating model graph')
     model = model_class(img=img, label=label)
+    
+    ckpt_dir = get_dir(cfg.ckpt_dir, model_name.name)
+    log_dir = get_dir(cfg.log_dir, model_name.name)
     
     tf.logging.debug('Creating summary op')
     summary_op = tf.summary.merge_all() 

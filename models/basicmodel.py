@@ -46,6 +46,9 @@ class BasicModel(object):
         delattr(self, 'training_vars')
 
             
+    @property
+    def name(self):
+        return self.scope
         
     @lazy_scope_property
     def train_placeholder(self):
