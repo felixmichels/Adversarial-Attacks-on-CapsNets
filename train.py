@@ -14,7 +14,7 @@ import time
 import importlib
 import inspect
 from util.config import cfg
-from util.util import load_cifar10
+from util.util import load_cifar10, get_dir
 
 def train_epoch(sess, model, init):
     sess.run(init)
@@ -84,13 +84,7 @@ def main(args):
     [(model_name, model_class)] = inspect.getmembers(model_module, 
                                                      lambda c: inspect.isclass(c) and sys.modules[c.__module__]==model_module)
     tf.logging.debug('Found class %s', model_class)
-    if not os.path.isdir(cfg.ckpt_dir):
-        tf.logging.fatal('Ckpt path does not exist')
-        sys.exit(1)
-        
-    ckpt_dir = os.path.join(cfg.ckpt_dir, model_name)
-    if not os.path.isdir(ckpt_dir):
-        os.mkdir(ckpt_dir)
+    ckpt_dir = get_dir(cfg.ckpt_dir, model_name)
     
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
