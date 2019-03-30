@@ -44,7 +44,7 @@ def get_dir(base, *args):
     """
     if not os.path.isdir(base):
         tf.logging.fatal("%s path does not exist", base)
-        raise FileNotFoundError
+        raise FileNotFoundError("{} does not exist".format(base))
         
     path = os.path.join(base,*args)
     os.makedirs(path, exist_ok=True)

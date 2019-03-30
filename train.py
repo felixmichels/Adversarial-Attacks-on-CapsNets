@@ -26,6 +26,7 @@ def train_epoch(sess, model, init, writer):
                                     cfg.train_log_every_n,
                                     step, loss, acc)
             
+            tf.logging.debug('Writing summary')
             writer.add_summary(summary, step=tf.train.get_global_step())
             
     except tf.errors.OutOfRangeError:
@@ -43,6 +44,7 @@ def test(sess, model, init, writer):
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc))
     summary = tf.Summary(value=[
             tf.Summary.Value(tag="test_accuracy", simple_value=acc)])
+    tf.logging.debug('Writing test summary')
     writer.add_summary(summary, step=tf.train.get_global_step())
     
 def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
