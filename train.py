@@ -123,6 +123,9 @@ def main(args):
     tf.logging.debug('Creating summary op')
     summary_op = tf.summary.merge_all() 
     
+    if cfg.stop_before_session:
+        exit()
+        
     tf.logging.debug('Starting session')
     with tf.Session() as sess:
         try:
