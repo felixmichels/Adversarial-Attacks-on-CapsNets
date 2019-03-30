@@ -19,8 +19,11 @@ class BasicModel(object):
 
         self.scope = scope or self.__class__.__name__
         
-        #Warning: Bad code ahead
+        self.__initialize_properties()
         
+        
+    def __initialize_properties(self):
+        # Set is_build = True, so that properties get added to respective lists
         self.is_build = True
         self.normal_vars = []
         self.training_vars = []
@@ -28,8 +31,9 @@ class BasicModel(object):
         #Fill normal_vars/training_vars
         inspect.getmembers(self)
         
-        #Initialize properties
+        # Set is_buidl = False, so that properties have normal behaviour
         self.is_build = False
+        #Initialize properties
         with tf.variable_scope(self.scope):
             for v in self.normal_vars:
                 getattr(self,v)
@@ -37,6 +41,9 @@ class BasicModel(object):
             if self.trainable:
                 for v in self.training_vars:
                     getattr(self,v)
+                    
+        delattr(self, 'normal_vars')
+        delattr(self, 'training_vars')
 
             
         
