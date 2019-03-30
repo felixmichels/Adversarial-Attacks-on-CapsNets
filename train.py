@@ -63,7 +63,7 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         
         ep = sess.run(epoch)
         tf.logging.info('Epoch: %d', ep)
-        train_epoch(sess, model, train_init)
+        train_epoch(sess, model, train_init, writer)
         tf.logging.info('Time: %5.2f', time.time()-ep_start_time)
                 
         if (ep+1)%cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
