@@ -16,7 +16,7 @@ class ConvBaseline(models.basicmodel.BasicModel):
     @lazy_scope_property
     def logits(self):
         act = tf.nn.relu
-        is_training = self.training_placeholder
+        is_training = self.train_placeholder
         
         
         conv1 = tf.layers.conv2d(self.img, filters=32, kernel_size=5, strides=1, padding='same', activation=act)

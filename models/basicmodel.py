@@ -22,6 +22,10 @@ class BasicModel(object):
         self.__initialize_properties()
         
         
+    @property
+    def name(self):
+        return self.scope
+        
     def __initialize_properties(self):
         # Set is_build = True, so that properties get added to respective lists
         self.is_build = True
