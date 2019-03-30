@@ -26,8 +26,9 @@ def train_epoch(sess, model, init, writer):
                                     cfg.train_log_every_n,
                                     step, loss, acc)
             
-            tf.logging.debug('Writing summary')
-            writer.add_summary(summary, step=tf.train.get_global_step())
+            if step%cfg.summary_every_n==0:
+                tf.logging.debug('Writing summary')
+                writer.add_summary(summary, global_step=step)
             
     except tf.errors.OutOfRangeError:
         pass
@@ -45,7 +46,8 @@ def test(sess, model, init, writer):
     summary = tf.Summary(value=[
             tf.Summary.Value(tag="test_accuracy", simple_value=acc)])
     tf.logging.debug('Writing test summary')
-    writer.add_summary(summary, step=tf.train.get_global_step())
+    step = sess.run(tf.train.get_global_step())
+    writer.add_summary(summary, global_step=step)
     
 def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
     sess.run(tf.global_variables_initializer())
@@ -89,6 +91,8 @@ def main(args):
     
     if cfg.debug:
         tf.logging.set_verbosity(tf.logging.DEBUG)
+    else:
+        tf.logging.set_verbosity(tf.logging.INFO)
         
     model_name, model_class = get_model(args[1])   
 
@@ -110,7 +114,6 @@ def main(args):
 
     tf.train.create_global_step()
     epoch = tf.get_variable('epoch', dtype=tf.int32, initializer=0, trainable=False)
-    tf.summary.scalar('Epoch', epoch)
     epoch_op = tf.assign_add(epoch, 1)
     summary_op = tf.summary.merge_all()
     
