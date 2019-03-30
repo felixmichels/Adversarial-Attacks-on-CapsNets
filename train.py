@@ -9,12 +9,9 @@ Created on Mon Mar 25 15:06:52 2019
 import tensorflow as tf
 import numpy as np
 import os
-import sys
 import time
-import importlib
-import inspect
 from util.config import cfg
-from util.util import load_cifar10, get_dir
+from util.util import load_cifar10, get_dir, get_model
 
 def train_epoch(sess, model, init):
     sess.run(init)
@@ -77,13 +74,8 @@ def main(args):
     if cfg.debug:
         tf.logging.set_verbosity(tf.logging.DEBUG)
         
-        
-    model_name = args[1].lower()
-    # Evil reflection
-    model_module = importlib.import_module('.'+model_name,cfg.model_pck)
-    [(model_name, model_class)] = inspect.getmembers(model_module, 
-                                                     lambda c: inspect.isclass(c) and sys.modules[c.__module__]==model_module)
-    tf.logging.debug('Found class %s', model_class)
+    model_name, model_class = get_model(args[1])   
+
     ckpt_dir = get_dir(cfg.ckpt_dir, model_name)
     
     with tf.variable_scope('data'):

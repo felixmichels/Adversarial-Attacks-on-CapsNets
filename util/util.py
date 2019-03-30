@@ -2,6 +2,9 @@ import tensorflow as tf
 import numpy as np
 from util.config import cfg
 import os
+import importlib
+import inspect
+import sys
 
 def _load_scaled_cifar10():
     if _load_scaled_cifar10.data is None:
@@ -80,3 +83,14 @@ def get_data(attack_name, n=None, override=False):
             label = img[:n]
     
     return img,label
+
+
+def get_model(name):
+      # Evil reflection
+    model_name = name.lower()
+    model_module = importlib.import_module('.'+model_name,cfg.model_pck)
+    [(model_name, model_class)] = inspect.getmembers(model_module, 
+                                                     lambda c: inspect.isclass(c) and sys.modules[c.__module__]==model_module)
+      
+    tf.logging.debug('Found class %s', model_class)
+    return model_name, model_class
