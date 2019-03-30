@@ -26,11 +26,16 @@ class SimpleNet(models.basicmodel.BasicModel):
     def optimizer(self):
         opt = tf.train.AdamOptimizer()
         return opt.minimize(self.loss, global_step=tf.train.get_global_step())
+    
+    @lazy_scope_property(only_training=True)
+    def summary(self):
+        tf.summary.scalar('Accuracy', self.accuracy)
+        tf.summary.scalar('Loss', self.loss)
         
     @lazy_scope_property
     def accuracy(self):
         correct_preds = tf.equal(tf.argmax(self.prediction, 1), self.label)
-        return tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
+        return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
         
     @lazy_scope_property
     def loss(self):

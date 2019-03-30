@@ -12,6 +12,7 @@ flags.DEFINE_boolean('restore', False, 'If true, restore from last checkpoint')
 flags.DEFINE_string('ckpt_dir', 'ckpt', 'checkpoint directory')
 flags.DEFINE_string('model_pck', 'models', 'package name of models')
 flags.DEFINE_string('data_dir', 'data', 'directory for generated perturbations')
+flags.DEFINE_string('log_dir', 'logdir', 'directory for graphs and summaries')
 
 flags.DEFINE_float('save_freq', 300.0, 'Saves after epoch, if time in seconds since last save surpasses this value')
 flags.DEFINE_integer('save_every_n', 5, 'Save every n epochs')
