@@ -22,7 +22,7 @@ def train_epoch(sess, model, init, writer):
                     feed_dict={model.train_placeholder: True})
                 
             tf.logging.log_every_n(tf.logging.INFO,
-                                   '| Steps: %5d | Loss: %5.1f | Accuracy: %1.3f',
+                                   '| Steps: %5d | Loss: %5.3f | Accuracy: %1.3f',
                                     cfg.train_log_every_n,
                                     step, loss, acc)
             
@@ -32,7 +32,7 @@ def train_epoch(sess, model, init, writer):
             
     except tf.errors.OutOfRangeError:
         pass
-    
+
 def test(sess, model, init, writer):
     sess.run(init)
     acc_list = []
@@ -44,7 +44,7 @@ def test(sess, model, init, writer):
     acc = np.average(acc_list)
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc))
     summary = tf.Summary(value=[
-            tf.Summary.Value(tag="test_accuracy", simple_value=acc)])
+            tf.Summary.Value(tag=model.name+"/test_accuracy", simple_value=acc)])
     tf.logging.debug('Writing test summary')
     step = sess.run(tf.train.get_global_step())
     writer.add_summary(summary, global_step=step)
@@ -59,7 +59,7 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         save_path = tf.train.latest_checkpoint(ckpt_dir)
         saver.restore(sess, save_path)
 
-    last_safe_time = float('inf')
+    last_safe_time = time.time()
     while sess.run(epoch) < cfg.epochs:
         ep_start_time = time.time()
         
@@ -68,16 +68,16 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         train_epoch(sess, model, train_init, writer)
         tf.logging.info('Time: %5.2f', time.time()-ep_start_time)
                 
-        if (ep+1)%cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
-            ckpt_path = os.path.join(ckpt_dir, 'model')
-            saver.save(sess, ckpt_path, global_step=tf.train.get_global_step())
-            last_safe_time = time.time()
-            
         if (ep+1)%cfg.test_every_n == 0:
             test(sess, model, test_init, writer)
             
         sess.run(epoch_op)
 
+        if (ep+1)%cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
+            ckpt_path = os.path.join(ckpt_dir, 'model')
+            saver.save(sess, ckpt_path, global_step=tf.train.get_global_step())
+            last_safe_time = time.time()
+            
     test(sess, model, test_init, writer)
     writer.close()
 
@@ -94,7 +94,7 @@ def main(args):
     else:
         tf.logging.set_verbosity(tf.logging.INFO)
         
-    model_name, model_class = get_model(args[1])   
+    model_class = get_model(args[1])   
     
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
@@ -117,8 +117,8 @@ def main(args):
     tf.logging.debug('Creating model graph')
     model = model_class(img=img, label=label)
     
-    ckpt_dir = get_dir(cfg.ckpt_dir, model_name.name)
-    log_dir = get_dir(cfg.log_dir, model_name.name)
+    ckpt_dir = get_dir(cfg.ckpt_dir, model.name)
+    log_dir = get_dir(cfg.log_dir, model.name)
     
     tf.logging.debug('Creating summary op')
     summary_op = tf.summary.merge_all() 
