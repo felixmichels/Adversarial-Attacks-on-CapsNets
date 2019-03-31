@@ -25,6 +25,28 @@ def _load_scaled_cifar10():
 _load_scaled_cifar10.data = None
 
 
+def rand_crop_resize(min_size, prob_crop):
+    def crop(img):
+        crop_size = tf.random_uniform(shape=(), minval=min_size, maxval=1)
+        x = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
+        y = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
+        box = [[x,y,x+crop_size,y+crop_size]]
+        return tf.image.crop_and_resize([img], boxes=box, box_ind=[0], crop_size=[32,32])[0]
+    
+    def aug(img):
+        choice = tf.random_uniform(shape=(), minval=0, maxval=1)
+        return tf.cond(choice<prob_crop, lambda: crop(img), lambda: img)
+    
+    return aug
+    
+
+def chain_augs(*augs):
+    def aug(x,y):
+        for f in augs:
+            x = f(x)
+        x = tf.clip_by_value(x,0,1)
+        return x,y
+    return aug
 
 def load_cifar10(is_train=True, batch_size=None):
     training, test = _load_scaled_cifar10()
@@ -32,6 +54,17 @@ def load_cifar10(is_train=True, batch_size=None):
     
     dataset = tf.data.Dataset.from_tensor_slices((x,y))
     if is_train:
+        dataset = dataset.map(
+                chain_augs(
+                        lambda x: tf.contrib.image.rotate(x, np.pi/15 * tf.random_normal(shape=())),
+                        tf.image.random_flip_left_right,
+                        lambda x: tf.image.random_hue(x, 0.05),
+                        lambda x: tf.image.random_saturation(x, 0.6, 1.6),
+                        lambda x: tf.image.random_brightness(x, 0.05),
+                        lambda x: tf.image.random_contrast(x, 0.7, 1.3),
+                        rand_crop_resize(0.6,0.6)
+                        ),
+                num_parallel_calls=32)
         dataset = dataset.shuffle(4*batch_size if batch_size is not None else 1024)
     if batch_size is not None:
         dataset = dataset.batch(batch_size)
