@@ -15,7 +15,7 @@ class ConvBaseline(models.basicmodel.BasicModel):
     
     @lazy_scope_property
     def logits(self):
-        act = tf.nn.relu
+        act = tf.nn.selu
         is_training = self.train_placeholder
         
         
@@ -73,5 +73,6 @@ class ConvBaseline(models.basicmodel.BasicModel):
     def loss(self):
         cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, cfg.classes), self.logits)
         l2_loss = tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name])
-        loss = cross_loss + 1e-5 * l2_loss
+        tf.summary.scalar('l2_loss', l2_loss)
+        loss = cross_loss + 1e-6 * l2_loss
         return loss
