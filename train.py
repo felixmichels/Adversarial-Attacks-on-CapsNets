@@ -59,7 +59,7 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         save_path = tf.train.latest_checkpoint(ckpt_dir)
         saver.restore(sess, save_path)
 
-    last_safe_time = float('inf')
+    last_safe_time = time.time()
     while sess.run(epoch) < cfg.epochs:
         ep_start_time = time.time()
         
