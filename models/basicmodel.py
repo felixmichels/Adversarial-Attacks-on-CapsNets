@@ -44,6 +44,13 @@ class BasicModel(object):
         # Fill normal_vars/training_vars
         inspect.getmembers(self)
 
+        self.normal_vars = sorted(self.normal_vars,
+                                  key=lambda s: '' if s == 'probabilities' else s)
+        self.training_vars = sorted(self.training_vars)
+
+        tf.logging.debug('%s properties: %s', self.name, self.normal_vars)
+        tf.logging.debug('%s training: %s', self.name, self.normal_vars)
+
         # Set is_build = False, so that properties have normal behaviour
         self.is_build = False
         # Initialize properties
