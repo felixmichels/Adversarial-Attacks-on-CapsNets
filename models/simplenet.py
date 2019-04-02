@@ -19,7 +19,7 @@ class SimpleNet(models.basicmodel.BasicModel):
         return tf.matmul(tf.layers.flatten(self.img), w) + b
         
     @lazy_scope_property
-    def prediction(self):
+    def probabilities(self):
         return tf.nn.softmax(self.logits)
 
     @lazy_scope_property(only_training=True)
@@ -34,7 +34,7 @@ class SimpleNet(models.basicmodel.BasicModel):
         
     @lazy_scope_property
     def accuracy(self):
-        correct_preds = tf.equal(tf.argmax(self.prediction, 1), self.label)
+        correct_preds = tf.equal(tf.argmax(self.probabilities, 1), self.label)
         return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
         
     @lazy_scope_property

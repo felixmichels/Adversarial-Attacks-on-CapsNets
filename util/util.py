@@ -1,29 +1,35 @@
-import tensorflow as tf
-import numpy as np
-from util.config import cfg
+"""
+This module contains various methods, that are used
+in different places in this project
+"""
+
 import os
 import importlib
 import inspect
 import sys
+import tensorflow as tf
+import numpy as np
+from util.config import cfg
+
 
 def _load_scaled_cifar10():
     if _load_scaled_cifar10.data is None:
         (train_x, train_y), (test_x, test_y) = tf.keras.datasets.cifar10.load_data()
-        
+
         train_x = train_x.astype('float32')
         train_x /= 255.0
         train_y = train_y.squeeze().astype('int64')
-        
+
         test_x = test_x.astype('float32')
         test_x /= 255.0
         test_y = test_y.squeeze().astype('int64')
-        
+
         _load_scaled_cifar10.data = (train_x, train_y), (test_x, test_y)
 
     return _load_scaled_cifar10.data
 
-_load_scaled_cifar10.data = None
 
+_load_scaled_cifar10.data = None
 
 def rand_crop_resize(min_size, prob_crop):
     def crop(img):
@@ -49,10 +55,13 @@ def chain_augs(*augs):
     return aug
 
 def load_cifar10(is_train=True, batch_size=None):
+    """
+    Returns a tf dataset with cifar10 images and labels
+    """
     training, test = _load_scaled_cifar10()
-    x,y = training if is_train else test
-    
-    dataset = tf.data.Dataset.from_tensor_slices((x,y))
+    x, y = training if is_train else test
+
+    dataset = tf.data.Dataset.from_tensor_slices((x, y))
     if is_train:
         dataset = dataset.map(
                 chain_augs(
@@ -70,6 +79,7 @@ def load_cifar10(is_train=True, batch_size=None):
         dataset = dataset.batch(batch_size)
     return dataset
 
+
 def get_dir(base, *args):
     """
     Checks if base exists and is a directory.
@@ -78,11 +88,12 @@ def get_dir(base, *args):
     if not os.path.isdir(base):
         tf.logging.fatal("%s path does not exist", base)
         raise FileNotFoundError("{} does not exist".format(base))
-        
-    path = os.path.join(base,*args)
+
+    path = os.path.join(base, *args)
     os.makedirs(path, exist_ok=True)
-    
+
     return path
+
 
 def get_data(attack_name, n=None, override=False):
     """
@@ -93,37 +104,42 @@ def get_data(attack_name, n=None, override=False):
     """
     path = get_dir(cfg.data_dir, attack_name)
     file_name = os.path.join(path, 'originals.npz')
-    
+
     if not os.path.isfile(file_name) or override:
         _, (img, label) = _load_scaled_cifar10()
-      
+
         idx = np.random.permutation(len(img))
         img = img[idx]
         label = label[idx]
-        
+
         img = img[:n]
         label = label[:n]
-        
+
         np.savez(file_name, img=img, label=label)
-        
+
     else:
         tf.logging.debug('Loading from file %s', file_name)
         with np.load(file_name) as npzfile:
             img = npzfile['img']
             label = npzfile['img']
-            
+
             img = img[:n]
             label = img[:n]
-    
-    return img,label
+
+    return img, label
 
 
 def get_model(name):
-      # Evil reflection
+    """
+    Loads the model class (in cfg.model_pck) based on the file name
+    (case insensitive)
+    """
+    # Evil reflection
     model_name = name.lower()
-    model_module = importlib.import_module('.'+model_name,cfg.model_pck)
-    [(_, model_class)] = inspect.getmembers(model_module, 
-                                                     lambda c: inspect.isclass(c) and sys.modules[c.__module__]==model_module)
-      
+    model_module = importlib.import_module('.'+model_name, cfg.model_pck)
+    [(_, model_class)] = inspect.getmembers(
+        model_module,
+        lambda c: inspect.isclass(c) and sys.modules[c.__module__] == model_module)
+
     tf.logging.debug('Found class %s', model_class)
     return model_class
