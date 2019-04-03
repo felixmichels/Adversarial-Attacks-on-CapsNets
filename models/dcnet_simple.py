@@ -83,20 +83,27 @@ class DCNetSimple(models.basicmodel.BasicModel):
         return train_op
 
     @lazy_scope_property(only_training=True)
-    def summary(self):
+    def summary_op(self):
         tf.summary.scalar('Accuracy', self.accuracy)
+        tf.summary.scalar('recon_loss', self.recon_loss)
+        tf.summary.scalar('l2_loss', self.l2_loss)
         tf.summary.scalar('Loss', self.loss)
+        return tf.summary.merge_all(scope=self.scope)
 
     @lazy_scope_property
     def accuracy(self):
         correct_preds = tf.equal(self.prediction, self.label)
         return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
+    
+    @lazy_scope_property
+    def recon_loss(self):
+        return tc.losses.reconstruction_loss(original=self.img, reconstruction=self.decoder, alpha=0.0005)
+
+    @lazy_scope_property
+    def l2_loss(self):
+        return 1e-6 * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name])
 
     @lazy_scope_property
     def loss(self):
         margin_loss = tc.losses.margin_loss(class_capsules=self.encoder, labels=self.label, m_minus=.1, m_plus=.9)
-        recon_loss = tc.losses.reconstruction_loss(original=self.img, reconstruction=self.decoder, alpha=0.0005)
-        tf.summary.scalar('recon_loss', recon_loss)
-        l2_loss = 1e-6 * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name])
-        tf.summary.scalar('l2_loss', l2_loss)
-        return margin_loss + recon_loss + l2_loss
+        return margin_loss + self.recon_loss + self.l2_loss
