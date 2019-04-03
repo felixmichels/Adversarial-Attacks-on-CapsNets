@@ -54,13 +54,14 @@ def _chain_augs(*augs):
 
 
 def _aug(dataset, scale, prob):
+    # Params for augmentation, between 0 (not at all) and 1
     param = {
         'angle': 0.25,
         'hue': 0.06,
         'sat': 0.4,
         'bright': 0.05,
         'contr': 0.3,
-        'crop': 0.6
+        'crop': 0.4
         }
     for key in param:
         param[key] *= scale
@@ -74,7 +75,7 @@ def _aug(dataset, scale, prob):
             lambda x: tf.image.random_saturation(x, 1-param['sat'], 1+param['sat']),
             lambda x: tf.image.random_brightness(x, param['bright']),
             lambda x: tf.image.random_contrast(x, 1-param['contr'], 1+param['contr']),
-            func_with_prob(_rand_crop_resize(param['crop']), 0.7)),
+            func_with_prob(_rand_crop_resize(1-param['crop']), 0.75)),
         prob)
 
     return dataset.map(lambda x,y: (aug_func(x), y), num_parallel_calls=32)
