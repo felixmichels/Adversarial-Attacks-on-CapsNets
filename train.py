@@ -10,7 +10,7 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model
+from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op
 from util.data import load_cifar10
 
 
@@ -75,10 +75,10 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         saver.restore(sess, save_path)
 
     last_safe_time = time.time()
-    while sess.run(epoch) < cfg.epochs:
+    while sess.run(get_epoch()) < cfg.epochs:
         ep_start_time = time.time()
 
-        ep = sess.run(epoch)
+        ep = sess.run(get_epoch())
         tf.logging.info('Epoch: %d', ep)
         train_epoch(sess, model, train_init, writer)
         tf.logging.info('Time: %5.2f', time.time()-ep_start_time)
@@ -86,7 +86,7 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
         if (ep+1) % cfg.test_every_n == 0:
             test(sess, model, test_init, writer)
 
-        sess.run(epoch_op)
+        sess.run(get_epoch_op())
 
         if (ep+1) % cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
             ckpt_path = os.path.join(ckpt_dir, 'model')
@@ -98,8 +98,6 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
 
 
 summary_op = None
-epoch = None
-epoch_op = None
 
 
 def main(args):
@@ -126,8 +124,7 @@ def main(args):
         test_init = iterator.make_initializer(test_data)
 
     tf.train.create_global_step()
-    epoch = tf.get_variable('epoch', dtype=tf.int32, initializer=0, trainable=False)
-    epoch_op = tf.assign_add(epoch, 1)
+    create_epoch()
     summary_op = tf.summary.merge_all()
 
     tf.logging.debug('Creating model graph')
