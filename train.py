@@ -10,7 +10,8 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import load_cifar10, get_dir, get_model
+from util.util import get_dir, get_model
+from util.data import load_cifar10
 
 
 def train_epoch(sess, model, init, writer):

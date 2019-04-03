@@ -6,7 +6,8 @@ flags = tf.app.flags
 
 flags.DEFINE_integer('batch_size', 128, 'batch size')
 flags.DEFINE_integer('epochs', 50, 'number of epochs')
-flags.DEFINE_float('l2_reg', 0.0, 'L2 regularization scale. Set to 0 to disable')
+flags.DEFINE_float('data_aug', None, 'Amount of data augmentation. Set to None to disable')
+flags.DEFINE_float('aug_prob', 0.75, 'Probability, that data augmentation is applied')
 
 flags.DEFINE_integer('classes', 11, 'Number of classes of dataset') # One garbage class
 
@@ -30,6 +31,7 @@ flags.DEFINE_boolean('stop_before_session', False, 'For debugging purposes')
 flags.DEFINE_string('hyper_cfg', '', 'hyperparameter config file')
 
 cfg = flags.FLAGS
+
 
 if cfg.hyper_cfg != '':
     for m in cfg.hyper_cfg.split(','):
