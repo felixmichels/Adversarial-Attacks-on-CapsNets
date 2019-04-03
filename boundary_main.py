@@ -16,11 +16,6 @@ from util.data import get_attack_original
 from attacks.boundary_attack import boundary_attack
 
 
-ATTACK_NAME = 'boundary_attack'
-NUMBER_IMG = 1000
-PROCESSES=32
-
-
 def is_adv_func(sess, model, true_label):
     def is_adv(img):
         acc = sess.run(model.accuracy,
@@ -34,12 +29,12 @@ def is_adv_func(sess, model, true_label):
 
 def attack(sess, model, img, label):
     is_adv = is_adv_func(sess, model, label)
-    return boundary_attack(img, is_adv, eps_min=1e-3, max_steps=1000)
+    return boundary_attack(img, is_adv, eps_min=cfg.eps_min, max_steps=cfg.max_steps)
 
 
 def create_adv(sess, model):
-    img, label = get_attack_original(ATTACK_NAME, n=NUMBER_IMG)
-    att_dir = get_dir(cfg.data_dir, ATTACK_NAME, model.name)
+    img, label = get_attack_original(cfg.attack_name, n=cfg.number_img)
+    att_dir = get_dir(cfg.data_dir, cfg.attack_name, model.name)
     att_file = os.path.join(att_dir, 'adv_images.npy')
     if os.path.isfile(att_file):
         tf.logging.debug('Loading adv img from %s', att_file)
@@ -49,12 +44,12 @@ def create_adv(sess, model):
         adv_img = np.empty(shape=(0,32,32,3), dtype='float32')
         
     num_adv = len(adv_img)
-    adv_at_once = 2*PROCESSES
+    adv_at_once = 2*cfg.processes
     tf.logging.info('Starting at img %d', num_adv)
-    for i in range(num_adv, NUMBER_IMG, adv_at_once):
+    for i in range(num_adv, cfg.number_img, adv_at_once):
         tic = time.time()
         idx = slice(i, i+adv_at_once)
-        with Pool(PROCESSES) as pool:
+        with Pool(cfg.processes) as pool:
             adv_img[idx] = pool.starmap(
                 lambda x,y: attack(sess, model, x, y),
                 zip(img[slice], label[slice]))
@@ -69,7 +64,7 @@ def main(args):
     else:
         tf.logging.set_verbosity(tf.logging.INFO)
         
-    model_class = get_model(args[0])
+    model_class = get_model(args[1])
     
     tf.logging.debug('Creating model graph')
     img_ph = tf.placeholder(dtype=tf.float32, shape=(None,32,32,3))
