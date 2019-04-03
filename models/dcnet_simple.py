@@ -14,9 +14,9 @@ from util.config import cfg
 import tfcaps as tc
 
 
-class CapsNet(models.basicmodel.BasicModel):
+class dcnet_simple(models.basicmodel.BasicModel):
     """
-    First try for a cifar10 capsule net
+    Second try for a cifar10 capsule net
     """
 
     @property
@@ -34,20 +34,15 @@ class CapsNet(models.basicmodel.BasicModel):
         is_training = self.train_placeholder
         i, o = tc.layers.new_io(self.img)
 
-        i(tf.layers.batch_normalization(
-            tf.layers.conv2d(o(), filters=32, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu),
-            training=is_training))
-        i(tf.layers.batch_normalization(
-            tf.layers.conv2d(o(), filters=32, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu),
-            training=is_training))
-        i(tf.layers.batch_normalization(
-            tf.layers.conv2d(o(), filters=32, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu),
-            training=is_training))
-        i(tf.layers.batch_normalization(
-            tf.layers.conv2d(o(), filters=32, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu),
-            training=is_training))
+        i(tf.layers.conv2d(o(), filters=13, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu))
 
-        i(tf.concat([o(-1), o(-2), o(-3), o(-4), o(-5)], axis=-1))
+        for _ in range(7):
+            i(tf.concat([o(-1), o(-2)], axis=-1))
+            i(tf.layers.conv2d(
+                tf.layers.batch_normalization(o(), training=is_training),
+                filters=16, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu))
+        i(tf.concat([o(-1), o(-2)], axis=-1))
+
         tf.logging.debug('Shape after conv-layers: %s', o().get_shape())
 
         i(tc.layers.PrimaryConvCaps2D(kernel_size=9, types=32, dimensions=8, strides=1, data_format='channels_last'))
