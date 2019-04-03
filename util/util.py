@@ -59,3 +59,41 @@ def func_with_prob(f, p):
         choice = tf.random_uniform(shape=(), minval=0, maxval=1)
         return tf.cond(choice < p, lambda: f(x), lambda: x)
     return g
+
+def get_epoch(graph=None):
+    """Get global epoch counter"""
+    graph = graph or tf.get_default_graph()
+    
+    epoch_tensors = graph.get_collection('epoch_key')
+    if len(epoch_tensors) == 2:
+        epoch = epoch_tensors[0]
+    else:
+        epoch = None
+    return epoch
+
+def get_epoch_op(graph=None):
+    """Get global epoch update op"""
+    graph = graph or tf.get_default_graph()
+    
+    epoch_tensors = graph.get_collection('epoch_key')
+    if len(epoch_tensors) == 2:
+        epoch_op = epoch_tensors[1]
+    else:
+        epoch_op = None
+    return epoch_op
+
+def create_epoch(graph=None):
+    """Creates the global epoch counter"""
+    if get_epoch(graph) is not None:
+        raise ValueError('"Epoch" already exists')
+        
+    graph = graph or tf.get_default_graph()
+    
+    with tf.device('cpu:0'):
+        with graph.as_default():
+            epoch = tf.get_variable('epoch', dtype=tf.int64, initializer=0, trainable=False)
+            graph.add_to_collection('epoch_key', epoch)
+            
+            epoch_op = tf.assign_add(epoch, 1)
+            graph.add_to_collection('epoch_key', epoch_op)
+   
