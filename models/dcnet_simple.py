@@ -14,14 +14,10 @@ from util.config import cfg
 import tfcaps as tc
 
 
-class dcnet_simple(models.basicmodel.BasicModel):
+class DCNetSimple(models.basicmodel.BasicModel):
     """
     Second try for a cifar10 capsule net
     """
-
-    @property
-    def name(self):
-        return 'CapsNetZero'
 
     @lazy_scope_property
     def encoder(self):
