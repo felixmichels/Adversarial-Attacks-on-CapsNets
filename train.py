@@ -27,7 +27,7 @@ def train_epoch(sess, model, init, writer):
                     tf.train.get_global_step(),
                     summary_op
                 ],
-                feed_dict={model.train_placeholder: True})
+                feed_dict={model.training: True})
 
             tf.logging.log_every_n(
                 tf.logging.INFO,
@@ -50,7 +50,7 @@ def test(sess, model, init, writer):
     try:
         while True:
             acc_val = sess.run(model.accuracy,
-                               feed_dict={model.train_placeholder: False})
+                               feed_dict={model.training: False})
             acc_list.append(acc_val)
     except tf.errors.OutOfRangeError:
         pass
