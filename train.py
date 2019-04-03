@@ -25,9 +25,9 @@ def train_epoch(sess, model, init, writer):
                     model.loss,
                     model.accuracy,
                     tf.train.get_global_step(),
-                    summary_op
+                    model.summary_op
                 ],
-                feed_dict={model.train_placeholder: True})
+                feed_dict={model.training: True})
 
             tf.logging.log_every_n(
                 tf.logging.INFO,
@@ -50,7 +50,7 @@ def test(sess, model, init, writer):
     try:
         while True:
             acc_val = sess.run(model.accuracy,
-                               feed_dict={model.train_placeholder: False})
+                               feed_dict={model.training: False})
             acc_list.append(acc_val)
     except tf.errors.OutOfRangeError:
         pass
@@ -97,11 +97,7 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
     writer.close()
 
 
-summary_op = None
-
-
 def main(args):
-    global summary_op, epoch, epoch_op
 
     if cfg.debug:
         tf.logging.set_verbosity(tf.logging.DEBUG)
@@ -125,16 +121,12 @@ def main(args):
 
     tf.train.create_global_step()
     create_epoch()
-    summary_op = tf.summary.merge_all()
 
     tf.logging.debug('Creating model graph')
     model = model_class(img=img, label=label)
 
     ckpt_dir = get_dir(cfg.ckpt_dir, model.name)
     log_dir = get_dir(cfg.log_dir, model.name)
-
-    tf.logging.debug('Creating summary op')
-    summary_op = tf.summary.merge_all()
 
     if cfg.stop_before_session:
         exit()

@@ -8,10 +8,11 @@ Created on Mon Mar 25 13:44:07 2019
 
 import inspect
 import tensorflow as tf
+from abc import ABC, abstractmethod
 from util.lazy import lazy_scope_property
 
 
-class BasicModel(object):
+class BasicModel(ABC):
     """
     Base class for model objects.
     Designed to work with lazy_scope_property;
@@ -75,13 +76,33 @@ class BasicModel(object):
         for save path names etc.
         """
         return self.scope
-
+    
+    @lazy_scope_property(only_training=True)
+    def summary_op(self):
+        """Summary op for this model"""
+        return tf.summary.merge_all(scope=self.scope)
+        
     @lazy_scope_property
-    def train_placeholder(self):
+    def training(self):
         """
         Training placeholder for use with tf session feed_dict.
         If the model is not trainable, returns a tf constant False
         """
         if self.trainable:
-            return tf.placeholder_with_default(True, shape=())
+            return tf.placeholder(dtype=tf.bool, shape=())
         return tf.constant(False)
+
+    @abstractmethod
+    def loss(self):
+        """Total loss"""
+        pass
+    
+    @abstractmethod
+    def accuracy(self):
+        """Accuracy for this batch"""
+        pass
+    
+    @abstractmethod
+    def optimizer(self):
+        """Optimizer op"""
+        pass
