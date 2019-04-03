@@ -27,7 +27,7 @@ class DCNetBig(models.basicmodel.BasicModel):
         :param classes: Number of classes
         :return:
         """
-        is_training = self.train_placeholder
+        is_training = self.training
         i, o = tc.layers.new_io(self.img)
 
         i(tf.layers.conv2d(o(), filters=13, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu))
@@ -68,7 +68,7 @@ class DCNetBig(models.basicmodel.BasicModel):
         :param shape: Shape of a single data point. For MNIST it would be [28, 28, 1].
         :return:
         """
-        encoder_out_masked_flat = tc.layers.label_mask(self.encoder, self.label, self.prediction, self.train_placeholder)
+        encoder_out_masked_flat = tc.layers.label_mask(self.encoder, self.label, self.prediction, self.training)
 
         i, o = tc.layers.new_io(encoder_out_masked_flat)
         i(tf.layers.dense(o(), 1024, activation=tf.nn.relu))
@@ -109,7 +109,7 @@ class DCNetBig(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def recon_loss(self):
-        return tc.losses.reconstruction_loss(original=self.img, reconstruction=self.decoder, alpha=0.0008)
+        return tc.losses.reconstruction_loss(original=self.img, reconstruction=self.decoder, alpha=0.0015)
 
     @lazy_scope_property
     def loss(self):

@@ -91,7 +91,7 @@ def create_epoch(graph=None):
     
     with tf.device('cpu:0'):
         with graph.as_default():
-            epoch = tf.get_variable('epoch', dtype=tf.int64, initializer=0, trainable=False)
+            epoch = tf.get_variable('epoch', dtype=tf.int64, initializer=tf.constant(0, dtype=tf.int64), trainable=False)
             graph.add_to_collection('epoch_key', epoch)
             
             epoch_op = tf.assign_add(epoch, 1)
