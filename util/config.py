@@ -1,4 +1,5 @@
 import tensorflow as tf
+import __main__
 
 flags = tf.app.flags
 
@@ -32,6 +33,11 @@ flags.DEFINE_string('hyper_cfg', '', 'hyperparameter config file')
 
 cfg = flags.FLAGS
 
+try:
+    script_name = __main__.__file__[:-3]+'_cfg'
+    __import__(cfg.hyper_dir+'.'+script_name)
+except ModuleNotFoundError:
+    pass
 
 if cfg.hyper_cfg != '':
     for m in cfg.hyper_cfg.split(','):

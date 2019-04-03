@@ -17,6 +17,7 @@ from util.data import load_cifar10
 def train_epoch(sess, model, init, writer):
     """Trains a single epoch and writes to summary (but doesn't save)"""
     sess.run(init)
+    acc_list = []
     try:
         while True:
             _, loss, acc, step, summary = sess.run(
@@ -29,6 +30,7 @@ def train_epoch(sess, model, init, writer):
                 ],
                 feed_dict={model.training: True})
 
+            acc_list.append(acc)
             tf.logging.log_every_n(
                 tf.logging.INFO,
                 '| Steps: %5d | Loss: %5.3f | Accuracy: %1.3f',
@@ -41,6 +43,8 @@ def train_epoch(sess, model, init, writer):
 
     except tf.errors.OutOfRangeError:
         pass
+    acc = np.average(acc_list)
+    tf.logging.info('Average accuracy this epoch: %1.3f', acc)
 
 
 def test(sess, model, init, writer):
