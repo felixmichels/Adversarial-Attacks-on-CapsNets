@@ -124,9 +124,9 @@ def get_attack_original(attack_name, n=None, override=False):
         tf.logging.debug('Loading from file %s', file_name)
         with np.load(file_name) as npzfile:
             img = npzfile['img']
-            label = npzfile['img']
+            label = npzfile['label']
 
             img = img[:n]
-            label = img[:n]
+            label = label[:n]
 
     return img, label

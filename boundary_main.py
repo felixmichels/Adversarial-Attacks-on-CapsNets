@@ -19,7 +19,7 @@ from attacks.boundary_attack import boundary_attack
 def is_adv_func(sess, model, true_label):
     def is_adv(img):
         acc = sess.run(model.accuracy,
-                       feed_dicy = {
+                       feed_dict = {
                                model.img: np.expand_dims(img, axis=0),
                                model.label: np.expand_dims(true_label, axis=0)
                                })
@@ -50,9 +50,10 @@ def create_adv(sess, model):
         tic = time.time()
         idx = slice(i, i+adv_at_once)
         with Pool(cfg.processes) as pool:
-            adv_img[idx] = pool.starmap(
-                lambda x,y: attack(sess, model, x, y),
-                zip(img[slice], label[slice]))
+            adv = pool.starmap(
+                lambda x, y: attack(sess, model, x, y),
+                zip(img[idx], label[idx]))
+        adv_img = np.append(adv_img, adv, axis=0)
         np.save(att_file, adv_img)
         tf.logging.info('Number of adv images: %d', i)
         tf.logging.info('Finished iteration in %.2f', time.time()-tic)
