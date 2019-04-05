@@ -61,7 +61,7 @@ def test(sess, model, init, writer):
     acc = np.average(acc_list)
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc))
     summary = tf.Summary(value=[
-        tf.Summary.Value(tag=model.name+"/test_accuracy", simple_value=acc)])
+        tf.Summary.Value(tag=model.scope+"/test_accuracy", simple_value=acc)])
     tf.logging.debug('Writing test summary')
     step = sess.run(tf.train.get_global_step())
     writer.add_summary(summary, global_step=step)
