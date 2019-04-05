@@ -103,11 +103,6 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
 
 def main(args):
 
-    if cfg.debug:
-        tf.logging.set_verbosity(tf.logging.DEBUG)
-    else:
-        tf.logging.set_verbosity(tf.logging.INFO)
-
     model_class = get_model(args[1])
 
     with tf.variable_scope('data'):

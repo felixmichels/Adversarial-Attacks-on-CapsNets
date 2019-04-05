@@ -60,11 +60,6 @@ def create_adv(sess, model):
         
 def main(args):
     
-    if cfg.debug:
-        tf.logging.set_verbosity(tf.logging.DEBUG)
-    else:
-        tf.logging.set_verbosity(tf.logging.INFO)
-        
     model_class = get_model(args[1])
     
     tf.logging.debug('Creating model graph')
