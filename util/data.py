@@ -98,13 +98,14 @@ def load_cifar10(is_train=True, batch_size=None):
     return dataset
 
 
-def get_attack_original(attack_name, n=None, override=False):
+def get_attack_original(attack_name, n=None, targeted=False, override=False):
     """
     Loads original images from file, or creates file with random test images.
     n: number of images. If image file already exists, None will load all.
        If file doesn't exists yet, or override is True, n must not be None
     override: If true, generate a new file
     """
+    num_classes = 10
     path = get_dir(cfg.data_dir, attack_name)
     file_name = os.path.join(path, 'originals.npz')
 
@@ -118,7 +119,16 @@ def get_attack_original(attack_name, n=None, override=False):
         img = img[:n]
         label = label[:n]
 
-        np.savez(file_name, img=img, label=label)
+        if targeted:
+            target_label = np.random.randint(low=0, high=num_classes, size=label.size, dtype=label.dtype)
+            # Make sure label and target label are different
+            same_idx = np.where(label == target_label)[0]
+            while same_idx.size > 0:
+                target_label[same_idx] = np.random.randint(low=0, high=num_classes, size=same_idx.size, label=label.dtype)
+                same_idx = np.where(label == target_label)[0]
+            np.savez(file_name, img=img, label=label, target_label=target_label)
+        else:
+            np.savez(file_name, img=img, label=label)
 
     else:
         tf.logging.debug('Loading from file %s', file_name)
@@ -129,4 +139,10 @@ def get_attack_original(attack_name, n=None, override=False):
             img = img[:n]
             label = label[:n]
 
+            if 'target_label' in npzfile.keys():
+                target_label = npzfile['target_label']
+                target_label = target_label[:n]
+
+    if targeted:
+        return img, label, target_label
     return img, label
