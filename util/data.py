@@ -120,7 +120,12 @@ def get_attack_original(attack_name, n=None, targeted=False, override=False):
         label = label[:n]
 
         if targeted:
-            target_label = np.random.randint(low=0, high=num_classes, dtype=label.dtype)
+            target_label = np.random.randint(low=0, high=num_classes, size=label.size, dtype=label.dtype)
+            # Make sure label and target label are different
+            same_idx = np.where(label == target_label)[0]
+            while same_idx.size > 0:
+                target_label[same_idx] = np.random.randint(low=0, high=num_classes, size=same_idx.size, label=label.dtype)
+                same_idx = np.where(label == target_label)[0]
             np.savez(file_name, img=img, label=label, target_label=target_label)
         else:
             np.savez(file_name, img=img, label=label)
