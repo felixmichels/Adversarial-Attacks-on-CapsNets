@@ -35,7 +35,7 @@ def create_adv(sess, attack):
             # If attack didn't succeed, mark image with NaN
             adv = np.empty_like(img[i])
             adv[:] = np.nan
-        adv_img = np.append(adv_img, adv, axis=0)
+        adv_img = np.append(adv_img, [adv], axis=0)
         np.save(att_file, adv_img)
         tf.logging.info('Number of adv images: %d', i)
         tf.logging.info('Finished iteration in %.2f', time.time()-tic)

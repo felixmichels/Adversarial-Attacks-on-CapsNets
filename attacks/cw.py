@@ -18,7 +18,7 @@ class CWAttackOp():
                  ):
         """Builds a optimize op for the carlini wagner attack."""
 
-        self.original_ph = tf.placeholder(dtype=tf.float32, shape=shape)
+        self.original = tf.placeholder(dtype=tf.float32, shape=shape)
         self.target = tf.placeholder(dtype=tf.int64, shape=())
         self.lagrangian = tf.placeholder(dtype=tf.float32, shape=())
         
