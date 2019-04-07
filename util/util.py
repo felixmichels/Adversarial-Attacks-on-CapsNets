@@ -8,6 +8,7 @@ import importlib
 import inspect
 import sys
 import tensorflow as tf
+import numpy as np
 from util.config import cfg
 
 
@@ -97,3 +98,19 @@ def create_epoch(graph=None):
             epoch_op = tf.assign_add(epoch, 1)
             graph.add_to_collection('epoch_key', epoch_op)
    
+    
+def _bak_name(file, n):
+    name = file
+    if n > 0:
+        name += '.bak'
+    if n > 1:
+        name += str(n)
+    return name     
+        
+def np_save_bak(file, arr, num_bak=5):
+    """numpy saves an array, but creates backups"""
+    for i in range(num_bak, 0, -1):
+        old = _bak_name(file, i-1)
+        if os.path.isfile(old):
+            os.rename(old, _bak_name(file, i))
+    np.save(file, arr)

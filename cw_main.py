@@ -10,7 +10,7 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model
+from util.util import get_dir, get_model, np_save_bak
 from util.data import get_attack_original
 from attacks.cw import CWAttackOp, cw_attack
 
@@ -36,7 +36,7 @@ def create_adv(sess, attack):
             adv = np.empty_like(img[i])
             adv[:] = np.nan
         adv_img = np.append(adv_img, [adv], axis=0)
-        np.save(att_file, adv_img)
+        np_save_bak(att_file, adv_img)
         tf.logging.info('Number of adv images: %d', i)
         tf.logging.info('Finished iteration in %.2f', time.time()-tic)
         
