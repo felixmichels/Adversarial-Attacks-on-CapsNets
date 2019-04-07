@@ -13,5 +13,5 @@ flags.DEFINE_string('attack_name', 'boundary_attack', 'Name of the attack (used 
 flags.DEFINE_integer('number_img', 1000, 'Number of images to attack')
 flags.DEFINE_integer('processes', 32, 'Number of attacks to run parallel')
 
-flags.DEFINE_float('eps_min', 1e-3, 'Epsilon min for the attack algorithm')
-flags.DEFINE_integer('max_steps', 1000, 'Maximum number of evaluations in the attack algorithm')
+flags.DEFINE_float('eps_min', 1e-4, 'Epsilon min for the attack algorithm')
+flags.DEFINE_integer('max_steps', 10000, 'Maximum number of evaluations in the attack algorithm')
