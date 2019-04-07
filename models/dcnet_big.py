@@ -11,6 +11,7 @@ import numpy as np
 import models.basicmodel
 from util.lazy import lazy_scope_property
 from util.config import cfg
+import hyperconfig/dcnet_big_cfg
 import tfcaps as tc
 
 
@@ -62,7 +63,7 @@ class DCNetBig(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def logits(self):
-        return self.probabilities
+        return 2*tf.atanh(2*self.probabilities - 1)
 
     @lazy_scope_property
     def decoder(self):
