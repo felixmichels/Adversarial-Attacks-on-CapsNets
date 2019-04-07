@@ -4,7 +4,7 @@ import __main__
 flags = tf.app.flags
 
 def _is_interactive():
-    return hasattr(__main__, '__file__')
+    return not hasattr(__main__, '__file__')
 
 
 flags.DEFINE_integer('batch_size', 128, 'batch size')
@@ -33,7 +33,7 @@ flags.DEFINE_boolean('stop_before_session', False, 'For debugging purposes')
 flags.DEFINE_string('hyper_dir', 'hyper_config', 'directory for hyperparameter config files')
 flags.DEFINE_string('hyper_cfg', '', 'hyperparameter config file')
 
-if not _is_interactive():
+if _is_interactive():
     flags.DEFINE_string('f', '', 'kernel')
 
 cfg = flags.FLAGS
@@ -43,17 +43,16 @@ if cfg.debug:
 else:
     tf.logging.set_verbosity(tf.logging.INFO)
 
-def _load_config(mod_name):
-    __import__(cfg.hyper_dir + '.' + mod_name)
+def load_config(mod_name):
+    __import__(cfg.hyper_dir + '.' + mod_name + '_cfg')
     tf.logging.debug('Loaded additional config from %s', mod_name)
 
 try:
-    script_name = __main__.file[:-3] if not _is_interactive() else 'default'
-    mod_name = script_name + '_cfg'
-    _load_config(mod_name)
+    mod_name = __main__.__file__[:-3] if not _is_interactive() else 'default'
+    load_config(mod_name)
 except ModuleNotFoundError:
     pass
 
 if cfg.hyper_cfg != '':
     for m in cfg.hyper_cfg.split(','):
-        _load_config(m+'_cfg')
+        load_config(m)

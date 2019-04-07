@@ -10,9 +10,10 @@ import tensorflow as tf
 import numpy as np
 import models.basicmodel
 from util.lazy import lazy_scope_property
-from util.config import cfg
-import hyperconfig/dcnet_big_cfg
+from util.config import cfg, load_config
 import tfcaps as tc
+
+load_config('dcnet_big')
 
 
 class DCNetBig(models.basicmodel.BasicModel):
