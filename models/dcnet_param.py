@@ -14,10 +14,17 @@ from util.config import cfg
 import tfcaps as tc
 
 
-class DCNetBig(models.basicmodel.BasicModel):
+class DCNetFit(models.basicmodel.BasicModel):
     """
     Another try for a cifar10 capsule net
     """
+
+    @property
+    def name(self):
+        return self.scope+'_conv:{},{}_l2:{}_rec:{}_aug:{},{}'.format(cfg.conv_layers, cfg.dense_filters,
+                                                                      cfg.l2_scale,
+                                                                      cfg.recon_scale,
+                                                                      cfg.data_aug, cfg.aug_prob)
 
     @lazy_scope_property
     def encoder(self):
@@ -30,16 +37,16 @@ class DCNetBig(models.basicmodel.BasicModel):
         is_training = self.training
         i, o = tc.layers.new_io(self.img)
 
-        i(tf.layers.conv2d(o(), filters=13, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu))
+        i(tf.layers.conv2d(o(), filters=cfg.dense_filters-3, kernel_size=5, strides=1, padding='same', activation=tf.nn.relu))
 
-        for _ in range(7):
+        for _ in range(cfg.conv_layers-1):
             i(tf.concat([o(-1), o(-2)], axis=-1))
             i(tf.layers.conv2d(
                 tf.layers.batch_normalization(o(), training=is_training),
-                filters=16, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu))
+                filters=cfg.dense_filters, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu))
         i(tf.concat([o(-1), o(-2)], axis=-1))
 
-        i(tf.layers.dropout(o(), rate=0.1, training=is_training))
+        i(tf.layers.dropout(o(), rate=0.11, training=is_training))
 
         tf.logging.debug('Shape after conv-layers: %s', o().get_shape())
 
@@ -62,7 +69,7 @@ class DCNetBig(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def logits(self):
-        return self.probabilities
+        return 2*tf.atanh(2*self.probabilities - 1)
 
     @lazy_scope_property
     def decoder(self):
