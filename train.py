@@ -14,7 +14,7 @@ from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op
 from util.data import load_cifar10
 
 
-def train_epoch(sess, model, init, writer):
+def train_epoch(sess, model, init, writer=None):
     """Trains a single epoch and writes to summary (but doesn't save)"""
     sess.run(init)
     acc_list = []
@@ -39,7 +39,8 @@ def train_epoch(sess, model, init, writer):
 
             if step % cfg.summary_every_n == 0:
                 tf.logging.debug('Writing summary')
-                writer.add_summary(summary, global_step=step)
+                if writer is not None:
+                    writer.add_summary(summary, global_step=step)
 
     except tf.errors.OutOfRangeError:
         pass
@@ -47,7 +48,7 @@ def train_epoch(sess, model, init, writer):
     tf.logging.info('Average accuracy this epoch: %1.3f', acc)
 
 
-def test(sess, model, init, writer):
+def test(sess, model, init, writer=None):
     """Runs the test set and averages accuracy"""
     sess.run(init)
     acc_list = []
@@ -64,7 +65,8 @@ def test(sess, model, init, writer):
         tf.Summary.Value(tag=model.scope+"/test_accuracy", simple_value=acc)])
     tf.logging.debug('Writing test summary')
     step = sess.run(tf.train.get_global_step())
-    writer.add_summary(summary, global_step=step)
+    if writer is not None:
+        writer.add_summary(summary, global_step=step)
 
 
 def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
@@ -72,7 +74,10 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
     sess.run(tf.global_variables_initializer())
 
     saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=5, keep_checkpoint_every_n_hours=2)
-    writer = tf.summary.FileWriter(log_dir, sess.graph)
+    if cfg.no_summary:
+        writer = None
+    else:
+        writer = tf.summary.FileWriter(log_dir, sess.graph)
 
     if cfg.restore:
         save_path = tf.train.latest_checkpoint(ckpt_dir)
@@ -92,13 +97,15 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
 
         sess.run(get_epoch_op())
 
-        if (ep+1) % cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
+        if ((ep+1) % cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq) and not cfg.no_save:
             ckpt_path = os.path.join(ckpt_dir, 'model')
             saver.save(sess, ckpt_path, global_step=tf.train.get_global_step())
             last_safe_time = time.time()
+            tf.logging.info('Saved to %s', ckpt_dir)
 
     test(sess, model, test_init, writer)
-    writer.close()
+    if writer is not None:
+        writer.close()
 
 
 def main(args):
