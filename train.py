@@ -97,10 +97,11 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
 
         sess.run(get_epoch_op())
 
-        if (ep+1) % cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq:
+        if ((ep+1) % cfg.save_every_n == 0 or time.time()-last_safe_time > cfg.save_freq) and not cfg.no_save:
             ckpt_path = os.path.join(ckpt_dir, 'model')
             saver.save(sess, ckpt_path, global_step=tf.train.get_global_step())
             last_safe_time = time.time()
+            tf.logging.info('Saved to %s', ckpt_dir)
 
     test(sess, model, test_init, writer)
     if writer is not None:
