@@ -119,6 +119,8 @@ def get_attack_original(attack_name, n=None, targeted=False, override=False):
         img = img[:n]
         label = label[:n]
 
+        save_kwargs = {'img': img, 'label': label}
+
         if targeted:
             target_label = np.random.randint(low=0, high=num_classes, size=label.size, dtype=label.dtype)
             # Make sure label and target label are different
@@ -126,9 +128,10 @@ def get_attack_original(attack_name, n=None, targeted=False, override=False):
             while same_idx.size > 0:
                 target_label[same_idx] = np.random.randint(low=0, high=num_classes, size=same_idx.size, dtype=label.dtype)
                 same_idx = np.where(label == target_label)[0]
-            np.savez(file_name, img=img, label=label, target_label=target_label)
-        else:
-            np.savez(file_name, img=img, label=label)
+            save_kwargs['target_label'] = target_label
+
+        tf.logging.debug('Saving to file %s', file_name)
+        np.savez(file_name, **save_kwargs)
 
     else:
         tf.logging.debug('Loading from file %s', file_name)

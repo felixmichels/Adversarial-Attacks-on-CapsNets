@@ -32,6 +32,7 @@ def create_adv(sess, attack):
         tic = time.time()
         adv = cw_attack(sess, img[i], target_label[i], attack, cfg.max_opt_iter, cfg.max_bin_iter)
         if adv is None:
+            tf.logging.info('Attack failed...')
             # If attack didn't succeed, mark image with NaN
             adv = np.empty_like(img[i])
             adv[:] = np.nan
