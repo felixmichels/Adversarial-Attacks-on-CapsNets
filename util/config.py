@@ -29,6 +29,7 @@ flags.DEFINE_integer('test_every_n', 5, 'Test every n epochs')
 
 flags.DEFINE_boolean('debug', False, 'Sets logging verbosity to debug')
 flags.DEFINE_boolean('stop_before_session', False, 'For debugging purposes')
+flags.DEFINE_boolean('no_summary', False, 'For testing')
 
 flags.DEFINE_string('hyper_dir', 'hyper_config', 'directory for hyperparameter config files')
 flags.DEFINE_string('hyper_cfg', '', 'hyperparameter config file')
