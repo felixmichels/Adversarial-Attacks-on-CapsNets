@@ -49,7 +49,7 @@ def doublewrap(function):
 def lazy_scope_property(function, only_training=False):
     """
     Only to be used within models.basicmodel and subclasses
-    Don't read, it's much too ugly
+    Don't read, it's way too ugly
     """
 
     attribute = '_cache_' + function.__name__
