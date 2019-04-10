@@ -61,9 +61,24 @@ class CWAttackOp():
         self.image = image
 
 
-def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter):
-    #tf.logging.debug('Initializing attack')
-    #sess.run(attack.init, feed_dict={attack.original: orig})
+def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter, c_prop):
+    """
+    Carlini wagner attack for a single image
+    
+    Args:
+        sess: The tensorflow session to use
+        orig: The original image (as an numpy array) to attack
+        target: The target label
+        attack: An instance of CWAttackOp
+        max_opt_iter: Maximal number of steps for the adam optimizer
+        max_bin_iter: Maximal number of steps for the binary search for c
+        c_prop: A property for the initial c value.
+                Is set to the value returned by binary search
+
+    Returns:
+        An numpy array containing the adversarial example,
+        or None if the attack was unsuccessful
+    """
       
     def test_func(c):
         tf.logging.info('Testing adv img with c=%f',c)
@@ -88,9 +103,11 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter):
                         feed_dict = {attack.target: target})
         
     tf.logging.debug('Starting binary search')
-    c = _binary_search_min(test_func, max_iter = max_bin_iter)
+    c = _binary_search_min(test_func, init_c=c_prop.fget(), max_iter = max_bin_iter)
     if c is None:
         return None
+
+    c_prop.fset(c)
     
     sess.run(attack.init, feed_dict={attack.original: orig})
     good_adv = None
@@ -115,15 +132,13 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter):
 
 
 
-def _binary_search_min(func, max_iter=10):
+def _binary_search_min(func, init_c, max_iter=10):
     """Finds minimal c, s.t. func(c) is True
     Assumes, that func is monotone and func(0) is False
     Returns None, if no valid c could be found"""
-    if 'start_c' not in _binary_search_min.__dict__:
-        _binary_search_min.start_c = 0.5
     c_min = 0.0
     c_max = None
-    c = _binary_search_min.start_c
+    c = init_c
 
     for _ in range(max_iter):
         if func(c):
@@ -143,5 +158,4 @@ def _binary_search_min(func, max_iter=10):
     # Return slightly larger c for safety
     if c is not None:
         c += 1e-3*(c_max - c_min)
-        _binary_search_min.start_c = 0.1*c + 0.9 * _binary_search_min.start_c
         return c + 1e-3*(c_max - c_min)

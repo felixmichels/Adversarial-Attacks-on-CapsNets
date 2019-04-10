@@ -14,6 +14,23 @@ from util.util import get_dir, get_model, np_save_bak
 from util.data import get_attack_original
 from attacks.cw import CWAttackOp, cw_attack
 
+def _c_prop(att_dir):
+    mv_avg_rate = 1/50
+    file = os.path.join(att_dir,'c.txt')
+    def getter():
+        if 'value' not in _c_prop.__dict__:
+            with open(file,'r') as f:
+                _c_prop.value = float(f.read())
+            tf.logging.debug('Read c value: %f', _c_prop.value)
+        return _c_prop.value
+
+    def setter(c):
+        _c_prop.value = mv_avg_rate * c + (1-mv_avg_rate)*_c_prop.value
+        with open(file, 'w') as f:
+            f.write(str(_c_prop.value))
+
+    return property(getter, setter)
+
 
 def create_adv(sess, attack):
     img, label, target_label = get_attack_original(cfg.attack_name, n=cfg.number_img, targeted=True)
@@ -26,11 +43,12 @@ def create_adv(sess, attack):
         tf.logging.debug('Creating empty array for adv img')
         adv_img = np.empty(shape=(0,32,32,3), dtype='float32')
         
+    c_prop = _c_prop(att_dir)
     num_adv = len(adv_img)
     tf.logging.info('Starting at img %d', num_adv)
     for i in range(num_adv, cfg.number_img):
         tic = time.time()
-        adv = cw_attack(sess, img[i], target_label[i], attack, cfg.max_opt_iter, cfg.max_bin_iter)
+        adv = cw_attack(sess, img[i], target_label[i], attack, cfg.max_opt_iter, cfg.max_bin_iter, c_prop)
         if adv is None:
             tf.logging.info('Attack failed...')
             # If attack didn't succeed, mark image with NaN
