@@ -82,3 +82,5 @@ class UniversalPerturbation():
                 self.perturbation = self._work_pert
             
             tf.logging.debug('it: %d, acc: %1.3f, norm: %1.3f', it, acc, la.norm(self._work_pert))
+            
+        tf.logging.info('Reached acc: %1.3f', self._best_fool_rate)
