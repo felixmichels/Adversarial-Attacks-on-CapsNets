@@ -19,17 +19,23 @@ class BasicModel(ABC):
     thus decorated methods are initialized immediately and only once,
     in an guaranteed order
     """
-
-    def __init__(self, img, label, trainable=True, scope=None):
+    
+    def __init__(self,
+                 img=None,
+                 label=None,
+                 trainable=True,
+                 scope=None,
+                 shape=(32,32,3)):
         """
-        img: Tensor, input images
-        label: Tensor, labels
+        img: Tensor, input images. If None, uses placeholder
+        label: Tensor, labels. If None, uses placeholder
         trainable: Boolean, indicates if model is trainable
         scope: Optional scope name for tensors in this model.
                Uses the class name (of the subclass) as default
+        shape: Input shape. Only used, if img is None
         """
-        self.img = img
-        self.label = label
+        self.img = img if img is not None else tf.placeholder(dtype=tf.float32, shape=(None, *shape))
+        self.label = label if label is not None else tf.placeholder(dtype=tf.int64, shape=(None,))
         self.trainable = trainable
 
         self.scope = scope or self.__class__.__name__
@@ -89,7 +95,7 @@ class BasicModel(ABC):
         If the model is not trainable, returns a tf constant False
         """
         if self.trainable:
-            return tf.placeholder(dtype=tf.bool, shape=())
+            return tf.placeholder_with_default(False, shape=())
         return tf.constant(False)
 
     @abstractmethod
