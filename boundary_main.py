@@ -14,12 +14,13 @@ from util.config import cfg
 from util.util import get_dir, get_model, np_save_bak
 from util.data import get_attack_original
 from attacks.boundary_attack import boundary_attack
+from util.imgdataset import  dataset_by_name
 
 
 def is_adv_func(sess, model, true_label):
     def is_adv(img):
         acc = sess.run(model.accuracy,
-                       feed_dict = {
+                       feed_dict={
                                model.img: np.expand_dims(img, axis=0),
                                model.label: np.expand_dims(true_label, axis=0)
                                })
@@ -32,16 +33,16 @@ def attack(sess, model, img, label):
     return boundary_attack(img, is_adv, eps_min=cfg.eps_min, max_steps=cfg.max_steps)
 
 
-def create_adv(sess, model):
-    img, label = get_attack_original(cfg.attack_name, n=cfg.number_img)
-    att_dir = get_dir(cfg.data_dir, cfg.attack_name, model.name)
+def create_adv(sess, dataset, model):
+    img, label = get_attack_original(cfg.attack_name, dataset, n=cfg.number_img)
+    att_dir = get_dir(cfg.data_dir, dataset.name, cfg.attack_name, model.name)
     att_file = os.path.join(att_dir, 'adv_images.npy')
     if os.path.isfile(att_file):
         tf.logging.debug('Loading adv img from %s', att_file)
         adv_img = np.load(att_file)
     else:
         tf.logging.debug('Creating empty array for adv img')
-        adv_img = np.empty(shape=(0,32,32,3), dtype='float32')
+        adv_img = np.empty(shape=(0, *dataset.shape), dtype='float32')
         
     num_adv = len(adv_img)
     adv_at_once = 2*cfg.processes
@@ -61,13 +62,12 @@ def create_adv(sess, model):
 def main(args):
     
     model_class = get_model(args[1])
+    dataset = dataset_by_name(args[2])
     
     tf.logging.debug('Creating model graph')
-    img_ph = tf.placeholder(dtype=tf.float32, shape=(None,32,32,3))
-    label_ph = tf.placeholder(dtype=tf.int64, shape=(None,))
-    model = model_class(img=img_ph, label=label_ph, trainable=False)
+    model = model_class(trainable=False, shape=dataset.shape)
     
-    ckpt_dir = get_dir(cfg.ckpt_dir, model.name)
+    ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, model.name)
     saver = tf.train.Saver(var_list=tf.global_variables(scope=model.scope))
     
     tf.logging.debug('Starting session')
@@ -75,9 +75,9 @@ def main(args):
         try:
             save_path = tf.train.latest_checkpoint(ckpt_dir)
             saver.restore(sess, save_path)
-            create_adv(sess, model)
+            create_adv(sess, dataset, model)
         except KeyboardInterrupt:
-            print("Manual interrupt occured")
+            print("Manual interrupt occurred")
         
 
 if __name__ == '__main__':
