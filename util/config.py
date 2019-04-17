@@ -20,6 +20,7 @@ flags.DEFINE_string('ckpt_dir', 'ckpt', 'checkpoint directory')
 flags.DEFINE_string('model_pck', 'models', 'package name of models')
 flags.DEFINE_string('data_dir', 'data', 'directory for generated perturbations')
 flags.DEFINE_string('log_dir', 'logdir', 'directory for graphs and summaries')
+flags.DEFINE_string('dataset_dir', 'datasets', 'directory for training/test data')
 
 flags.DEFINE_float('save_freq', 300.0, 'Saves after epoch, if time in seconds since last save surpasses this value')
 flags.DEFINE_integer('save_every_n', 5, 'Save every n epochs')
@@ -43,19 +44,21 @@ if _is_interactive():
 cfg = flags.FLAGS
 
 if cfg.test:
-    cfg.epochs=0
-    cfg.no_summary=True
-    cfg.no_save=True
-    cfg.restore=True
+    cfg.epochs = 0
+    cfg.no_summary = True
+    cfg.no_save = True
+    cfg.restore = True
 
 if cfg.debug:
     tf.logging.set_verbosity(tf.logging.DEBUG)
 else:
     tf.logging.set_verbosity(tf.logging.INFO)
 
+
 def load_config(mod_name):
     __import__(cfg.hyper_dir + '.' + mod_name + '_cfg')
     tf.logging.debug('Loaded additional config from %s', mod_name)
+
 
 try:
     mod_name = __main__.__file__[:-3] if not _is_interactive() else 'default'

@@ -2,6 +2,8 @@
 ckpt/
 data/
 logdir/
+datasets/*
+!datasets/get_datasets.sh
 
 # Pipenv
 Pipfile
@@ -102,6 +104,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# Pycharm
+.idea/
 
 # Rope project settings
 .ropeproject
