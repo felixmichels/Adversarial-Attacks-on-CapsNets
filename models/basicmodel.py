@@ -34,8 +34,8 @@ class BasicModel(ABC):
                Uses the class name (of the subclass) as default
         shape: Input shape. Only used, if img is None
         """
-        self.img = img or tf.placeholder(dtype=tf.float32, shape=(None,)+shape)
-        self.label = label or tf.placeholder(dtype=tf.int64, shape=(None,))
+        self.img = img if img is not None else tf.placeholder(dtype=tf.float32, shape=(None, *shape))
+        self.label = label if label is not None tf.placeholder(dtype=tf.int64, shape=(None,))
         self.trainable = trainable
 
         self.scope = scope or self.__class__.__name__
