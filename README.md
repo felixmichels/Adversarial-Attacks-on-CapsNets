@@ -59,3 +59,10 @@ Top Capsule Network, bottom Convolutional Network
 ![alt text](resources/img/zoomed/universal_orig_bird.png)
 ![alt text](resources/img/zoomed/universal_conv_adv.png)
 ![alt text](resources/img/zoomed/universal_conv_pert.png)
+
+
+## TODO
+Test on different datasets
+Compare confidence
+Test transferability
+Test Decoder error
