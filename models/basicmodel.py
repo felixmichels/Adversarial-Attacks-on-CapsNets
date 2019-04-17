@@ -35,7 +35,7 @@ class BasicModel(ABC):
         shape: Input shape. Only used, if img is None
         """
         self.img = img if img is not None else tf.placeholder(dtype=tf.float32, shape=(None, *shape))
-        self.label = label if label is not None tf.placeholder(dtype=tf.int64, shape=(None,))
+        self.label = label if label is not None else tf.placeholder(dtype=tf.int64, shape=(None,))
         self.trainable = trainable
 
         self.scope = scope or self.__class__.__name__
