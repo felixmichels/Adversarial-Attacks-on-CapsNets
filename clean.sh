@@ -1,6 +1,6 @@
 #/bin/sh
 
-dirs=('logdir' 'data' 'ckpt', 'datasets')
+dirs=('logdir' 'data' 'ckpt' 'datasets')
 
 for i in ${dirs[@]}; do
 	mkdir -p "$i"

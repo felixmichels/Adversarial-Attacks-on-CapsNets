@@ -124,7 +124,7 @@ svhn = ImgDataset(
     _svhn_loader,
     name='svhn',
     num_classes=10,
-    names=[str(n) for n in range(10)])
+    label_names=[str(n) for n in range(10)])
 
 
 _datasets = {ds.name: ds for ds in (cifar10, fashion_mnist, mnist, svhn)}
