@@ -1,0 +1,122 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2019
+
+% ready for submission
+% \usepackage{neurips_2019}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2019}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+     \usepackage[final]{neurips_2019}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\title{Adversarial Attacks on Capsule Networks}
+\bibliographystyle{plain}
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+
+\author{%
+  Felix Michels, Tobias Uelwer, Stefan Harmeling \\
+  Department of Computer Science\\
+  Heinrich-Heine University Düsseldorf\\
+  \texttt{\{felix.michels, tobias.uelwer, harmeling\}@hhu.de} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	In this paper we want to extensively evaluate the robustness of capsule networks towards different adversarial attacks. Our experiments show that capsule networks can be fooled as easily as convolutional networks.
+
+\end{abstract}
+
+\section{Introduction}
+
+
+
+\section{Capsule Networks and Dynamic Routing}
+
+\cite{capsules}
+
+\section{Adversarial Attacks}
+
+\subsection{Carlini-Wagner Attack}
+
+\cite{carlini}
+
+\subsection{Boundary Attack}
+
+\cite{boundary}
+
+\subsection{DeepFool Attack}
+
+\cite{deepfool}
+
+\subsection{Universal Adversarial Perturbations}
+\cite{universal}
+
+\section{Experiments}
+
+\subsection{Capsule Network}
+
+\subsection{Datasets}
+
+We train the capsule network on the following benchmark datasets:
+\begin{itemize}
+	\item MNIST \cite{mnist}
+	\item Fashion-MNIST \cite{fashion}
+	\item SVHN \cite{svhn}
+	\item CIFAR10 \cite{cifar}
+\end{itemize}
+
+\section{Conclusion}
+
+
+\bibliography{neurips_2019}
+
+
+\end{document}
