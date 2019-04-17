@@ -42,7 +42,7 @@
   Felix Michels, Tobias Uelwer, Stefan Harmeling \\
   Department of Computer Science\\
   Heinrich-Heine University Düsseldorf\\
-  \texttt{\{felix.michels, tobias.uelwer, stefan.harmeling\}@hhu.de} \\
+  \texttt{\{felix.michels, tobias.uelwer, harmeling\}@hhu.de} \\
   % examples of more authors
   % \And
   % Coauthor \\
@@ -70,6 +70,7 @@
 \maketitle
 
 \begin{abstract}
+	In this paper we want to extensively evaluate the robustness of capsule networks towards different adversarial attacks. Our experiments show that capsule networks can be fooled as easily as convolutional networks.
 
 \end{abstract}
 
@@ -100,10 +101,20 @@
 
 \section{Experiments}
 
+\subsection{Capsule Network}
+
+\subsection{Datasets}
+
+We train the capsule network on the following benchmark datasets:
+\begin{itemize}
+	\item MNIST \cite{mnist}
+	\item Fashion-MNIST \cite{fashion}
+	\item SVHN \cite{svhn}
+	\item CIFAR10 \cite{cifar}
+\end{itemize}
+
 \section{Conclusion}
 
-
-\section*{References}
 
 \bibliography{neurips_2019}
 
