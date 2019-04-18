@@ -13,13 +13,13 @@ from util.util import get_dir, func_with_prob
 from util.config import cfg
 
 
-def _rand_crop_resize(min_size):
+def _rand_crop_resize(min_size, size):
     def crop(img):
         crop_size = tf.random_uniform(shape=(), minval=min_size, maxval=1)
         x = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
         y = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
         box = [[x, y, x+crop_size, y+crop_size]]
-        return tf.image.crop_and_resize([img], boxes=box, box_ind=[0], crop_size=[32,32])[0]
+        return tf.image.crop_and_resize([img], boxes=box, box_ind=[0], crop_size=size)[0]
 
     return crop
 
@@ -46,17 +46,28 @@ def _aug(dataset, scale, prob):
     for key in param:
         param[key] *= scale
 
-    tf.logging.debug('Building augmentation function with scale %f, prob %f', scale, prob)
-    aug_func = func_with_prob(
-        _chain_augs(
-            lambda x: tf.contrib.image.rotate(x, param['angle'] * tf.random_normal(shape=())),
-            tf.image.random_flip_left_right,
+    shape = dataset.output_shapes[0].as_list()
+    augs = [
+        lambda x: tf.contrib.image.rotate(x, param['angle'] * tf.random_normal(shape=())),
+        lambda x: tf.image.random_brightness(x, param['bright']),
+        func_with_prob(_rand_crop_resize(1-param['crop'], shape[:-1]), 0.75)
+    ]
+
+    # If the images have color
+    if shape[-1] == 3:
+        tf.logging.debug('Adding color augmentations')
+        augs += [
             lambda x: tf.image.random_hue(x, param['hue']),
             lambda x: tf.image.random_saturation(x, 1-param['sat'], 1+param['sat']),
-            lambda x: tf.image.random_brightness(x, param['bright']),
             lambda x: tf.image.random_contrast(x, 1-param['contr'], 1+param['contr']),
-            func_with_prob(_rand_crop_resize(1-param['crop']), 0.75)),
-        prob)
+        ]
+
+    tf.logging.debug('Building augmentation function with scale %f, prob %f', scale, prob)
+    tf.logging.debug('Building flip augmentations')
+    aug_func = tf.image.random_flip_left_right
+    if scale > 0:
+        tf.logging.debug('Building scalable augmentations')
+        aug_func = _chain_augs(func_with_prob(_chain_augs(*augs), prob), aug_func)
 
     return dataset.map(lambda x, y: (aug_func(x), y), num_parallel_calls=32)
 
@@ -81,7 +92,7 @@ def to_tf_dataset(dataset, is_train=True, batch_size=None, aug=None):
 
     dataset = tf.data.Dataset.from_tensor_slices((x, y))
     if is_train:
-        if aug is not None and aug[0] is not None and aug[0] != 0:
+        if aug is not None and aug[0] is not None:
             if not isinstance(aug, tuple):
                 aug = (aug, 1.0)
             dataset = _aug(dataset, aug[0], aug[1])
