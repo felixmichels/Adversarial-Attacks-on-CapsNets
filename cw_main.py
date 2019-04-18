@@ -10,13 +10,13 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model, np_save_bak
+from util.util import get_dir, get_model, np_save_bak, get_params
 from util.data import get_attack_original
 from attacks.cw import CWAttackOp, cw_attack
 from util.imgdataset import dataset_by_name
 
 def _c_prop(att_dir):
-    mv_avg_rate = 1/50
+    mv_avg_rate = 1/100
     file = os.path.join(att_dir,'c.txt')
     def getter():
         if 'value' not in _c_prop.__dict__:
@@ -64,11 +64,14 @@ def main(args):
     
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
+
+    params = get_params(dataset.name, args[1])
     
     tf.logging.debug('Creating attack ops')
     attack = CWAttackOp(model_class,
-                        cfg.classes,
-                        shape=dataset.shape,
+                        params,
+                        dataset.shape,
+                        dataset.num_classes,
                         kappa=cfg.kappa,
                         rand_start_std=cfg.rand_start_std)
     
