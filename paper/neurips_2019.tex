@@ -79,7 +79,7 @@
 
 \section{Introduction}
 
-Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio} and Peer et al. \cite{training}, however... This paper is structured as followed: In section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods used to attack neural networks. Section \ref{lab:experiments} summarizes the results of our experiments.
+Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio} and Peer et al. \cite{training}, however... This paper is structured as followed: In section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods we used to attack the capsule networks. Section \ref{lab:experiments} summarizes the results of our experiments.
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
@@ -97,24 +97,30 @@ Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the
 \subsection{Carlini-Wagner Attack}
 
 The Carlini-Wagner attack \cite{carlini} is a targeted white-box attack and performed by solving the following constrained optimization problem
-
-\begin{equation*}
+\begin{equation}
 	\begin{aligned}
 	& \underset{\delta}{\text{minimize}}
 	& & ||\delta||_2 + c \cdot \max(\max_{i\neq t}(F(x+\delta)_i)-F(x)_t, 0) \\
 	& \text{subject to}
 	& & x+\delta \in [0,1]^{n \times n},
 	\end{aligned}
-\end{equation*}
+\end{equation}
 
 where $c>0$ is a positive fixed value. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
-$$\delta = \frac{1}{2}(\tanh(w)+1)-x,$$ where the $\tanh$-function is applied componentwise. After applying this transform the optimization problem is treated as unconstrained and can be solved in terms of $w$ using Adam \cite{adam}. 
+\begin{equation}
+	\delta = \frac{1}{2}(\tanh(w)+1)-x,
+\end{equation} 
+where the $\tanh$-function is applied componentwise. After applying this transform the optimization problem is treated as unconstrained and can be solved in terms of $w$ using Adam \cite{adam}. In their work Carlini and Wagner also proposed two different approaches to handle the box-constraint: projected gradient descent and clipped gradient descent. For details we refer the reader to the original work \cite{carlini}.
 
 \subsection{Boundary Attack}
 
-The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boundary} is to sample a perturbation which leads to a missclassification of the original image. Additionally, the desired perturbation should have the smallest possible norm. The initial perturbation $\delta$ is componentwise sampled from a uniform distribution $\delta_{ij}\sim \mathcal{U}(0,1)$. Initial perturbation, which are not missclassified, are rejected. During the attack a random walk is performed using a proposal distribution $\mathcal{P}$ where we ensure that $x+\delta$ gets wrongly classified.
+The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boundary} is to sample a perturbation which leads to a missclassification of the original image $x^{(0)}:=x$. Additionally, the desired perturbation should have the smallest possible norm. The initial perturbation $\delta^{(0)}$ is componentwise sampled from a uniform distribution $\delta^{(0)}_{ij}\sim \mathcal{U}(0,1)$. Initial perturbations, which are not missclassified, are rejected. During the attack adversarial images are constructed iteratively $x^{(k+1)}:= x^{(k)}+\delta^{(k)}$ by a random walk close to the decision boundary. During this random walk the following three conditions are enforced by appropriate scaling and clipping of the image and the perturbation:
+\begin{enumerate}
+	\item The new image $x^{(k+1)}$ should be in the range of a valid image, i.e. in $x^{(k+1)}\in [0,1]^{n\times n}$.
+	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given hyperparamter $\gamma$.
+	\item The reduction of the distance from the adversarial image to the original image $d(x, x^{(k)})-d(x, x^{(k+1)})$ is proportional to $d(x, x^{(k)})$ with constant $\nu>0$.
+\end{enumerate}
 
-TODO: Add orthogonal stuff I do not understand yet.
 
 \subsection{DeepFool Attack}
 
