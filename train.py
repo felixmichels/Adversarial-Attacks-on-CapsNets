@@ -114,7 +114,7 @@ def main(args):
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
 
-    params = get_params(dataset.name, args[1])
+    params = get_params(args[1], dataset.name)
     load_config(dataset.name, optional=True)
 
     with tf.variable_scope('data'):

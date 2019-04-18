@@ -44,25 +44,36 @@ def get_model(name):
     return model_class
 
 
-def get_params(*names):
+def get_params(name, *optionals):
     """
     Loads parameters from a json file,
     that may not exists.
 
     Args:
-        *names: names, that are chained together to form the filename
+        name: name, that starts the filename
+        *optionals: optional names, that are chained together to form the filename
 
     Returns:
-        A dict containing the parameters, or an empty dict, if the file does not exist.
+        Returns a dict from
+            name_optional[0]_optional[1]....json if it exists,
+            name.json, if above does not exist
+        If neither exists, returns an empty dict
     """
-    names = [name.lower() for name in names]
-    file = os.path.join(cfg.param_dir, '_'.join(names)+'.json')
-    if not os.path.isfile(file):
-        tf.logging.debug('No parameter file found')
+    name = name.lower()
+    optionals = [opt.lower() for opt in optionals]
+
+    partial = os.path.join(cfg.param_dir, name+'.json')
+    full = os.path.join(cfg.param_dir, '_'.join([name]+optionals)+'.json')
+    if os.path.isfile(full):
+        file = full
+    elif os.path.isfile(partial):
+        file = partial
+    else:
+        tf.logging.info('No parameter file found')
         return {}
 
     with open(file, 'r') as f:
-        tf.logging.debug('Loading parameters from %s', file)
+        tf.logging.info('Loading parameters from %s', file)
         return json.load(f)
 
 

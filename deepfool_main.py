@@ -54,10 +54,13 @@ def main(args):
     
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
+
+    params = get_param(args[1], dataset.name)
     
     tf.logging.debug('Creating attack ops')
     deepfool = DeepfoolOp(model_class,
-                          shape=dataset.shape)
+                          dataset=dataset
+                          params=params)
     
     ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, deepfool.model.name)
     saver = tf.train.Saver(var_list=tf.global_variables(scope=deepfool.model.scope))

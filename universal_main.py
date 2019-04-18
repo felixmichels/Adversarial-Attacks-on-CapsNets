@@ -11,7 +11,7 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model, np_save_bak
+from util.util import get_dir, get_model, np_save_bak, get_params
 from util.data import get_attack_original
 from attacks.universal_perturbation import UniversalPerturbation
 from attacks.fast_batch_attacks import FGSM
@@ -58,9 +58,14 @@ def main(args):
     
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
+
+    params = get_params(args[1], dataset.name)
     
     tf.logging.debug('Building model')
-    model = model_class(trainable=False, shape=dataset.shape)
+    model = model_class(trainable=False,
+                        num_classes = dataset.num_classes,
+                        shape=dataset.shape,
+                        **params)
     
     tf.logging.debug('Creating attack ops')
     fgsm = FGSM(model, fgsm_eps)
