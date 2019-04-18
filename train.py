@@ -9,7 +9,7 @@ import os
 import time
 import tensorflow as tf
 import numpy as np
-from util.config import cfg
+from util.config import cfg, load_config
 from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op, get_params
 from util.data import to_tf_dataset
 from util.imgdataset import dataset_by_name
@@ -64,9 +64,9 @@ def test(sess, model, init, writer=None):
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc))
     summary = tf.Summary(value=[
         tf.Summary.Value(tag=model.scope+"/test_accuracy", simple_value=acc)])
-    tf.logging.debug('Writing test summary')
     step = sess.run(tf.train.get_global_step())
     if writer is not None:
+        tf.logging.debug('Writing test summary')
         writer.add_summary(summary, global_step=step)
 
 
@@ -114,7 +114,8 @@ def main(args):
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
 
-    params = get_params(args[1], dataset.name)
+    params = get_params(dataset.name, args[1])
+    load_config(dataset.name, optional=True)
 
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')

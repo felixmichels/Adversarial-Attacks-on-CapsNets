@@ -44,7 +44,18 @@ class ImgDataset(object):
         test_x = test_x.astype('float32')
         test_y = test_y.squeeze().astype('int64')
 
-        assert len(train_x) == len(train_x), 'Training data size not matching'
+        # Shift labels, so that they start at 0
+        offset = train_y.min()
+        train_y -= offset
+        test_y -= offset
+
+        # Add channel dimension, if necessary
+        if len(train_x.shape) < 4:
+            train_x = np.expand_dims(train_x, axis=-1)
+        if len(test_x.shape) < 4:
+            test_x = np.expand_dims(test_x, axis=-1)
+
+        assert len(train_x) == len(train_y), 'Training data size not matching'
         assert len(test_x) == len(test_y), 'Test data size not matching'
         assert train_y.shape[1:] == test_y.shape[1:] == (), 'Invalid label shape'
         assert train_x.shape[1:] == test_x.shape[1:], 'Test and training data not matching'
@@ -112,11 +123,11 @@ mnist = ImgDataset(
 
 
 def _svhn_loader():
-    train = sio.loadmat(os.path.join(cfg.datset_dir, 'train_32x32.mat'))
-    test = sio.loadmat(os.path.join(cfg.datset_dir, 'test_32x32.mat'))
+    train = sio.loadmat(os.path.join(cfg.dataset_dir, 'train_32x32.mat'))
+    test = sio.loadmat(os.path.join(cfg.dataset_dir, 'test_32x32.mat'))
     # Change from HWCN to NHWC
-    train_x = np.roll(train['X'], 3, 0)
-    test_x = np.roll(test['X'], 3, 0)
+    train_x = np.rollaxis(train['X'], 3, 0)
+    test_x = np.rollaxis(test['X'], 3, 0)
     return (train_x, train['y']), (test_x, test['y'])
 
 

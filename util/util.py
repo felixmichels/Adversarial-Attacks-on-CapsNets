@@ -56,7 +56,7 @@ def get_params(*names):
         A dict containing the parameters, or an empty dict, if the file does not exist.
     """
     names = [name.lower() for name in names]
-    file = os.join(cfg.param_dir, '_'.join(names)+'.json')
+    file = os.path.join(cfg.param_dir, '_'.join(names)+'.json')
     if not os.path.isfile(file):
         tf.logging.debug('No parameter file found')
         return {}

@@ -81,7 +81,7 @@ def to_tf_dataset(dataset, is_train=True, batch_size=None, aug=None):
 
     dataset = tf.data.Dataset.from_tensor_slices((x, y))
     if is_train:
-        if aug is not None:
+        if aug is not None and aug[0] is not None and aug[0] != 0:
             if not isinstance(aug, tuple):
                 aug = (aug, 1.0)
             dataset = _aug(dataset, aug[0], aug[1])

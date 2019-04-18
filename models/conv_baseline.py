@@ -80,5 +80,5 @@ class ConvBaseline(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def loss(self):
-        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, cfg.classes), self.logits)
+        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, self.num_classes+self.garbage_class), self.logits)
         return cross_loss + self.l2_loss

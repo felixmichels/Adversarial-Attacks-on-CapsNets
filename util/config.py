@@ -56,16 +56,23 @@ else:
     tf.logging.set_verbosity(tf.logging.INFO)
 
 
-def load_config(mod_name):
+def _load_config(mod_name):
     __import__(cfg.config_dir + '.' + mod_name + '_cfg')
     tf.logging.debug('Loaded additional config from %s', mod_name)
 
+def load_config(mod_name, optional=False):
+    if optional:
+        try:
+            _load_config(mod_name)
+        except ModuleNotFoundError:
+            tf.logging.debug('No config %s', mod_name)
+            pass
+    else:
+        _load_config(mod_name)
+    
 
-try:
-    mod_name = __main__.__file__[:-3] if not _is_interactive() else 'default'
-    load_config(mod_name)
-except ModuleNotFoundError:
-    pass
+mod_name = __main__.__file__[:-3] if not _is_interactive() else 'default'
+load_config(mod_name, optional=True)
 
 if cfg.extra_cfg != '':
     for m in cfg.extra_cfg.split(','):
