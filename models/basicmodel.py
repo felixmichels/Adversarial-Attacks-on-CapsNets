@@ -26,7 +26,7 @@ class BasicModel(ABC):
                  num_classes=10,
                  trainable=True,
                  scope=None,
-                 shape=(32, 32, 3),
+                 shape=None,
                  **kwargs):
         """
         img: Tensor, input images. If None, uses placeholder
@@ -42,6 +42,8 @@ class BasicModel(ABC):
         self.trainable = trainable
         self.num_classes = num_classes
         self.garbage_class = 0
+
+        self.shape = shape if shape is not None else self.img.shape.as_list()[1:]
 
         self.scope = scope or self.__class__.__name__
 
