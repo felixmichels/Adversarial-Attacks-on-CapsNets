@@ -21,6 +21,7 @@ flags.DEFINE_string('model_pck', 'models', 'package name of models')
 flags.DEFINE_string('data_dir', 'data', 'directory for generated perturbations')
 flags.DEFINE_string('log_dir', 'logdir', 'directory for graphs and summaries')
 flags.DEFINE_string('dataset_dir', 'datasets', 'directory for training/test data')
+flags.DEFINE_string('param_dir', 'parameters', 'directory for (hyper-)parameters')
 
 flags.DEFINE_float('save_freq', 300.0, 'Saves after epoch, if time in seconds since last save surpasses this value')
 flags.DEFINE_integer('save_every_n', 5, 'Save every n epochs')
@@ -35,8 +36,8 @@ flags.DEFINE_boolean('no_save', False, 'For testing')
 flags.DEFINE_boolean('test', False, 'For testing')
 
 
-flags.DEFINE_string('hyper_dir', 'hyper_config', 'directory for hyperparameter config files')
-flags.DEFINE_string('hyper_cfg', '', 'hyperparameter config file')
+flags.DEFINE_string('config_dir', 'configs', 'directory for config files')
+flags.DEFINE_string('extra_cfg', '', 'extra config files')
 
 if _is_interactive():
     flags.DEFINE_string('f', '', 'kernel')
@@ -56,7 +57,7 @@ else:
 
 
 def load_config(mod_name):
-    __import__(cfg.hyper_dir + '.' + mod_name + '_cfg')
+    __import__(cfg.config_dir + '.' + mod_name + '_cfg')
     tf.logging.debug('Loaded additional config from %s', mod_name)
 
 
@@ -66,6 +67,6 @@ try:
 except ModuleNotFoundError:
     pass
 
-if cfg.hyper_cfg != '':
-    for m in cfg.hyper_cfg.split(','):
+if cfg.extra_cfg != '':
+    for m in cfg.extra_cfg.split(','):
         load_config(m)

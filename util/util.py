@@ -7,6 +7,7 @@ import os
 import importlib
 import inspect
 import sys
+import json
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
@@ -43,6 +44,28 @@ def get_model(name):
     return model_class
 
 
+def get_params(*names):
+    """
+    Loads parameters from a json file,
+    that may not exists.
+
+    Args:
+        *names: names, that are chained together to form the filename
+
+    Returns:
+        A dict containing the parameters, or an empty dict, if the file does not exist.
+    """
+    names = [name.lower() for name in names]
+    file = os.join(cfg.param_dir, '_'.join(names)+'.json')
+    if not os.path.isfile(file):
+        tf.logging.debug('No parameter file found')
+        return {}
+
+    with open(file, 'r') as f:
+        tf.logging.debug('Loading parameters from %s', file)
+        return json.load(f)
+
+
 def func_with_prob(f, p):
     """
     Applies a function randomly
@@ -61,6 +84,7 @@ def func_with_prob(f, p):
         return tf.cond(choice < p, lambda: f(x), lambda: x)
     return g
 
+
 def get_epoch(graph=None):
     """Get global epoch counter"""
     graph = graph or tf.get_default_graph()
@@ -72,6 +96,7 @@ def get_epoch(graph=None):
         epoch = None
     return epoch
 
+
 def get_epoch_op(graph=None):
     """Get global epoch update op"""
     graph = graph or tf.get_default_graph()
@@ -82,6 +107,7 @@ def get_epoch_op(graph=None):
     else:
         epoch_op = None
     return epoch_op
+
 
 def create_epoch(graph=None):
     """Creates the global epoch counter"""
@@ -106,7 +132,8 @@ def _bak_name(file, n):
     if n > 1:
         name += str(n)
     return name     
-        
+
+
 def np_save_bak(file, arr, num_bak=5):
     """numpy saves an array, but creates backups"""
     for i in range(num_bak, 0, -1):

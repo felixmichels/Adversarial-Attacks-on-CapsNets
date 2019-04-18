@@ -23,9 +23,11 @@ class BasicModel(ABC):
     def __init__(self,
                  img=None,
                  label=None,
+                 num_classes=10,
                  trainable=True,
                  scope=None,
-                 shape=(32,32,3)):
+                 shape=(32, 32, 3),
+                 **kwargs):
         """
         img: Tensor, input images. If None, uses placeholder
         label: Tensor, labels. If None, uses placeholder
@@ -33,12 +35,18 @@ class BasicModel(ABC):
         scope: Optional scope name for tensors in this model.
                Uses the class name (of the subclass) as default
         shape: Input shape. Only used, if img is None
+        kwargs: Optional parameters
         """
         self.img = img if img is not None else tf.placeholder(dtype=tf.float32, shape=(None, *shape))
         self.label = label if label is not None else tf.placeholder(dtype=tf.int64, shape=(None,))
         self.trainable = trainable
+        self.num_classes = num_classes
+        self.garbage_class = 0
 
         self.scope = scope or self.__class__.__name__
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
         self.__initialize_properties()
 

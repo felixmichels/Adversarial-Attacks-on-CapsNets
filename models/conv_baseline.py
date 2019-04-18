@@ -9,10 +9,8 @@ Created on Sat Mar 30 18:35:34 2019
 import tensorflow as tf
 import models.basicmodel
 from util.lazy import lazy_scope_property
-from util.config import cfg, load_config
 from tfcaps.layers import new_io
 
-load_config('conv_baseline')
 
 class ConvBaseline(models.basicmodel.BasicModel):
     
@@ -44,8 +42,8 @@ class ConvBaseline(models.basicmodel.BasicModel):
         i(tf.layers.flatten(o()))
         i(tf.layers.dense(o(), 1024, activation=act))
         i(tf.layers.dropout(o(), rate=0.5, training=is_training))
-        
-        i(tf.layers.dense(o(), cfg.classes))
+
+        i(tf.layers.dense(o(), self.num_classes + self.garbage_class))
         
         return o()
 
@@ -77,7 +75,7 @@ class ConvBaseline(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def l2_loss(self):
-        return cfg.l2_scale * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables(self.scope) if 'bias' not in v.name])
+        return self.l2_scale * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables(self.scope) if 'bias' not in v.name])
     
 
     @lazy_scope_property

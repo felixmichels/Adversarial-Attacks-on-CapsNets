@@ -10,7 +10,7 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op
+from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op, get_params
 from util.data import to_tf_dataset
 from util.imgdataset import dataset_by_name
 
@@ -114,6 +114,8 @@ def main(args):
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
 
+    params = get_params(args[1], dataset.name)
+
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
         train_data = to_tf_dataset(dataset, is_train=True, batch_size=cfg.batch_size, aug=(cfg.data_aug, cfg.aug_prob))
@@ -131,7 +133,7 @@ def main(args):
     create_epoch()
 
     tf.logging.debug('Creating model graph')
-    model = model_class(img=img, label=label)
+    model = model_class(img=img, label=label, num_classes=dataset.num_classes, **params)
 
     ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, model.name)
     log_dir = get_dir(cfg.log_dir, dataset.name, model.name)
