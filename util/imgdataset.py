@@ -76,7 +76,7 @@ class ImgDataset(object):
 
     @lazy_property
     def shape(self):
-        return self.data[0][0].shape
+        return self.data[0][0].shape[1:]
 
 
 
