@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 from multiprocessing.dummy import Pool
 from util.config import cfg
-from util.util import get_dir, get_model, np_save_bak, get_param
+from util.util import get_dir, get_model, np_save_bak, get_params
 from util.data import get_attack_original
 from attacks.boundary_attack import boundary_attack
 from util.imgdataset import dataset_by_name
@@ -64,7 +64,7 @@ def main(args):
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
 
-    params = get_param(args[1], dataset.name)
+    params = get_params(args[1], dataset.name)
     
     tf.logging.debug('Creating model graph')
     model = model_class(trainable=False, shape=dataset.shape, **params)

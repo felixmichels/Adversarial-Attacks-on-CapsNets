@@ -10,7 +10,7 @@ import time
 import tensorflow as tf
 import numpy as np
 from util.config import cfg
-from util.util import get_dir, get_model, np_save_bak
+from util.util import get_dir, get_model, np_save_bak, get_params
 from util.data import get_attack_original
 from attacks.deepfool import DeepfoolOp
 from util.imgdataset import dataset_by_name
@@ -55,7 +55,7 @@ def main(args):
     model_class = get_model(args[1])
     dataset = dataset_by_name(args[2])
 
-    params = get_param(args[1], dataset.name)
+    params = get_params(args[1], dataset.name)
     
     tf.logging.debug('Creating attack ops')
     deepfool = DeepfoolOp(model_class,
