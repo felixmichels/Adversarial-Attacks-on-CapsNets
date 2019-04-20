@@ -119,7 +119,10 @@ def main(args):
 
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
-        train_data = to_tf_dataset(dataset, is_train=True, batch_size=cfg.batch_size, aug=(cfg.data_aug, cfg.aug_prob))
+        train_data = to_tf_dataset(dataset, is_train=True, batch_size=cfg.batch_size,
+                                   aug_strength=cfg.data_aug, 
+                                   aug_prob=cfg.aug_prob,
+                                   aug_flip=cfg.aug_flip)
         test_data = to_tf_dataset(dataset, is_train=False, batch_size=cfg.batch_size)
 
         iterator = tf.data.Iterator.from_structure(train_data.output_types,

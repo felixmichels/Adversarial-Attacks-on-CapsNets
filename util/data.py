@@ -33,8 +33,9 @@ def _chain_augs(*augs):
     return aug
 
 
-def _aug(dataset, scale, prob):
+def _aug(dataset, scale, prob, flip):
     # Params for augmentation, between 0 (not at all) and 1
+    scale = scale if scale is not None else 0
     param = {
         'angle': 0.25,
         'hue': 0.06,
@@ -64,7 +65,10 @@ def _aug(dataset, scale, prob):
 
     tf.logging.debug('Building augmentation function with scale %f, prob %f', scale, prob)
     tf.logging.debug('Building flip augmentations')
-    aug_func = tf.image.random_flip_left_right
+    if flip:
+        aug_func = tf.image.random_flip_left_right
+    else:
+        aug_func = tf.identity
     if scale > 0:
         tf.logging.debug('Building scalable augmentations')
         aug_func = _chain_augs(func_with_prob(_chain_augs(*augs), prob), aug_func)
@@ -72,7 +76,10 @@ def _aug(dataset, scale, prob):
     return dataset.map(lambda x, y: (aug_func(x), y), num_parallel_calls=32)
 
 
-def to_tf_dataset(dataset, is_train=True, batch_size=None, aug=None):
+def to_tf_dataset(dataset, is_train=True, batch_size=None,
+                  aug_strength=None,
+                  aug_prob=1.0,
+                  aug_flip=False):
     """
     Returns a shuffled tf dataset with the images and labels
 
@@ -92,10 +99,8 @@ def to_tf_dataset(dataset, is_train=True, batch_size=None, aug=None):
 
     dataset = tf.data.Dataset.from_tensor_slices((x, y))
     if is_train:
-        if aug is not None and aug[0] is not None:
-            if not isinstance(aug, tuple):
-                aug = (aug, 1.0)
-            dataset = _aug(dataset, aug[0], aug[1])
+        if aug_strength is not None or aug_flip:
+            dataset = _aug(dataset, aug_strength, aug_prob, aug_flip)
         dataset = dataset.shuffle(4*batch_size if batch_size is not None else 1024)
     if batch_size is not None:
         dataset = dataset.batch(batch_size)
