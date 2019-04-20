@@ -49,11 +49,11 @@ class ConvBaseline(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def probabilities(self):
-        return tf.nn.softmax(self.logits)
+        return tf.nn.softmax(self.logits[:,:self.num_classes])
     
     @lazy_scope_property
     def prediction(self):
-        return tf.argmax(self.logits, -1)
+        return tf.argmax(self.probabilities, -1)
 
     @lazy_scope_property(only_training=True)
     def optimizer(self):

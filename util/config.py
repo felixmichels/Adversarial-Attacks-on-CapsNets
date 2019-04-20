@@ -11,6 +11,7 @@ flags.DEFINE_integer('batch_size', 128, 'batch size')
 flags.DEFINE_integer('epochs', 50, 'number of epochs')
 flags.DEFINE_float('data_aug', None, 'Amount of data augmentation. Set to None to disable')
 flags.DEFINE_float('aug_prob', 0.75, 'Probability, that data augmentation is applied')
+flags.DEFINE_boolean('aug_flip', False, 'If training data should be randomly flipped')
 
 flags.DEFINE_integer('classes', 11, 'Number of classes of dataset') # One garbage class
 
@@ -57,8 +58,9 @@ else:
 
 
 def _load_config(mod_name):
-    __import__(cfg.config_dir + '.' + mod_name + '_cfg')
-    tf.logging.debug('Loaded additional config from %s', mod_name)
+    mod_file = cfg.config_dir + '.' + mod_name + '_cfg'
+    __import__(mod_file)
+    tf.logging.info('Loaded additional config from %s', mod_file)
 
 def load_config(mod_name, optional=False):
     if optional:

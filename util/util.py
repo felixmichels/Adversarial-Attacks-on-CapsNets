@@ -44,6 +44,15 @@ def get_model(name):
     return model_class
 
 
+def _update(d, u):
+    for k, v in u.items():
+        if isinstance(v, dict):
+            d[k] = _update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
+
+
 def get_params(name, *optionals):
     """
     Loads parameters from a json file,
@@ -58,23 +67,27 @@ def get_params(name, *optionals):
             name_optional[0]_optional[1]....json if it exists,
             name.json, if above does not exist
         If neither exists, returns an empty dict
+        (combines possible dicts)
     """
     name = name.lower()
     optionals = [opt.lower() for opt in optionals]
 
     partial = os.path.join(cfg.param_dir, name+'.json')
     full = os.path.join(cfg.param_dir, '_'.join([name]+optionals)+'.json')
-    if os.path.isfile(full):
-        file = full
-    elif os.path.isfile(partial):
-        file = partial
-    else:
-        tf.logging.info('No parameter file found')
-        return {}
 
-    with open(file, 'r') as f:
-        tf.logging.info('Loading parameters from %s', file)
-        return json.load(f)
+    param = {}
+    if os.path.isfile(partial):
+        with open(partial, 'r') as f:
+            tf.logging.info('Loading parameters from %s', partial)
+            _update(param, json.load(f))
+    if os.path.isfile(full):
+        with open(full, 'r') as f:
+            tf.logging.info('Loading parameters from %s', full)
+            _update(param, json.load(f))
+
+    if not param:
+        tf.logging.info('No parameter file found')
+    return param
 
 
 def func_with_prob(f, p):
