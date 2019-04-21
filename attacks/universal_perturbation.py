@@ -61,7 +61,7 @@ class UniversalPerturbation():
             
     
     def fit(self, sess):
-        self._work_pert = np.random.normal(size=self.perturbation.shape)
+        self._work_pert = np.random.normal(size=self.perturbation.shape).astype('float32')
         _clip(self._work_pert, self.max_norm/10)   
         
         correct = self._not_fooled(sess)
