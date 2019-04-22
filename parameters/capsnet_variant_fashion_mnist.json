@@ -1,0 +1,16 @@
+{
+	"l1_scale": 0.0,
+	"l2_scale": 0.0,
+	"recon_scale": 0.0010,
+	"garbage_class": 0,
+
+	"sizes": {
+		"conv_kernel": 3,
+		"conv_filters1": 32,
+		"conv_filters2": 32,
+		"prim_caps_types": 16,
+
+		"decoder_dense1": 512,
+		"decoder_dense2": 1024
+	}
+}
