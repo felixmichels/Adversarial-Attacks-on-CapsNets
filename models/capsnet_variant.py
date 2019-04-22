@@ -23,10 +23,14 @@ class CapsNetVariant(models.basicmodel.BasicModel):
         is_training = self.training
         i, o = tc.layers.new_io(self.img)
 
-        K, A, B, C = (self.sizes['conv_kernel'],
-                      self.sizes['conv_filters1'],
-                      self.sizes['conv_filters2'],
-                      self.sizes['prim_caps_types'])
+        K, A, B, C, D1, D2 = \
+            (self.sizes['conv_kernel'],
+             self.sizes['conv_filters1'],
+             self.sizes['conv_filters2'],
+             self.sizes['prim_caps_types'],
+             self.sizes['prim_caps_dim'],
+             self.sizes['class_caps_dim'])
+
 
         i(tf.layers.conv2d(o(), filters=A, kernel_size=K, strides=1, activation=tf.nn.relu))
         i(tf.layers.batch_normalization(o(), training=is_training))

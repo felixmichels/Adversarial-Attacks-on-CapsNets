@@ -58,7 +58,7 @@ class DCNetBig(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def probabilities(self):
-        return tc.layers.length(self.encoder)
+        return tc.layers.length(self.encoder[:,:self.num_classes,:])
 
     @lazy_scope_property
     def logits(self):

@@ -10,6 +10,9 @@
 		"conv_filters2": 128,
 		"prim_caps_types": 32,
 
+		"prim_caps_dim": 8,
+		"class_caps_dim": 16,
+
 		"decoder_dense1": 512,
 		"decoder_dense2": 1024
 	}
