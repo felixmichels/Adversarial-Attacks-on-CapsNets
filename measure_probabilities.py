@@ -46,8 +46,8 @@ def measure_normal_attack(attack_name, dataset_name, model, sess, source_name):
 
     probs = get_probabilities(model, adv_img, sess, cfg.batch_size)
 
-    save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, source_name + '_' + model.name)
-    save_file = os.path.join(save_dir, adv_file_name)
+    save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, 'Measure_' + source_name + '_' + model.name)
+    save_file = os.path.join(save_dir, 'probabilities_' + adv_file_name)
 
     np.save(save_file, probs)
 
@@ -56,7 +56,7 @@ def measure_universal(dataset_name, model, sess, source_name):
     attack_name = 'universal_perturbation'
     tf.logging.info('Measuring %s: source %s, target %s', attack_name, source_name, model.name)
 
-    attack_path = os.path.join(cfg.data_dir, dataset_name, attack_name, 'originals.npy')
+    attack_path = os.path.join(cfg.data_dir, dataset_name, attack_name, 'originals.npz')
     with np.load(attack_path) as npz:
         img = npz['img']
 
@@ -71,8 +71,8 @@ def measure_universal(dataset_name, model, sess, source_name):
         for pert in perts:
             prob_list.append(get_probabilities(model, img+pert, sess, cfg.batch_size))
 
-        save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, source_name + '_' + model.name)
-        save_file = os.path.join(save_dir, adv_file_name)
+        save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, 'Measure_' + source_name + '_' + model.name)
+        save_file = os.path.join(save_dir, 'probabilities_' + adv_file_name)
 
         np.save(save_file, prob_list)
 
@@ -82,7 +82,7 @@ def main(args):
     model_name = args[1]
     model_class = get_model(model_name)
     source_name = args[2]
-    dataset = dataset_by_name([3])
+    dataset = dataset_by_name(args[3])
 
     params = get_params(model_name, dataset.name)
 
@@ -100,7 +100,7 @@ def main(args):
         try:
             save_path = tf.train.latest_checkpoint(ckpt_dir)
             saver.restore(sess, save_path)
-            for attack in 'carlini_wagner', 'boundary_attack', 'deep_fool':
+            for attack in 'carlini_wagner', 'boundary_attack', 'deepfool':
                 measure_normal_attack(attack, dataset.name, model, sess, source_name)
 
             measure_universal(dataset.name, model, sess, source_name)
