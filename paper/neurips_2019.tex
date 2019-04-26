@@ -28,6 +28,8 @@
 
 \usepackage{amsmath}        
 \usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{placeins}
 
 \title{Adversarial Attacks on Capsule Networks}
 \bibliographystyle{plain}
@@ -79,7 +81,7 @@
 
 \section{Introduction}
 
-Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio} and Peer et al. \cite{training}, however... This paper is structured as followed: In section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods we used to attack the capsule networks. Section \ref{lab:experiments} summarizes the results of our experiments.
+Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio}, however they focus on the evaluation of their method. Also Peer et al. \cite{training} have briefly discussed the application of the fast gradient sign method \cite{fgsm} on capsule networks. Detecting adversarial examples using the reconstruction quality of the capsule networks has been investigated by Frosst et al. \cite{darccc}. In this work we want to compare the results of four different attack on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. This paper is structured as followed: in section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods we used to attack the capsule networks. Section \ref{lab:experiments} summarizes the results of our experiments.
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
@@ -92,7 +94,7 @@ TODO: Wait for Eric to respond.
 
 Adversarial attacks can be performed in different settings: in the white-box setting the attacker can compute the gradient of the networks output with respect to the input, whereas in the black-box setting such calculations are not possible. Furthermore, adversarial attacks can be classified into targeted attacks, where the goal of the attack is that the network assigns a given label to the manipulated image, and untargeted attacks, where the attacker's goal is to fool the network in the sense that it only missclassifies a given image.
 
-Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output after the softmax activation as $F$ and the perturbation as $\delta$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
+Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
 
 \subsection{Carlini-Wagner Attack}
 
@@ -110,7 +112,7 @@ where $c>0$ is a positive fixed value. To ensure the box-constraint on $x+\delta
 \begin{equation}
 	\delta = \frac{1}{2}(\tanh(w)+1)-x,
 \end{equation} 
-where the $\tanh$-function is applied componentwise. After applying this transform the optimization problem is treated as unconstrained and can be solved in terms of $w$ using Adam \cite{adam}. In their work Carlini and Wagner also proposed two different approaches to handle the box-constraint: projected gradient descent and clipped gradient descent. For details we refer the reader to the original work \cite{carlini}.
+where the $\tanh$-function is applied componentwise. After this transformation the optimization problem is treated as unconstrained and can be solved in terms of $w$ using Adam \cite{adam}. In their work Carlini and Wagner also proposed two different approaches to handle the box-constraint: projected gradient descent and clipped gradient descent. For details we refer the reader to the original work \cite{carlini}.
 
 \subsection{Boundary Attack}
 
@@ -136,10 +138,10 @@ The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boun
 
 We train the capsule network on the following benchmark datasets:
 \begin{itemize}
-	\item MNIST: $28\times28$ grayscale images of digits (60,000/10,000) \cite{mnist}
-	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000/10,000) \cite{fashion}
-	\item SVHN: $32\times32$ color images of house numbers (73,257/26,032) \cite{svhn}
-	\item CIFAR10: $32\times32$ color images (50.000/10.000) \cite{cifar}
+	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
+	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training/images 10,000 for testing) \cite{fashion}
+	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training/26,032  images for testing) \cite{svhn}
+	\item CIFAR10: $32\times32$ color images (50.000  images for training/10.000  images for testing) \cite{cifar}
 \end{itemize}
 Each dataset is divided into ten different classes.
 
@@ -149,15 +151,65 @@ TODO: Add description of the networks we used. Report test errors.
 \begin{table}[h]
 	\centering
 	\begin{tabular}{lcccc}
-		Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\toprule
+		Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
+		\midrule
 		Convolutional neural network &  &  &  &  \\
 		Capsule network            &  &  &  &  \\
-		
+		\bottomrule\\
 	\end{tabular}
 \label{tab:accuracies}
-\caption{Test accuracies archived by our networks.}
+\caption{Test accuracies achieved by our networks.}
 \end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{llcccc}
+		\toprule
+		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
+		\midrule
+		\multirow{2}{*}{CW} & CNN &  &  &  &  \\
+		& CapsNet            &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{Boundary} & CNN &  &  &  &  \\
+		& CapsNet            &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{DeepFool} & CNN &  &  &  &  \\
+		& CapsNet           &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{Universal} & CNN &  &  &  &  \\
+		& CapsNet           &  &  &  &  \\
+		\bottomrule\\
+	\end{tabular}
+	\label{tab:attacks}
+	\caption{Test accuracies on adversarial examples.}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{llcccc}
+		\toprule
+		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
+		\midrule
+		\multirow{2}{*}{CW} & CNN &  &  &  &  \\
+		& CapsNet            &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{Boundary} & CNN &  &  &  &  \\
+		& CapsNet            &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{DeepFool} & CNN &  &  &  &  \\
+		& CapsNet           &  &  &  &  \\
+		\midrule
+		\multirow{2}{*}{Universal} & CNN &  &  &  &  \\
+		& CapsNet           &  &  &  &  \\
+		\bottomrule\\
+	\end{tabular}
+	\label{tab:norms}
+	\caption{Average perturbation norm.}
+\end{table}
+
+
+\FloatBarrier
 \section{Conclusion}
 
 
