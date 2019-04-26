@@ -12,18 +12,6 @@ import tensorflow as tf
 import numpy as np
 import numpy.linalg as la
 
-#def random_perturbation(adv, original, delta, epsilon):
-#    pert_norm_old = la.norm(original-adv)
-#    eta = np.random.normal(size=adv.shape)
-#    eta *=  delta * pert_norm_old / la.norm(eta)
-#    adv_new = np.clip(adv+eta, min=0, max=1)
-#    
-#    #Orthogonal projection
-#    pert = adv_new - original
-#    pert = (1-epsilon) * pert_norm_old / la.norm(pert)
-#    adv_new = np.clip(original+pert, min=0, max=1)
-#    
-#    return adv_new
 
 def boundary_attack(original, is_adv, eps_min, max_steps):
     epsilon = 0.5
@@ -83,4 +71,4 @@ def boundary_attack(original, is_adv, eps_min, max_steps):
             epsilon = 0.3 + 0.7*epsilon
 
             
-    return adv
+    return adv.astype('float32')

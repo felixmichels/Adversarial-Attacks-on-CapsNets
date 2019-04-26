@@ -9,9 +9,10 @@ import os
 import time
 import tensorflow as tf
 import numpy as np
-from util.config import cfg
-from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op
-from util.data import load_cifar10
+from util.config import cfg, load_config
+from util.util import get_dir, get_model, create_epoch, get_epoch, get_epoch_op, get_params
+from util.data import to_tf_dataset
+from util.imgdataset import dataset_by_name
 
 
 def train_epoch(sess, model, init, writer=None):
@@ -63,9 +64,9 @@ def test(sess, model, init, writer=None):
     tf.logging.info('\nTest Accuracy: %1.3f', np.average(acc))
     summary = tf.Summary(value=[
         tf.Summary.Value(tag=model.scope+"/test_accuracy", simple_value=acc)])
-    tf.logging.debug('Writing test summary')
     step = sess.run(tf.train.get_global_step())
     if writer is not None:
+        tf.logging.debug('Writing test summary')
         writer.add_summary(summary, global_step=step)
 
 
@@ -111,11 +112,18 @@ def train_with_test(sess, model, train_init, test_init, ckpt_dir, log_dir):
 def main(args):
 
     model_class = get_model(args[1])
+    dataset = dataset_by_name(args[2])
+
+    params = get_params(args[1], dataset.name)
+    load_config(dataset.name, optional=True)
 
     with tf.variable_scope('data'):
         tf.logging.debug('Load data')
-        train_data = load_cifar10(is_train=True, batch_size=cfg.batch_size)
-        test_data = load_cifar10(is_train=False, batch_size=cfg.batch_size)
+        train_data = to_tf_dataset(dataset, is_train=True, batch_size=cfg.batch_size,
+                                   aug_strength=cfg.data_aug, 
+                                   aug_prob=cfg.aug_prob,
+                                   aug_flip=cfg.aug_flip)
+        test_data = to_tf_dataset(dataset, is_train=False, batch_size=cfg.batch_size)
 
         iterator = tf.data.Iterator.from_structure(train_data.output_types,
                                                    train_data.output_shapes)
@@ -129,10 +137,10 @@ def main(args):
     create_epoch()
 
     tf.logging.debug('Creating model graph')
-    model = model_class(img=img, label=label)
+    model = model_class(img=img, label=label, num_classes=dataset.num_classes, **params)
 
-    ckpt_dir = get_dir(cfg.ckpt_dir, model.name)
-    log_dir = get_dir(cfg.log_dir, model.name)
+    ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, model.name)
+    log_dir = get_dir(cfg.log_dir, dataset.name, model.name)
 
     if cfg.stop_before_session:
         exit()

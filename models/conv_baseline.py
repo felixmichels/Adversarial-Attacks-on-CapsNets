@@ -9,10 +9,8 @@ Created on Sat Mar 30 18:35:34 2019
 import tensorflow as tf
 import models.basicmodel
 from util.lazy import lazy_scope_property
-from util.config import cfg, load_config
 from tfcaps.layers import new_io
 
-load_config('conv_baseline')
 
 class ConvBaseline(models.basicmodel.BasicModel):
     
@@ -44,18 +42,18 @@ class ConvBaseline(models.basicmodel.BasicModel):
         i(tf.layers.flatten(o()))
         i(tf.layers.dense(o(), 1024, activation=act))
         i(tf.layers.dropout(o(), rate=0.5, training=is_training))
-        
-        i(tf.layers.dense(o(), cfg.classes))
+
+        i(tf.layers.dense(o(), self.num_classes + self.garbage_class))
         
         return o()
 
     @lazy_scope_property
     def probabilities(self):
-        return tf.nn.softmax(self.logits)
+        return tf.nn.softmax(self.logits[:,:self.num_classes])
     
     @lazy_scope_property
     def prediction(self):
-        return tf.argmax(self.logits, -1)
+        return tf.argmax(self.probabilities, -1)
 
     @lazy_scope_property(only_training=True)
     def optimizer(self):
@@ -77,10 +75,10 @@ class ConvBaseline(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def l2_loss(self):
-        return cfg.l2_scale * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables(self.scope) if 'bias' not in v.name])
+        return self.l2_scale * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables(self.scope) if 'bias' not in v.name])
     
 
     @lazy_scope_property
     def loss(self):
-        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, cfg.classes), self.logits)
+        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, self.num_classes+self.garbage_class), self.logits)
         return cross_loss + self.l2_loss

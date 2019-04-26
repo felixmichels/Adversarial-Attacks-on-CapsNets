@@ -13,36 +13,16 @@ from util.util import get_dir, func_with_prob
 from util.config import cfg
 
 
-def _load_scaled_cifar10():
-    if _load_scaled_cifar10.data is None:
-        (train_x, train_y), (test_x, test_y) = tf.keras.datasets.cifar10.load_data()
-
-        train_x = train_x.astype('float32')
-        train_x /= 255.0
-        train_y = train_y.squeeze().astype('int64')
-
-        test_x = test_x.astype('float32')
-        test_x /= 255.0
-        test_y = test_y.squeeze().astype('int64')
-
-        _load_scaled_cifar10.data = (train_x, train_y), (test_x, test_y)
-
-    return _load_scaled_cifar10.data
-
-
-_load_scaled_cifar10.data = None
-
-
-def _rand_crop_resize(min_size):
+def _rand_crop_resize(min_size, size):
     def crop(img):
         crop_size = tf.random_uniform(shape=(), minval=min_size, maxval=1)
         x = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
         y = tf.random_uniform(shape=(), minval=0, maxval=1-crop_size)
         box = [[x, y, x+crop_size, y+crop_size]]
-        return tf.image.crop_and_resize([img], boxes=box, box_ind=[0], crop_size=[32,32])[0]
+        return tf.image.crop_and_resize([img], boxes=box, box_ind=[0], crop_size=size)[0]
 
     return crop
-    
+
 
 def _chain_augs(*augs):
     def aug(x):
@@ -53,8 +33,9 @@ def _chain_augs(*augs):
     return aug
 
 
-def _aug(dataset, scale, prob):
+def _aug(dataset, scale, prob, flip):
     # Params for augmentation, between 0 (not at all) and 1
+    scale = scale if scale is not None else 0
     param = {
         'angle': 0.25,
         'hue': 0.06,
@@ -66,51 +47,82 @@ def _aug(dataset, scale, prob):
     for key in param:
         param[key] *= scale
 
-    tf.logging.debug('Building augmentation function with scale %f, prob %f', scale, prob)
-    aug_func = func_with_prob(
-        _chain_augs(
-            lambda x: tf.contrib.image.rotate(x, param['angle'] * tf.random_normal(shape=())),
-            tf.image.random_flip_left_right,
+    shape = dataset.output_shapes[0].as_list()
+    augs = [
+        lambda x: tf.contrib.image.rotate(x, param['angle'] * tf.random_normal(shape=())),
+        lambda x: tf.image.random_brightness(x, param['bright']),
+        func_with_prob(_rand_crop_resize(1-param['crop'], shape[:-1]), 0.75)
+    ]
+
+    # If the images have color
+    if shape[-1] == 3:
+        tf.logging.debug('Adding color augmentations')
+        augs += [
             lambda x: tf.image.random_hue(x, param['hue']),
             lambda x: tf.image.random_saturation(x, 1-param['sat'], 1+param['sat']),
-            lambda x: tf.image.random_brightness(x, param['bright']),
             lambda x: tf.image.random_contrast(x, 1-param['contr'], 1+param['contr']),
-            func_with_prob(_rand_crop_resize(1-param['crop']), 0.75)),
-        prob)
+        ]
 
-    return dataset.map(lambda x,y: (aug_func(x), y), num_parallel_calls=32)
+    tf.logging.debug('Building augmentation function with scale %f, prob %f', scale, prob)
+    tf.logging.debug('Building flip augmentations')
+    if flip:
+        aug_func = tf.image.random_flip_left_right
+    else:
+        aug_func = tf.identity
+    if scale > 0:
+        tf.logging.debug('Building scalable augmentations')
+        aug_func = _chain_augs(func_with_prob(_chain_augs(*augs), prob), aug_func)
+
+    return dataset.map(lambda x, y: (aug_func(x), y), num_parallel_calls=32)
 
 
-def load_cifar10(is_train=True, batch_size=None):
+def to_tf_dataset(dataset, is_train=True, batch_size=None,
+                  aug_strength=None,
+                  aug_prob=1.0,
+                  aug_flip=False):
     """
-    Returns a tf dataset with cifar10 images and labels
+    Returns a shuffled tf dataset with the images and labels
+
+    Args:
+        dataset: ImgDataset instance
+        is_train: If train or test data should be returned.
+                  Train Data may be augmented
+        batch_size: batch size of the dataset
+        aug: Either a scalar augmentation strength,
+             or a tuple (augmentation_strength, augmentation_probability)
+
+    Returns:
+        A tensorflow dataset
     """
-    training, test = _load_scaled_cifar10()
+    training, test = dataset.data
     x, y = training if is_train else test
 
     dataset = tf.data.Dataset.from_tensor_slices((x, y))
     if is_train:
-        if cfg.data_aug is not None:
-            dataset = _aug(dataset, cfg.data_aug, cfg.aug_prob)
+        if aug_strength is not None or aug_flip:
+            dataset = _aug(dataset, aug_strength, aug_prob, aug_flip)
         dataset = dataset.shuffle(4*batch_size if batch_size is not None else 1024)
     if batch_size is not None:
         dataset = dataset.batch(batch_size)
     return dataset
 
 
-def get_attack_original(attack_name, n=None, targeted=False, override=False):
+def get_attack_original(attack_name, dataset, n=None, targeted=False, override=False):
     """
     Loads original images from file, or creates file with random test images.
-    n: number of images. If image file already exists, None will load all.
-       If file doesn't exists yet, or override is True, n must not be None
-    override: If true, generate a new file
+    Args:
+        attack_name: string, name of the attack
+        dataset: ImgDataset instance
+        n: number of images. If image file already exists, None will load all.
+           If file doesn't exists yet, or override is True, n must not be None
+        override: If true, generate a new file
     """
-    num_classes = 10
-    path = get_dir(cfg.data_dir, attack_name)
+    num_classes = dataset.num_classes
+    path = get_dir(cfg.data_dir, dataset.name, attack_name)
     file_name = os.path.join(path, 'originals.npz')
 
     if not os.path.isfile(file_name) or override:
-        _, (img, label) = _load_scaled_cifar10()
+        _, (img, label) = dataset.data
 
         idx = np.random.permutation(len(img))
         img = img[idx]

@@ -25,14 +25,17 @@ except ImportError:
 class DeepfoolOp():
     def __init__(self,
                  model_class,
-                 shape,
+                 dataset,
+                 params
                  ):
-        self.image = tf.placeholder(dtype=tf.float32, shape=shape)
+        self.image = tf.placeholder(dtype=tf.float32, shape=dataset.shape)
         
         self.model = model_class(
             tf.expand_dims(self.image, axis=0),
             tf.constant([0], dtype=tf.int64),  # label doesn't matter
-            trainable=False)
+            trainable=False,
+            num_classes=dataset.num_classes,
+            **params)
         
         self.logits = self.model.logits[0]
         self.num_classes = self.logits.shape.as_list()[0]

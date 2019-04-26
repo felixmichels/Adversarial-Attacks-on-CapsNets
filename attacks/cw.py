@@ -11,8 +11,9 @@ import tensorflow as tf
 class CWAttackOp():
     def __init__(self,
                  model_class,
-                 num_classes,
+                 model_params,
                  shape,
+                 num_classes,
                  kappa,
                  rand_start_std=0.0
                  ):
@@ -33,7 +34,9 @@ class CWAttackOp():
         self.model = model_class(
             tf.expand_dims(image, axis=0),
             tf.expand_dims(self.target, axis=0),  # label matters because of acc check
-            trainable=False)
+            num_classes=num_classes,
+            trainable=False,
+            **model_params)
 
         logits = tf.squeeze(self.model.logits)
         mask = tf.logical_not(tf.cast(tf.one_hot(self.target, num_classes), tf.bool))
