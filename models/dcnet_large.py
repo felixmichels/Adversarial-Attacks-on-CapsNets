@@ -82,10 +82,6 @@ class DCNetLarge(models.basicmodel.BasicModel):
         i(tf.reshape(o(), [-1, 32, 32, 3]))
         return o()
 
-    @lazy_scope_property
-    def prediction(self):
-        return tf.argmax(self.probabilities, axis=-1)
-
     @lazy_scope_property(only_training=True)
     def optimizer(self):
         opt = tf.train.AdamOptimizer()
@@ -100,11 +96,6 @@ class DCNetLarge(models.basicmodel.BasicModel):
         tf.summary.scalar('recon_loss', self.recon_loss)
         tf.summary.scalar('l2_loss', self.l2_loss)
         return tf.summary.merge_all(scope=self.scope)
-
-    @lazy_scope_property
-    def accuracy(self):
-        correct_preds = tf.equal(self.prediction, self.label)
-        return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
 
     @lazy_scope_property
     def l2_loss(self):

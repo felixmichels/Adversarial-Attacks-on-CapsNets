@@ -33,11 +33,6 @@ class SimpleNet(models.basicmodel.BasicModel):
         tf.summary.scalar('Loss', self.loss)
         
     @lazy_scope_property
-    def accuracy(self):
-        correct_preds = tf.equal(tf.argmax(self.probabilities, 1), self.label)
-        return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
-        
-    @lazy_scope_property
     def loss(self):
         entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.logits, labels=tf.one_hot(self.label,10), name='entropy')
         return tf.reduce_mean(entropy, name='loss')

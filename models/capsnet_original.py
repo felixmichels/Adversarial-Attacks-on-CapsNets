@@ -41,7 +41,6 @@ class CapsNetOriginal(models.basicmodel.BasicModel):
     def probabilities(self):
         return tc.layers.length(self.encoder[:,:self.num_classes,:])
 
-
     @lazy_scope_property
     def logits(self):
         return 2*tf.atanh(2*self.probabilities - 1)
@@ -60,10 +59,6 @@ class CapsNetOriginal(models.basicmodel.BasicModel):
         i(tf.reshape(o(), [-1, *self.shape]))
         return o()
 
-    @lazy_scope_property
-    def prediction(self):
-        return tf.argmax(self.probabilities, axis=-1)
-
     @lazy_scope_property(only_training=True)
     def optimizer(self):
         opt = tf.train.AdamOptimizer()
@@ -79,11 +74,6 @@ class CapsNetOriginal(models.basicmodel.BasicModel):
         tf.summary.scalar('l1_loss', self.l1_loss)
         tf.summary.scalar('l2_loss', self.l2_loss)
         return tf.summary.merge_all(scope=self.scope)
-
-    @lazy_scope_property
-    def accuracy(self):
-        correct_preds = tf.equal(self.prediction, self.label)
-        return  tf.reduce_sum(tf.cast(correct_preds, tf.float32)) / tf.cast(tf.size(self.label), tf.float32)
 
     @lazy_scope_property
     def l1_loss(self):
