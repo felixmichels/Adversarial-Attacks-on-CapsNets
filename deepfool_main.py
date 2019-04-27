@@ -59,7 +59,7 @@ def main(args):
     
     tf.logging.debug('Creating attack ops')
     deepfool = DeepfoolOp(model_class,
-            dataset=dataset,
+                          dataset=dataset,
                           params=params)
     
     ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, deepfool.model.name)

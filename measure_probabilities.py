@@ -16,6 +16,7 @@ from util.imgdataset import dataset_by_name
 
 def get_probabilities(model, img, session, batch_size):
     probs = None
+    img = np.clip(img, 0, 1)
     N = len(img)
     for idx in np.array_split(np.arange(N), N//batch_size):
         batch_probs = session.run(
@@ -75,11 +76,11 @@ def measure_universal(dataset_name, model, sess, source_name):
         np.save(save_file, prob_list)
 
 
-def measure__attack(attack_name, dataset_name, model, sess, source_name):
+def measure_attack(attack_name, dataset_name, model, sess, source_name):
     if attack_name != 'universal_perturbation':
-        measure_normal_attack(attack, dataset_name, model, sess, source_name)
+        measure_normal_attack(attack_name, dataset_name, model, sess, source_name)
     else:
-	measure_universal(dataset_name, model, sess, source_name)
+        measure_universal(dataset_name, model, sess, source_name)
 
 
 def main(args):
@@ -89,7 +90,7 @@ def main(args):
     source_name = args[2]
     dataset = dataset_by_name(args[3])
 
-    if len(args < 5):
+    if len(args) < 5:
         attacks = ['carlini_wagner', 'boundary_attack', 'deepfool', 'universal_perturbation']
     else:
         attacks = args[4].split(',')
@@ -110,7 +111,7 @@ def main(args):
         try:
             save_path = tf.train.latest_checkpoint(ckpt_dir)
             saver.restore(sess, save_path)
-	    for attack in attacks:
+            for attack in attacks:
                 measure_attack(attack, dataset.name, model, sess, source_name)
 
         except KeyboardInterrupt:

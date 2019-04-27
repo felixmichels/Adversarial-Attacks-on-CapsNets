@@ -87,5 +87,5 @@ class DeepfoolOp():
             
             pred = sess.run(self.prediction, feed_dict={self.image: adv})
             
-        if it < max_iter:
+        if pred != label:
             return adv
