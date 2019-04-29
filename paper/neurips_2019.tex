@@ -85,9 +85,16 @@ Adversarial attacks on capsule networks have been previously studied by Marchisi
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
+The concept of vector capsules and the dynamic routing algorithm was proposed by Sabour et al. \cite{capsules}. In an essence, neurons are grouped into vectors, so called capsules. Capsules are are meant to represent only a single specific abstract entity, for example a single object class in a classification setting.
+In other words, capsules intent to develop a dedicated representation of certain characteristics in a number of dedicated vectors in favor of an entangled representation of many characteristics in a single vector, as it would be the case for MLPs or ConvNets at a given location. This allows to apply linear transformations directly to the representations of respective entities. Spatial relations, which can be implemented as a matrix product, can thus be modeled more efficiently \cite{capsules}.
 
-TODO: Wait for Eric to respond.
-\cite{capsules}
+The routing algorithm introduces a scalar factor, the so called routing coefficient, for each connection between a capsule $i$ from a layer $L$ and capsule $j$ from layer $L+1$. These coefficients explicitly regulate the influence that previous capsules may have on a given capsule $j$ and are determined by the dynamic routing procedure. As this procedure implements a \textit{routing by agreement} mechanism, it yields high coefficients if a capsule $j$ matches the expectation of a capsule $i$ and low coefficients otherwise. [TODO: clarify] Theoretically, that means information flows where it is needed, both during forward and backpropagation. This also supports the goal of capsules with a dedicated representation.
+
+[TODO: Layer (primary, dense?, convcaps)]
+
+[NOTE: text in A.E.]
+
+
 
 \section{Adversarial Attacks}
 \label{lab:attacks}
