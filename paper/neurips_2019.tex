@@ -103,7 +103,7 @@ The routing algorithm introduces a scalar factor, the so called routing coeffici
 
 Adversarial attacks can be performed in different settings: in the white-box setting the attacker can compute the gradient of the networks output with respect to the input, whereas in the black-box setting such calculations are not possible. Furthermore, adversarial attacks can be classified into targeted attacks, where the goal of the attack is that the network assigns a given label to the manipulated image, and untargeted attacks, where the attacker's goal is to fool the network in the sense that it only missclassifies a given image.
 
-Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. $C(x)$ refers tot the label assigned to $x$ by the network and $C^*(x)$ is the correct label of $x$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
+Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. $C(x)$ refers to the label assigned to $x$ by the network and $C^*(x)$ is the correct label of $x$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
 
 \subsection{Carlini-Wagner Attack}
 
@@ -117,7 +117,7 @@ The Carlini-Wagner attack \cite{carlini} is a targeted white-box attack and perf
 	\end{aligned}
 \end{equation}
 
-where $c>0$ is a positive fixed value. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
+where $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
 \begin{equation}
 	\delta = \frac{1}{2}(\tanh(w)+1)-x,
 \end{equation} 
@@ -128,9 +128,10 @@ where the $\tanh$-function is applied componentwise. After this transformation t
 The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boundary} is to sample a perturbation which leads to a missclassification of the original image $x^{(0)}:=x$. Additionally, the desired perturbation should have the smallest possible norm. The initial perturbation $\delta^{(0)}$ is componentwise sampled from a uniform distribution $\delta^{(0)}_{ij}\sim \mathcal{U}(0,1)$. Initial perturbations, which are not missclassified, are rejected. During the attack adversarial images are constructed iteratively $x^{(k+1)}:= x^{(k)}+\delta^{(k)}$ by a random walk close to the decision boundary. During this random walk the following three conditions are enforced by appropriate scaling and clipping of the image and the perturbation:
 \begin{enumerate}
 	\item The new image $x^{(k+1)}$ should be in the range of a valid image, i.e. in $x^{(k+1)}\in [0,1]^{n\times n}$.
-	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given hyperparamter $\gamma$.
-	\item The reduction of the distance from the adversarial image to the original image $d(x, x^{(k)})-d(x, x^{(k+1)})$ is proportional to $d(x, x^{(k)})$ with constant $\nu>0$.
+	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given paramter $\gamma$.
+	\item The reduction of the distance from the adversarial image to the original image $d(x, x^{(k)})-d(x, x^{(k+1)})$ is proportional to $d(x, x^{(k)})$ with $\nu>0$.
 \end{enumerate}
+$\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust Region methods.
 
 
 \subsection{DeepFool Attack}
@@ -138,6 +139,7 @@ Deepfool is an untargeted white-box attack developed by Moosavi-Dezfooli eta al 
 The authors found, that minimal adversarial perturbations for affine multiclass classifier can be computed exactly and quickly,
 by calculated the distance to the (linear) decision boundaries and making an orthogonal projection to the nearest one.
 Deepfool initializes $\delta \gets 0$ and then iteratively approximates $F$ with its first degree Taylor polynomial at $x + \delta$, computes a perturbation $\Delta \delta$ for this approximation as described above and updates $\delta \gets \delta + \Delta \delta$.
+For better results, we restrict the norm of $\Delta \delta$ each step.
 
 \subsection{Universal Adversarial Perturbations}
 A \emph{universal perturbation} is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for "many" $x$ sampled from the input image distribution.
