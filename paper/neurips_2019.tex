@@ -131,7 +131,7 @@ The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boun
 	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given paramter $\gamma$.
 	\item The reduction of the distance from the adversarial image to the original image $d(x, x^{(k)})-d(x, x^{(k+1)})$ is proportional to $d(x, x^{(k)})$ with $\nu>0$.
 \end{enumerate}
-$\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust Region methods.
+The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust Region methods.
 
 
 \subsection{DeepFool Attack}
@@ -142,14 +142,13 @@ Deepfool initializes $\delta \gets 0$ and then iteratively approximates $F$ with
 For better results, we restrict the norm of $\Delta \delta$ each step.
 
 \subsection{Universal Adversarial Perturbations}
-A \emph{universal perturbation} is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for "many" $x$ sampled from the input image distribution.
-This concept was proposed by Moosave-Dezfooli et al. \cite{universal} and we use a variation of their algorithm:
+A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for multiple $x$ sampled from the input image distribution. This concept was proposed by Moosave-Dezfooli et al. \cite{universal} and we use a variation of their algorithm:
 \begin{enumerate}
-	\item initialize $\delta \gets 0$
-	\item choose a batch $X = \{x_1, ..., x_N\}$ of images with $\forall x_i \in\ X:  C(x_i + \delta) = C^*(x_i)$
-	\item For each $x_i$ compute a perturbation $\delta_i$ using FGSM \cite{fgsm}
+	\item Initialize $\delta \gets 0$.
+	\item Choose a batch $X = \{x_1, ..., x_N\}$ of images with $\forall x_i \in\ X:  C(x_i + \delta) = C^*(x_i)$.
+	\item For each $x_i$ compute a perturbation $\delta_i$ using FGSM \cite{fgsm}.
 	\item Update the perturbation: $\delta \gets \delta + \frac{1}{N} \sum\limits_{i=0}^N \delta_i$
-	\item Clip $\delta$ to a maximal norm chosen beforehand
+	\item Clip $\delta$ to a maximal norm chosen beforehand.
 \end{enumerate}
 
 
@@ -168,9 +167,12 @@ We train the capsule network on the following benchmark datasets:
 Each dataset is divided into ten different classes.
 
 \subsection{Network Architectures}
-TODO: Add description of the networks we used. Report test errors.
+As a baseline architecture we use a convolutional neural network which we trained with batch-normalization and dropout on each of the datasets. Since training capsule networks is in practice rather difficult, we adapt different architectures for each datasets.
 
 \subsection{Results}
+
+We are aware of the fact that the test accuracies of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of convolutional and capsule networks ensure comparability.
+
 \begin{table}[h]
 	\centering
 	\begin{tabular}{lcccc}
@@ -228,7 +230,7 @@ TODO: Add description of the networks we used. Report test errors.
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:norms}
-	\caption{Average perturbation norm.}
+	\caption{Comparison of the average perturbation norm for each attack and architecture.}
 \end{table}
 
 \begin{table}[h]
@@ -245,7 +247,7 @@ TODO: Add description of the networks we used. Report test errors.
 	\vspace{0.1cm}\\
 	\end{tabular}
 	\label{tab:images}
-	\caption{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right).}
+	\caption{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right) calculated for a capsule network.}
 \end{table}
 
 \subsection{Visualizing Universal Perturbations}
@@ -259,7 +261,7 @@ TODO: Add description of the networks we used. Report test errors.
 
 \FloatBarrier
 \section{Conclusion}
-Our experiments show that capsule networks are as vulnerable to the (white-box) Carlini-Wagner attack as convolutional architectures.
+Our experiments show that capsule networks are as vulnerable to (white-box) attacks as convolutional network architectures.
 
 
 \bibliography{neurips_2019}
