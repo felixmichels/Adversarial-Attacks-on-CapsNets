@@ -32,7 +32,6 @@ class DeepfoolOp():
         
         self.model = model_class(
             tf.expand_dims(self.image, axis=0),
-            tf.constant([0], dtype=tf.int64),  # label doesn't matter
             trainable=False,
             num_classes=dataset.num_classes,
             **params)
@@ -40,7 +39,6 @@ class DeepfoolOp():
         self.logits = self.model.logits[0]
         self.num_classes = self.logits.shape.as_list()[0]
         self.logits_grad = jacobian(self.logits, self.image)
-        self.prediction = self.model.prediction[0]
         
     
     def attack(self,
@@ -65,10 +63,7 @@ class DeepfoolOp():
         l = np.empty(shape=self.num_classes, dtype='float32')
         l[label] = np.inf
         
-        pred = sess.run(self.prediction, feed_dict={self.image: adv})
-        it = 0
-        while pred == label and it < max_iter:
-            it += 1
+        for it in range(max_iter):
             
             logits, logit_grads = sess.run(
                     [self.logits, self.logits_grad],
@@ -78,14 +73,12 @@ class DeepfoolOp():
                 w[k] = logit_grads[k] - logit_grads[label]
                 f[k] = logits[k] - logits[label]
                 l[k] = np.abs(f[k]) / la.norm(w[k])
+
+            if (f[ks] > 1e-5).any():
+                return adv
                 
             l_hat = np.argmin(l)
 
-            pert = (np.abs(f[l_hat]) / la.norm(w[l_hat])**2) * w[l_hat] 
+            pert = ((np.abs(f[l_hat]) + 1e-5) / la.norm(w[l_hat])**2) * w[l_hat] 
             pert *= min(1.0, step_size/(la.norm(pert)+1e-8))
             adv = np.clip(adv+pert, 0, 1)
-            
-            pred = sess.run(self.prediction, feed_dict={self.image: adv})
-            
-        if pred != label:
-            return adv
