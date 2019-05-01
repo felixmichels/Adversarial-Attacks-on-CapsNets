@@ -13,20 +13,20 @@ from util.util import get_model, get_dir, get_params
 from util.config import cfg
 from util.imgdataset import dataset_by_name
 
+def batch_probabilities(model, sess, batch):
+    return sess.run(
+            model.probabilities,
+            feed_dict={model.img: batch})
+
 
 def get_probabilities(model, img, session, batch_size):
     probs = None
     img = np.clip(img, 0, 1)
     N = len(img)
-    for idx in np.array_split(np.arange(N), N//batch_size):
-        batch_probs = session.run(
-            model.probabilities,
-            feed_dict={model.img: img[idx]})
-        if probs is None:
-            probs = batch_probs
-        else:
-            probs = np.concatenate([probs, batch_probs])
-    return probs
+    batches = np.array_split(img, max(1, N//batch_size))
+    return np.concatenate(
+            [batch_probabilities(model, session, batch)
+                for batch in batches])
 
 
 def measure_normal_attack(attack_name, dataset_name, model, sess, source_name):
