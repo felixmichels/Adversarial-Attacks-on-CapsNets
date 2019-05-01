@@ -161,3 +161,19 @@ def get_attack_original(attack_name, dataset, n=None, targeted=False, override=F
     if targeted:
         return img, label, target_label
     return img, label
+
+
+def get_adv(model_name, attack_name, dataset_name):
+    """
+    Loads adversarial examples or perturbations
+    Args:
+        model_name:
+        attack_name:
+        dataset_name:
+
+    Returns:
+        Numpy array, containing the adversarial data
+    """
+    att_dir = os.path.join(cfg.data_dir, dataset_name, attack_name, model_name)
+    adv_files = [f for f in os.listdir(att_dir) if f.endswith('.npy')]
+    return np.concatenate([np.load(os.path.join(att_dir, f)) for f in adv_files])
