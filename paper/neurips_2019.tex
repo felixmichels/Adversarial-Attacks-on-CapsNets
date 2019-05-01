@@ -169,6 +169,7 @@ Each dataset is divided into ten different classes.
 \subsection{Network Architectures}
 TODO: Add description of the networks we used. Report test errors.
 
+\subsection{Results}
 \begin{table}[h]
 	\centering
 	\begin{tabular}{lcccc}
@@ -246,10 +247,12 @@ TODO: Add description of the networks we used. Report test errors.
 	\caption{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right).}
 \end{table}
 
+\subsection{Visualizing Universal Perturbations}
+
 \begin{figure}
 	\centering
-	\includegraphics[height=6.5cm]{figures/tsne.pdf}
-	\caption{Two dimensional embedding of the universal perturbations calculated using t-SNE \cite{tsne}.}
+	\includegraphics[height=5.5cm]{figures/tsne.pdf}
+	\caption{Two dimensional embedding of the universal perturbations calculated using t-SNE \cite{tsne}. The upper left cluster represents perturbations calculated on a CNN, whereas the lower left cluster represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
 \end{figure}
 
 
