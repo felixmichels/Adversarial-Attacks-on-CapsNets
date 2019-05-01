@@ -31,7 +31,7 @@
 \usepackage{multirow}
 \usepackage{placeins}
 
-\title{Adversarial Attacks on Capsule Networks}
+\title{On the Vulnerability of Capsule Networks to Adversarial Attacks}
 \bibliographystyle{plain}
 % The \author macro works with any number of authors. There are two commands
 % used to separate the names and addresses of multiple authors: \And and \AND.
@@ -49,11 +49,11 @@
   Heinrich-Heine University Düsseldorf\\
   \texttt{\{felix.michels, tobias.uelwer, harmeling\}@hhu.de} \\
   % examples of more authors
-  % \And
-  % Coauthor \\
-  % Affiliation \\
+  \And
+  Eric Upschulte \\
+  Forschungszentrum Jülich \\
   % Address \\
-  % \texttt{email} \\
+  \texttt{e.upschulte@fz-juelich.de} \\
   % \AND
   % Coauthor \\
   % Affiliation \\
@@ -75,13 +75,13 @@
 \maketitle
 
 \begin{abstract}
-	In this paper we want to extensively evaluate the robustness of capsule networks towards different adversarial attacks. Our experiments show that capsule networks can be fooled as easily as convolutional networks.
+	In this paper we want to extensively evaluate the vulnerability of capsule networks to different adversarial attacks. Recent work suggests that these architectures are more robust towards adversarial attacks than other neural networks. However, our experiments show that capsule networks can be fooled as easily as convolutional networks.
 
 \end{abstract}
 
 \section{Introduction}
 
-Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio}, however they focus on the evaluation of their method. Also Peer et al. \cite{training} have briefly discussed the application of the fast gradient sign method \cite{fgsm} on capsule networks. Detecting adversarial examples using the reconstruction quality of the capsule networks has been investigated by Frosst et al. \cite{darccc}. In this work we want to compare the results of four different attack on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. This paper is structured as followed: in section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods we used to attack the capsule networks. Section \ref{lab:experiments} summarizes the results of our experiments.
+Frost et al. \cite{darccc} state that capsule networks are more robust against white box adversarial attacks than other architectures. Adversarial attacks on capsule networks have been previously studied by Marchisio et al. \cite{marchisio}, however they focus on the evaluation of their method. Also Peer et al. \cite{training} have briefly discussed the application of the fast gradient sign method \cite{fgsm} on capsule networks. Detecting adversarial examples using the reconstruction quality of the capsule networks has been investigated by Frosst et al. \cite{darccc}. In this work we want to compare the results of four different attack on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. This paper is structured as followed: in section \ref{lab:capsules} we recapitulate the idea of capsule networks that were introduced by Sabour et al. \cite{capsules}. In section \ref{lab:attacks} we describe the methods we used to attack the capsule networks. Section \ref{lab:experiments} summarizes the results of our experiments.
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
@@ -101,7 +101,7 @@ The routing algorithm introduces a scalar factor, the so called routing coeffici
 
 Adversarial attacks can be performed in different settings: in the white-box setting the attacker can compute the gradient of the networks output with respect to the input, whereas in the black-box setting such calculations are not possible. Furthermore, adversarial attacks can be classified into targeted attacks, where the goal of the attack is that the network assigns a given label to the manipulated image, and untargeted attacks, where the attacker's goal is to fool the network in the sense that it only missclassifies a given image.
 
-Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
+Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F(x)$ and the perturbation as $\delta$. Furthermore, we refer to the $i$-th entry of $F(x)$ as $F(x)_i$.
 
 \subsection{Carlini-Wagner Attack}
 
@@ -218,7 +218,7 @@ TODO: Add description of the networks we used. Report test errors.
 
 \FloatBarrier
 \section{Conclusion}
-
+Our experiments show that capsule networks are as vulnerable to the (white-box) Carlini-Wagner attack as convolutional architectures.
 
 
 \bibliography{neurips_2019}
