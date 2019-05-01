@@ -108,14 +108,24 @@ class BasicModel(ABC):
             return tf.placeholder_with_default(False, shape=())
         return tf.constant(False)
 
+    @lazy_scope_property
+    def prediction(self):
+        return tf.argmax(self.probabilities, axis=-1)
+
     @abstractmethod
     def loss(self):
         """Total loss"""
         pass
     
-    @abstractmethod
+    @lazy_scope_property
     def accuracy(self):
         """Accuracy for this batch"""
+        correct_preds = tf.equal(self.prediction, self.label)
+        return  tf.reduce_mean(tf.cast(correct_preds, tf.float32))
+
+    @abstractmethod
+    def probabilities(self):
+        """Probabilities"""
         pass
     
     @abstractmethod

@@ -38,11 +38,12 @@ def create_adv(sess, dataset, deepfool):
             tf.logging.info('Attack failed...')
             # Try again with bigger step size
             adv = deepfool.attack(sess, img[i], label[i], cfg.max_iter, cfg.max_step_size)
-        if adv is None:
-            tf.logging.info('Failed a second time...')
-            # If attack didn't succeed, mark image with NaN
-            adv = np.empty_like(img[i])
-            adv[:] = np.nan
+
+            if adv is None:
+                tf.logging.info('Failed a second time...')
+                # If attack didn't succeed, mark image with NaN
+                adv = np.empty_like(img[i])
+                adv[:] = np.nan
 
         adv_img = np.append(adv_img, [adv], axis=0)
         np_save_bak(att_file, adv_img)
@@ -59,7 +60,7 @@ def main(args):
     
     tf.logging.debug('Creating attack ops')
     deepfool = DeepfoolOp(model_class,
-            dataset=dataset,
+                          dataset=dataset,
                           params=params)
     
     ckpt_dir = get_dir(cfg.ckpt_dir, dataset.name, deepfool.model.name)

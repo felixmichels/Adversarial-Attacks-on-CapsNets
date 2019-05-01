@@ -13,21 +13,20 @@ from util.util import get_model, get_dir, get_params
 from util.config import cfg
 from util.imgdataset import dataset_by_name
 
+def batch_probabilities(model, sess, batch):
+    return sess.run(
+            model.probabilities,
+            feed_dict={model.img: batch})
+
 
 def get_probabilities(model, img, session, batch_size):
     probs = None
-    dummy_label = np.zeros((batch_size,), dtype='int64')
+    img = np.clip(img, 0, 1)
     N = len(img)
-    for idx in np.array_split(np.arange(N), N//batch_size):
-        batch_probs = session.run(
-            model.probabilities,
-            feed_dict={model.img: img[idx],
-                       model.label: dummy_label})
-        if probs is None:
-            probs = batch_probs
-        else:
-            probs = np.concatenate([probs, batch_probs])
-    return probs
+    batches = np.array_split(img, max(1, N//batch_size))
+    return np.concatenate(
+            [batch_probabilities(model, session, batch)
+                for batch in batches])
 
 
 def measure_normal_attack(attack_name, dataset_name, model, sess, source_name):
@@ -77,12 +76,24 @@ def measure_universal(dataset_name, model, sess, source_name):
         np.save(save_file, prob_list)
 
 
+def measure_attack(attack_name, dataset_name, model, sess, source_name):
+    if attack_name != 'universal_perturbation':
+        measure_normal_attack(attack_name, dataset_name, model, sess, source_name)
+    else:
+        measure_universal(dataset_name, model, sess, source_name)
+
+
 def main(args):
 
     model_name = args[1]
     model_class = get_model(model_name)
     source_name = args[2]
     dataset = dataset_by_name(args[3])
+
+    if len(args) < 5:
+        attacks = ['carlini_wagner', 'boundary_attack', 'deepfool', 'universal_perturbation']
+    else:
+        attacks = args[4].split(',')
 
     params = get_params(model_name, dataset.name)
 
@@ -100,10 +111,8 @@ def main(args):
         try:
             save_path = tf.train.latest_checkpoint(ckpt_dir)
             saver.restore(sess, save_path)
-            for attack in 'carlini_wagner', 'boundary_attack', 'deepfool':
-                measure_normal_attack(attack, dataset.name, model, sess, source_name)
-
-            measure_universal(dataset.name, model, sess, source_name)
+            for attack in attacks:
+                measure_attack(attack, dataset.name, model, sess, source_name)
 
         except KeyboardInterrupt:
             print("Manual interrupt occurred")
