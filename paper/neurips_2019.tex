@@ -30,6 +30,8 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{placeins}
+\usepackage{graphicx}
+\usepackage{graphbox} 
 
 \title{On the Vulnerability of Capsule Networks to Adversarial Attacks}
 \bibliographystyle{plain}
@@ -177,8 +179,8 @@ TODO: Add description of the networks we used. Report test errors.
 		Capsule network            &  &  &  &  \\
 		\bottomrule\\
 	\end{tabular}
-\label{tab:accuracies}
-\caption{Test accuracies achieved by our networks.}
+	\label{tab:accuracies}
+	\caption{Test accuracies achieved by our networks.}
 \end{table}
 
 \begin{table}[h]
@@ -225,6 +227,20 @@ TODO: Add description of the networks we used. Report test errors.
 	\end{tabular}
 	\label{tab:norms}
 	\caption{Average perturbation norm.}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{rlll} 
+	CW & \includegraphics[height=1.5cm, align=c]{figures/carlini_wagner_orig.pdf} & \includegraphics[height=1.5cm, align=c]{figures/carlini_wagner_adversarial.pdf} & \includegraphics[height=1.5cm, align=c]{figures/carlini_wagner_diff.pdf}\\
+	\\
+	Boundary & \includegraphics[height=1.5cm, align=c]{figures/boundary_orig.pdf} & \includegraphics[height=1.5cm, align=c]{figures/boundary_adversarial.pdf} & \includegraphics[height=1.5cm, align=c]{figures/boundary_diff.pdf}\\
+	\\
+	DeepFool & \includegraphics[height=1.5cm, align=c]{figures/deepfool_orig.pdf} & \includegraphics[height=1.5cm, align=c]{figures/deepfool_adversarial.pdf} & \includegraphics[height=1.5cm, align=c]{figures/deepfool_diff.pdf}\\
+	\vspace{0.1cm}\\
+	\end{tabular}
+	\label{tab:images}
+	\caption{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right).}
 \end{table}
 
 
