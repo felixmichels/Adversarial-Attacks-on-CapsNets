@@ -176,8 +176,8 @@ TODO: Add description of the networks we used. Report test errors.
 		\toprule
 		Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		Convolutional neural network &  &  &  &  \\
-		Capsule network            &  &  &  &  \\
+		Convolutional neural network & 99.4\% & 92.8\% & 92.6\% & 82.6\% \\
+		Capsule network            & 99.4\% & 92.6\% & 92.4\% & 82.4\% \\
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:accuracies}
@@ -213,17 +213,17 @@ TODO: Add description of the networks we used. Report test errors.
 		\toprule
 		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		\multirow{2}{*}{CW} & CNN &  &  &  &  \\
-		& CapsNet            &  &  &  &  \\
+		\multirow{2}{*}{CW} & CNN & 1.4 & 0.51 & 0.67 & 0.56 \\
+		& CapsNet            & 1.8 & 0.5 & 0.60 & 0.37 \\
 		\midrule
-		\multirow{2}{*}{Boundary} & CNN &  &  &  &  \\
-		& CapsNet            &  &  &  &  \\
+		\multirow{2}{*}{Boundary} & CNN & 3.07 & 1.24 & 2.42 & 1.76 \\
+		& CapsNet            & 3.26 & 0.93 & 1.88 & 0.99 \\
 		\midrule
-		\multirow{2}{*}{DeepFool} & CNN &  &  &  &  \\
-		& CapsNet           &  &  &  &  \\
+		\multirow{2}{*}{DeepFool} & CNN & 1.08 & 0.32 & 0.43 & 0.26 \\
+		& CapsNet           & 1.99 & 0.57 & 0.78 & 0.19 \\
 		\midrule
-		\multirow{2}{*}{Universal} & CNN &  &  &  &  \\
-		& CapsNet           &  &  &  &  \\
+		\multirow{2}{*}{Universal} & CNN & 0.921 & 1.22 & 2.61 & 3.0 \\
+		& CapsNet           & 0.921 & 1.22 & 2.61 & 3.0 \\
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:norms}
