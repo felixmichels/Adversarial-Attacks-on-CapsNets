@@ -43,7 +43,7 @@ class ConvBaseline(models.basicmodel.BasicModel):
         i(tf.layers.dense(o(), 1024, activation=act))
         i(tf.layers.dropout(o(), rate=0.5, training=is_training))
 
-        i(tf.layers.dense(o(), self.num_classes + self.garbage_class))
+        i(tf.layers.dense(o(), self.num_classes))
         
         return o()
 
@@ -73,5 +73,5 @@ class ConvBaseline(models.basicmodel.BasicModel):
 
     @lazy_scope_property
     def loss(self):
-        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, self.num_classes+self.garbage_class), self.logits)
+        cross_loss = tf.losses.softmax_cross_entropy(tf.one_hot(self.label, self.num_classes), self.logits)
         return cross_loss + self.l2_loss
