@@ -70,6 +70,7 @@
   % Address \\
   % \texttt{email} \\
 }
+\usepackage{amsmath}
 \begin{document}
 
 \maketitle
@@ -101,7 +102,7 @@ The routing algorithm introduces a scalar factor, the so called routing coeffici
 
 Adversarial attacks can be performed in different settings: in the white-box setting the attacker can compute the gradient of the networks output with respect to the input, whereas in the black-box setting such calculations are not possible. Furthermore, adversarial attacks can be classified into targeted attacks, where the goal of the attack is that the network assigns a given label to the manipulated image, and untargeted attacks, where the attacker's goal is to fool the network in the sense that it only missclassifies a given image.
 
-Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
+Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. $C(x)$ refers tot the label assigned to $x$ by the network and $C^*(x)$ is the correct label of $x$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
 
 \subsection{Carlini-Wagner Attack}
 
@@ -132,11 +133,22 @@ The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boun
 
 
 \subsection{DeepFool Attack}
-
-\cite{deepfool}
+Deepfool is an untargeted white-box attack developed by Moosavi-Dezfooli eta al \cite{deepfool}.
+The authors found, that minimal adversarial perturbations for affine multiclass classifier can be computed exactly and quickly,
+by calculated the distance to the (linear) decision boundaries and making an orthogonal projection to the nearest one.
+Deepfool initializes $\delta \gets 0$ and then iteratively approximates $F$ with its first degree Taylor polynomial at $x + \delta$, computes a perturbation $\Delta \delta$ for this approximation as described above and updates $\delta \gets \delta + \Delta \delta$.
 
 \subsection{Universal Adversarial Perturbations}
-\cite{universal}
+A \emph{universal perturbation} is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for "many" $x$ sampled from the input image distribution.
+This concept was proposed by Moosave-Dezfooli et al. \cite{universal} and we use a variation of their algorithm:
+\begin{enumerate}
+	\item initialize $\delta \gets 0$
+	\item choose a batch $X = \{x_1, ..., x_N\}$ of images with $\forall x_i \in\ X:  C(x_i + \delta) = C^*(x_i)$
+	\item For each $x_i$ compute a perturbation $\delta_i$ using FGSM \cite{fgsm}
+	\item Update the perturbation: $\delta \gets \delta + \frac{1}{N} \sum\limits_{i=0}^N \delta_i$
+	\item Clip $\delta$ to a maximal norm chosen beforehand
+\end{enumerate}
+
 
 \section{Experiments}
 \label{lab:experiments}
