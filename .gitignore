@@ -5,6 +5,9 @@ logdir/
 datasets/*
 !datasets/get_datasets.sh
 
+# vim
+*.swp
+
 # Pipenv
 Pipfile
 Pipfile.lock
