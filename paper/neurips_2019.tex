@@ -151,30 +151,29 @@ A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$,
 	\item Update the perturbation: $\delta \gets \delta + \frac{1}{N} \sum\limits_{i=0}^N \delta_i$
 	\item Clip $\delta$ to a maximal norm chosen beforehand.
 \end{enumerate}
+Since this method depends on the FGSM \cite{fgsm} it is a white-box attack.
 
 
 \section{Experiments}
 \label{lab:experiments}
 
-\subsection{Datasets}
+\subsection{Datasets and Network Architectures}
 
-We train the capsule network on the following benchmark datasets:
-\begin{itemize}
-	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
-	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training/images 10,000 for testing) \cite{fashion}
-	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training/26,032  images for testing) \cite{svhn}
-	\item CIFAR10: $32\times32$ color images (50.000  images for training/10.000  images for testing) \cite{cifar}
-\end{itemize}
-Each dataset is divided into ten different classes.
-
-\subsection{Network Architectures}
-As a baseline architecture we use a convolutional neural network which we trained with batch-normalization and dropout on each of the datasets. Since training capsule networks is in practice rather difficult, we adapt different architectures for each datasets.
+We train the capsule network on the following benchmark datasets: MNIST \cite{mnist}, Fashion-MNIST \cite{fashion}, SVHN \cite{svhn} and CIFAR-10 \cite{cifar}. Each dataset is divided into ten different classes. 
+As a baseline architecture we use a convolutional neural network (CNN) which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training capsule networks (CapsNets) is in practice rather difficult, we adapt different architectures for each datasets: For the CIFAR-10 dataset we use an architecture with ... primary capsules and .... For the other datasets we used a smaller architecture.
+%\begin{itemize}
+%	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
+%	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training/images 10,000 for testing) \cite{fashion}
+%	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training/26,032  images for testing) \cite{svhn}
+%	\item CIFAR10: $32\times32$ color images (50.000  images for training/10.000  images for testing) \cite{cifar}
+%\end{itemize}
 
 \subsection{Results}
 
 We are aware of the fact that the test accuracies of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of convolutional and capsule networks ensure comparability.
 
 \begin{table}[h]
+	\caption{Test accuracies achieved by our networks.}
 	\centering
 	\begin{tabular}{lcccc}
 		\toprule
@@ -185,10 +184,10 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:accuracies}
-	\caption{Test accuracies achieved by our networks.}
 \end{table}
 
 \begin{table}[h]
+	\caption{Test accuracies on adversarial examples.}
 	\centering
 	\begin{tabular}{llcccc}
 		\toprule
@@ -208,10 +207,10 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:attacks}
-	\caption{Test accuracies on adversarial examples.}
 \end{table}
 
 \begin{table}[h]
+	\caption{Comparison of the average perturbation norm for each attack and architecture.}
 	\centering
 	\begin{tabular}{llcccc}
 		\toprule
@@ -231,7 +230,6 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:norms}
-	\caption{Comparison of the average perturbation norm for each attack and architecture.}
 \end{table}
 
 \begin{table}[h]
@@ -253,6 +251,7 @@ We are aware of the fact that the test accuracies of our models are not state-of
 
 \subsection{Visualizing Universal Perturbations}
 
+We also visualized the universal perturbations calculated for the CapsNet and for the CNN using t-SNE \cite{tsne} and we observe that the perturbations for the CapsNet seem to be inherently different than the perturbations for the convolutional networks.
 \begin{figure}
 	\centering
 	\includegraphics[height=5.5cm]{figures/tsne.pdf}
@@ -262,7 +261,7 @@ We are aware of the fact that the test accuracies of our models are not state-of
 
 \FloatBarrier
 \section{Conclusion}
-Our experiments show that capsule networks are as vulnerable to (white-box) attacks as convolutional network architectures.
+Our experiments show that capsule networks are as vulnerable to (white-box) attacks as convolutional architectures.
 
 
 \bibliography{neurips_2019}
