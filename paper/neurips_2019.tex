@@ -126,10 +126,10 @@ where the $\tanh$-function is applied componentwise. After this transformation t
 
 \subsection{Boundary Attack}
 
-The idea of the boundary attack as it was intoduced by Brendel et al. \cite{boundary} is to sample a perturbation which leads to a missclassification of the original image $x^{(0)}:=x$. Additionally, the desired perturbation should have the smallest possible norm. The initial perturbation $\delta^{(0)}$ is componentwise sampled from a uniform distribution $\delta^{(0)}_{ij}\sim \mathcal{U}(0,1)$. Initial perturbations, which are not missclassified, are rejected. During the attack adversarial images are constructed iteratively $x^{(k+1)}:= x^{(k)}+\delta^{(k)}$ by a random walk close to the decision boundary. During this random walk the following three conditions are enforced by appropriate scaling and clipping of the image and the perturbation:
+The idea of the boundary attack as it was introduced by Brendel et al. \cite{boundary} is to sample a perturbation which leads to a missclassification of the original image $x^{(0)}:=x$. Additionally, the desired perturbation should have the smallest possible norm. The initial perturbation $\delta^{(0)}$ is componentwise sampled from a uniform distribution $\delta^{(0)}_{ij}\sim \mathcal{U}(0,1)$. Initial perturbations, which are not missclassified, are rejected. During the attack adversarial images are constructed iteratively $x^{(k+1)}:= x^{(k)}+\delta^{(k)}$ by a random walk close to the decision boundary. During this random walk the following three conditions are enforced by appropriate scaling and clipping of the image and the perturbation:
 \begin{enumerate}
 	\item The new image $x^{(k+1)}$ should be in the range of a valid image, i.e. in $x^{(k+1)}\in [0,1]^{n\times n}$.
-	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given paramter $\gamma$.
+	\item The proportion of the size of the perturbation $\delta^{(k)}$ and the distance to the given image equal to a given parameter $\gamma$.
 	\item The reduction of the distance from the adversarial image to the original image $d(x, x^{(k)})-d(x, x^{(k+1)})$ is proportional to $d(x, x^{(k)})$ with $\nu>0$.
 \end{enumerate}
 The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust Region methods.
