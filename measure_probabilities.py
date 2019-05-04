@@ -76,8 +76,26 @@ def measure_universal(dataset_name, model, sess, source_name):
         np.save(save_file, prob_list)
 
 
+def measure_original(attack_name, dataset_name, model, sess):
+    tf.logging.info('Measuring %s: source %s on originals', attack_name, model.name)
+    original_file = os.path.join(cfg.data_dir, dataset_name, attack_name, 'originals.npz')
+    with np.load(original_file) as npz:
+        img = npz['img']
+
+    tf.logging.info('Loaded adv images %s', original_file)
+
+    probs = get_probabilities(model, img, sess, cfg.batch_size)
+
+    save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, 'Measure_original_' + model.name)
+    save_file = os.path.join(save_dir, 'probabilities_originals.npy')
+
+    np.save(save_file, probs)
+
+
 def measure_attack(attack_name, dataset_name, model, sess, source_name):
-    if attack_name != 'universal_perturbation':
+    if source_name == 'original':
+        measure_original(attack_name, dataset_name, model, sess)
+    elif attack_name != 'universal_perturbation':
         measure_normal_attack(attack_name, dataset_name, model, sess, source_name)
     else:
         measure_universal(dataset_name, model, sess, source_name)
