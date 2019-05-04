@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar 31 00:01:04 2019
+
+@author: felix
+"""
+
+import tensorflow as tf
+import numpy as np
+import models.basicmodel
+from util.lazy import lazy_scope_property
+import tfcaps as tc
+
+
+class DCNet3(models.basicmodel.BasicModel):
+    """
+    Another try for a cifar10 capsule net
+    """
+
+    @property
+    def name(self):
+        return 'DCNet'
+
+    @lazy_scope_property
+    def encoder(self):
+        """
+        Define encoder part
+        :param inputs: Inputs for the encoder
+        :param classes: Number of classes
+        :return:
+        """
+
+        self.garbage_class = 1
+
+        is_training = self.training
+        i, o = tc.layers.new_io(self.img)
+
+        i(tf.layers.conv2d(o(), filters=32-self.shape[-1], kernel_size=3, strides=1, padding='same', activation=tf.nn.relu))
+
+        for _ in range(7):
+            i(tf.concat([o(-1), o(-2)], axis=-1))
+            i(tf.layers.conv2d(
+                tf.layers.batch_normalization(o(), training=is_training),
+                filters=32, kernel_size=3, strides=1, padding='same', activation=tf.nn.relu))
+        i(tf.concat([o(-1), o(-2)], axis=-1))
+
+        i(tf.layers.dropout(o(), rate=0.2, training=is_training))
+        i(tf.layers.batch_normalization(o(), training=is_training))
+
+        tf.logging.debug('Shape after conv-layers: %s', o().get_shape())
+
+        i(tc.layers.PrimaryConvCaps2D(kernel_size=5, types=32+self.garbage_class, dimensions=12, strides=2, data_format='channels_last'))
+        i(o()[:,:,:,:32,:])
+
+        tf.logging.debug('Shape after primary caps: %s', o().get_shape())
+
+        i(tc.layers.ConvCaps2D(kernel_size=3, types=64+self.garbage_class, dimensions=24, strides=2, name='conv-caps',
+                               data_format='channels_last'))
+        i(o()[:,:,:,:64,:])
+
+        width = self.shape[0]
+        k = ((width - 4 + 1)//2 - 2 + 1) // 2
+        i(tc.layers.ConvCaps2D(kernel_size=k, types=self.num_classes+self.garbage_class, dimensions=48, name="class-caps",
+                               data_format='channels_last'))
+        i(tf.squeeze(o(), axis=(1, 2)))  # shape: [batch, classes, dimensions]
+
+        return o()
+
+    @lazy_scope_property
+    def probabilities(self):
+        return tc.layers.length(self.encoder[:,:self.num_classes,:])
+
+    @lazy_scope_property
+    def logits(self):
+        return 2*tf.atanh(2*self.probabilities - 1)
+
+    @lazy_scope_property
+    def decoder(self):
+        """
+        Define decoder part
+        :param inputs: Inputs for the decoder.
+        :param shape: Shape of a single data point. For MNIST it would be [28, 28, 1].
+        :return:
+        """
+        encoder_out_masked_flat = tc.layers.label_mask(self.encoder, self.label, self.prediction, self.training)
+
+        i, o = tc.layers.new_io(encoder_out_masked_flat)
+        i(tf.layers.dense(o(), 1024, activation=tf.nn.relu))
+        i(tf.layers.dense(o(), 1024, activation=tf.nn.relu))
+        i(tf.concat([o(-1),o(-1)], axis=-1))
+        i(tf.layers.dense(o(), 2024, activation=tf.nn.relu))
+        i(tf.layers.dense(o(), np.multiply.reduce(self.shape), activation=tf.nn.sigmoid))
+        i(tf.reshape(o(), [-1, *self.shape]))
+        return o()
+
+    @lazy_scope_property(only_training=True)
+    def optimizer(self):
+        opt = tf.train.AdamOptimizer()
+        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+            train_op = opt.minimize(self.loss, global_step=tf.train.get_global_step())
+        return train_op
+
+    @lazy_scope_property(only_training=True)
+    def summary_op(self):
+        tf.summary.scalar('Accuracy', self.accuracy)
+        tf.summary.scalar('Loss', self.loss)
+        tf.summary.scalar('recon_loss', self.recon_loss)
+        tf.summary.scalar('l2_loss', self.l2_loss)
+        return tf.summary.merge_all(scope=self.scope)
+
+    @lazy_scope_property
+    def l2_loss(self):
+        self.l2_scale = 0.0
+        return self.l2_scale * tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name])
+
+    @lazy_scope_property
+    def recon_loss(self):
+        self.recon_scale = 0.0005
+        return tc.losses.reconstruction_loss(original=self.img, reconstruction=self.decoder, alpha=self.recon_scale)
+
+    @lazy_scope_property
+    def loss(self):
+        margin_loss = tc.losses.margin_loss(class_capsules=self.encoder, labels=self.label, m_minus=.1, m_plus=.9)
+        return margin_loss + self.recon_loss + self.l2_loss

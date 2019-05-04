@@ -1,6 +1,14 @@
 # Adversarial-Attacks-on-CapsNets
 
-### Results  
+### Accuracies and model names
+
+| Model/Dataset | mnist               | fashion               | svhn                  | cifar10          |
+|---------------|---------------------|-----------------------|-----------------------|------------------|
+| ConvNet       | conv_baseline<br>99.4% | conv_baseline<br>92.9%   | conv_baseline<br>92.6%   | conv_good<br>88.2%  |
+| CapsNet       | capsnet_small<br>99.4% | capsnet_variant<br>92.7% | capsnet_variant<br>92.4% | dcnet<br>88.2%      |
+
+
+### Results (old)
 | Avg. Pert Norm | CapsNet | ConvNet |
 |----------------|---------|---------|
 | Carlini-Wagner | 0.371   | 0.556   | 
