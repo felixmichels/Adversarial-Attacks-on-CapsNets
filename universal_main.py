@@ -19,7 +19,8 @@ from util.imgdataset import dataset_by_name
 
 fgsm_eps = 0.05
 max_it = 50
-max_norm_ratio = 0.1 # Use max_norm_ratio times the average image norm as max norm
+# max_norm_ratio = 0.1 # Use max_norm_ratio times the average image norm as max norm
+target_rate = 0.5
 batch_size=128
 pert_per_split = 10
 num_split = 10
@@ -27,16 +28,15 @@ attack_name='universal_perturbation'
 
 
 def _avg_norm(dataset):
-    (x,_),_ = dataset.data
+    (x, _), _ = dataset.data
     return np.average([np.linalg.norm(xi) for xi in x])
-
 
 
 def create_adv(sess, dataset, fgsm):
     img, label = get_attack_original(attack_name, dataset)
     att_dir = get_dir(cfg.data_dir, dataset.name, attack_name, fgsm.model.name)
-    max_norm = max_norm_ratio * _avg_norm(dataset)
-    tf.logging.info('Using max norm %f', max_norm)
+    # max_norm = max_norm_ratio * _avg_norm(dataset)
+    # tf.logging.info('Using max norm %f', max_norm)
     
     for idx in np.array_split(np.arange(len(label)), num_split):
         tf.logging.info('Attacking range {}-{}'.format(idx.min(), idx.max()))
@@ -54,7 +54,7 @@ def create_adv(sess, dataset, fgsm):
                                            img[idx], label[idx],
                                            batch_size=batch_size,
                                            max_it=max_it,
-                                           max_norm=max_norm)
+                                           target_rate=target_rate)
             tic = time.time()
             attack.fit(sess)
             perts = np.append(perts, [attack.perturbation], axis=0)

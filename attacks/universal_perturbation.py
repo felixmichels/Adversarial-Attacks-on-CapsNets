@@ -13,7 +13,7 @@ import numpy.linalg as la
         
 def _clip(img, norm):
     np.clip(img, -1, 1, out=img)
-    if la.norm(img) >= norm:
+    if norm is not None and la.norm(img) >= norm:
         img *= norm / la.norm(img)
 
 class UniversalPerturbation():
@@ -22,16 +22,23 @@ class UniversalPerturbation():
                  attack,
                  img, label,
                  batch_size,
-                 max_it, max_norm):
+                 max_it,
+                 max_norm=None,
+                 target_rate=None):
         """
-        args:
+
+        Args:
             attack: FastAttack instance
             img: numpy array of originals
             label: original labels
-            batch_size: used in the FastAttack
+            batch_size: used in FastAttack
             max_it: Maximal number of iterations
-            max_norm: Maximal l2-norm of perturbation
+            max_norm: Maximal l2-norm of perturbation,
+                      or None for no restriction
+            target_rate: Stop, if this fooling rate is reached
         """
+
+        self.target_rate = target_rate
         self.attack = attack
         self.img = img
         self.label = label
@@ -41,12 +48,11 @@ class UniversalPerturbation():
 
         self.perturbation = np.zeros_like(img[0])
         self._best_fool_rate = 1.0
+        self._work_pert = None
         
-
     def _feed(self, idx):
         return {self.attack.model.img: np.clip(self.img[idx] + self._work_pert, 0, 1),
                 self.attack.model.label: self.label[idx]}
-            
             
     def _not_fooled(self, sess):
         preds = []
@@ -59,10 +65,14 @@ class UniversalPerturbation():
         preds = np.concatenate(preds)
         return preds == self.label
             
-    
     def fit(self, sess):
         self._work_pert = np.random.normal(size=self.perturbation.shape).astype('float32')
-        _clip(self._work_pert, self.max_norm/10)   
+        if self.max_norm is None:
+            init_norm = np.mean([la.norm(img) for img in self.img]) / 100
+        else:
+            init_norm = self.max_norm / 10
+
+        _clip(self._work_pert, init_norm)
         
         correct = self._not_fooled(sess)
         for it in range(self.max_it):
@@ -80,7 +90,10 @@ class UniversalPerturbation():
                 tf.logging.debug('Found good perturbation')
                 self._best_fool_rate = acc
                 self.perturbation = self._work_pert
+
+            if self.target_rate is not None and self._best_fool_rate < self.target_rate:
+                break
             
             tf.logging.debug('it: %d, acc: %1.3f, norm: %1.3f', it, acc, la.norm(self._work_pert))
             
-        tf.logging.info('Reached acc: %1.3f', self._best_fool_rate)
+        tf.logging.info('Reached acc %1.3f with norm %2.3f', self._best_fool_rate, la.norm(self.perturbation))
