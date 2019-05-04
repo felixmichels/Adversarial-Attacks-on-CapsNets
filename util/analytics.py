@@ -7,6 +7,7 @@ Small functions for analyzing the adversarial examples
 import numpy as np
 import numpy.linalg as la
 
+
 def average_norm(x, orig=None, filter='default'):
     """ Average norm
     
@@ -39,8 +40,19 @@ def average_norm(x, orig=None, filter='default'):
 
 def valid_index(x):
     """ Boolean mask of images without NaN of inf """
-    return np.isfinite(x).all(axis=tuple(range(1,x.ndim)))
+    return np.isfinite(x).all(axis=tuple(range(1, x.ndim)))
 
 
-#def certanties(x):
-#    x = x.argsort()
+def certanties(probabilities):
+    """
+    Args:
+        probabilities:
+
+    Returns:
+        Mean and std of gap between highest and second highest
+        probability
+
+    """
+    prob_sorted = np.sort(probabilities)
+    certanties = prob_sorted[:, -1] - prob_sorted[:, -2]
+    return certanties.mean(), certanties.norm()
