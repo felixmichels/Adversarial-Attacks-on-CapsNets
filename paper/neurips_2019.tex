@@ -31,7 +31,9 @@
 \usepackage{multirow}
 \usepackage{placeins}
 \usepackage{graphicx}
-\usepackage{graphbox} 
+\usepackage{graphbox}
+
+\DeclareMathOperator\arctanh{arctanh}
 
 \title{On the Vulnerability of Capsule Networks to Adversarial Attacks}
 \bibliographystyle{plain}
@@ -104,7 +106,12 @@ The routing algorithm introduces a scalar factor, the so called routing coeffici
 
 Adversarial attacks can be performed in different settings: in the white-box setting the attacker can compute the gradient of the networks output with respect to the input, whereas in the black-box setting such calculations are not possible. Furthermore, adversarial attacks can be classified into targeted attacks, where the goal of the attack is that the network assigns a given label to the manipulated image, and untargeted attacks, where the attacker's goal is to fool the network in the sense that it only missclassifies a given image.
 
-Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output before the softmax activation as $F$ and the perturbation as $\delta$. $C(x)$ refers to the label assigned to $x$ by the network and $C^*(x)$ is the correct label of $x$. Furthermore, we refer to the i-the entry of $F(x)$ as $F(x)_i$.
+Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output logits as $Z$ and the perturbation as $\delta$. \\
+% Explain this better
+If $F$ is the output of the network interpretable as probability, then\\
+$F(x) = softmax (Z(x))$ in the case of the CNN\\
+$Z(x) = \arctanh(2 \cdot F(x) - 1)$ in the case of the CapsNet\\
+$C(x)$ refers to the label assigned to $x$ by the network and $C^*(x)$ is the correct label of $x$. Furthermore, we refer to the i-the entry of $Z(x)$ as $Z(x)_i$.
 
 \subsection{Carlini-Wagner Attack}
 
@@ -112,13 +119,13 @@ The Carlini-Wagner attack \cite{carlini} is a targeted white-box attack and perf
 \begin{equation}
 	\begin{aligned}
 	& \underset{\delta}{\text{minimize}}
-	& & ||\delta||_2 + c \cdot \max(\max_{i\neq t}(F(x+\delta)_i)-F(x)_t, 0) \\
+	& & ||\delta||_2 + c \cdot \max(\max_{i\neq t}(Z(x+\delta)_i)-Z(x)_t, -\kappa) \\
 	& \text{subject to}
 	& & x+\delta \in [0,1]^{n \times n},
 	\end{aligned}
 \end{equation}
 
-where $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
+where $\kappa > 0$ controlls the confidence $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
 \begin{equation}
 	\delta = \frac{1}{2}(\tanh(w)+1)-x,
 \end{equation} 
@@ -161,6 +168,16 @@ Since this method depends on the FGSM \cite{fgsm} it is a white-box attack.
 
 We train the capsule network on the following benchmark datasets: MNIST \cite{mnist}, Fashion-MNIST \cite{fashion}, SVHN \cite{svhn} and CIFAR-10 \cite{cifar}. Each dataset is divided into ten different classes. 
 As a baseline architecture we use a convolutional neural network (CNN) which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training capsule networks (CapsNets) is in practice rather difficult, we adapt different architectures for each datasets: For the CIFAR-10 dataset we use an architecture with ... primary capsules and .... For the other datasets we used a smaller architecture.
+Mnist: 3 layer network, like sabour \cite{capsules} did, but only 64 convolutional kernels in the first layer
+Fashion-Mnist: Two convolutional layers at the beginning
+SVHN: Two convolutional layers at the beginning, also bigger capsules and bigger reconstruction network
+Cifar10: CapsNets have problems with more complex data \cite{complex}, we use a modified DCNet \cite{denseanddiverse} with three capsule layers and "none-of-the-above" category for the dynamic routing \cite{capsules}
+
+For each dataset:\\
+DeepFool and Boundary attack: 1000 adversarial examples on images randomly chosen from the test set\\
+Carlini-Wagner: 500 adversarial examples, with $\kappa = 1$, on images randomly chosen from the test set. Target labels not equal to true label, otherwise random \\
+Universal Perturbation: Split the test set in 10 parts, compute 10 adversarial perturbations on each part, stop once accuracy is below 50\%. However, each perturbation is evaluated on the whole test set.
+
 %\begin{itemize}
 %	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
 %	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training/images 10,000 for testing) \cite{fashion}
