@@ -17,11 +17,11 @@ from attacks.universal_perturbation import UniversalPerturbation
 from attacks.fast_batch_attacks import FGSM
 from util.imgdataset import dataset_by_name
 
-fgsm_eps = 0.05
-max_it = 50
+fgsm_eps = 0.03
+max_it = 250
 # max_norm_ratio = 0.1 # Use max_norm_ratio times the average image norm as max norm
 target_rate = 0.5
-batch_size=128
+batch_size=64
 pert_per_split = 10
 num_split = 10
 attack_name='universal_perturbation'
