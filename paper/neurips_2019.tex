@@ -167,7 +167,7 @@ Since this method depends on the FGSM \cite{fgsm} it is a white-box attack.
 \subsection{Datasets and Network Architectures}
 
 We train the capsule network on the following benchmark datasets: MNIST \cite{mnist}, Fashion-MNIST \cite{fashion}, SVHN \cite{svhn} and CIFAR-10 \cite{cifar}. Each dataset is divided into ten different classes. 
-As a baseline architecture we use a convolutional neural network (CNN) which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training capsule networks (CapsNets) is in practice rather difficult, we adapt different architectures for each datasets: For the CIFAR-10 dataset we use an architecture with ... primary capsules and .... For the other datasets we used a smaller architecture.
+As a baseline architecture we use a convolutional neural network (CNN) which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training capsule networks (CapsNets) is in practice rather difficult, we adapt different architectures for each datasets: For the CIFAR-10 dataset we use an architecture with ... primary capsules and .... For the other datasets we used a smaller architecture.\\
 Mnist: 3 layer network, like sabour \cite{capsules} did, but only 64 convolutional kernels in the first layer
 Fashion-Mnist: Two convolutional layers at the beginning
 SVHN: Two convolutional layers at the beginning, also bigger capsules and bigger reconstruction network
@@ -196,28 +196,28 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\toprule
 		Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		Convolutional neural network & 99.4\% & 92.8\% & 92.6\% & 82.6\% \\
-		Capsule network            & 99.4\% & 92.6\% & 92.4\% & 82.4\% \\
+		Convolutional neural network & 99.4\% & 92.8\% & 92.6\% & 88.2\% \\
+		Capsule network            & 99.4\% & 92.6\% & 92.4\% & 88.2\% \\
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:accuracies}
 \end{table}
 
 \begin{table}[h]
-	\caption{Test accuracies on adversarial examples.}
+	\caption{Transfer fooling rates.}
 	\centering
 	\begin{tabular}{llcccc}
 		\toprule
 		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		\multirow{2}{*}{CW} & CNN &  &  &  &  \\
-		& CapsNet            &  &  &  &  \\
+		\multirow{2}{*}{CW} & CNN & 0.8\% & 1.6\% & 2.7\% &  \\
+		& CapsNet            & 1.8\% & 2.1\% & 3.8\% &  \\
 		\midrule
-		\multirow{2}{*}{Boundary} & CNN &  &  &  &  \\
-		& CapsNet            &  &  &  &  \\
+		\multirow{2}{*}{Boundary} & CNN & 8.9\% & 9.5\% & 10.5\% & 13.4\% \\
+		& CapsNet            & 14.2\% & 14.6\% & 12.9\% & 26.1\% \\
 		\midrule
-		\multirow{2}{*}{DeepFool} & CNN &  &  &  &  \\
-		& CapsNet           &  &  &  &  \\
+		\multirow{2}{*}{DeepFool} & CNN & 4.3\% & 8.5\% & 13.5\% & 11.8\% \\
+		& CapsNet           & 0.9\% & 10.9\% & 10.8\% & 14.1\% \\
 		\midrule
 		\multirow{2}{*}{Universal} & CNN &  &  &  &  \\
 		& CapsNet           &  &  &  &  \\
@@ -226,6 +226,8 @@ We are aware of the fact that the test accuracies of our models are not state-of
 	\label{tab:attacks}
 \end{table}
 
+(Fooled in the case of the targeted cw attack means target label is reached)
+
 \begin{table}[h]
 	\caption{Comparison of the average perturbation norm for each attack and architecture.}
 	\centering
@@ -233,17 +235,17 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\toprule
 		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		\multirow{2}{*}{CW} & CNN & 1.4 & 0.51 & 0.67 & 0.56 \\
-		& CapsNet            & 1.8 & 0.5 & 0.60 & 0.37 \\
+		\multirow{2}{*}{CW} & CNN & 1.4 & 0.51 & 0.67 & 0.38 \\
+		& CapsNet            & 1.8 & 0.5 & 0.60 & 0.23 \\
 		\midrule
-		\multirow{2}{*}{Boundary} & CNN & 3.07 & 1.24 & 2.42 & 1.76 \\
-		& CapsNet            & 3.26 & 0.93 & 1.88 & 0.99 \\
+		\multirow{2}{*}{Boundary} & CNN & 3.07 & 1.24 & 2.42 & 1.38 \\
+		& CapsNet            & 3.26 & 0.93 & 1.88 & 0.72 \\
 		\midrule
-		\multirow{2}{*}{DeepFool} & CNN & 1.08 & 0.32 & 0.43 & 0.26 \\
-		& CapsNet           & 1.99 & 0.57 & 0.78 & 0.19 \\
+		\multirow{2}{*}{DeepFool} & CNN & 1.07 & 0.41 & 0.43 & 0.23 \\
+		& CapsNet           & 2.03 & 0.55 & 0.80 & 0.16 \\
 		\midrule
-		\multirow{2}{*}{Universal} & CNN & 0.921 & 1.22 & 2.61 & 3.0 \\
-		& CapsNet           & 0.921 & 1.22 & 2.61 & 3.0 \\
+		\multirow{2}{*}{Universal} & CNN & 6.71 & 2.4 & 2.46 & 2.45 \\
+		& CapsNet           & 11.45 & 5.31 & 8.59 & 2.70 \\
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:norms}
