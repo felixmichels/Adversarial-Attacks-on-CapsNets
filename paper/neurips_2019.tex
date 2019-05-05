@@ -123,7 +123,7 @@ The Carlini-Wagner (CW) attack \cite{carlini} is a targeted white-box attack and
 	\end{aligned}
 \end{equation}
 
-where $\kappa > 0$ controlls the confidence $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
+where $\kappa > 0$ controlls the confidence and a $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
 \begin{equation}
 	\delta = \frac{1}{2}(\tanh(w)+1)-x,
 \end{equation} 
@@ -204,8 +204,8 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\toprule
 		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		\multirow{2}{*}{CW} & ConvNet & 0.8\% & 1.6\% & 2.7\% &  \\
-		& CapsNet            & 1.8\% & 2.1\% & 3.8\% &  \\
+		\multirow{2}{*}{CW} & ConvNet & 0.8\% & 1.6\% & 2.7\% & 2.5\% \\
+		& CapsNet            & 1.8\% & 2.1\% & 3.8\% & 2.1\% \\
 		\midrule
 		\multirow{2}{*}{Boundary} & ConvNet & 8.9\% & 9.5\% & 10.5\% & 13.4\% \\
 		& CapsNet            & 14.2\% & 14.6\% & 12.9\% & 26.1\% \\
@@ -213,8 +213,8 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\multirow{2}{*}{DeepFool} & ConvNet & 4.3\% & 8.5\% & 13.5\% & 11.8\% \\
 		& CapsNet           & 0.9\% & 10.9\% & 10.8\% & 14.1\% \\
 		\midrule
-		\multirow{2}{*}{Universal} & ConvNet &  &  &  &  \\
-		& CapsNet           &  &  &  &  \\
+		\multirow{2}{*}{Universal} & ConvNet & 4.9\% & 20.4\% & 35.0\% & 25.6\% \\
+		& CapsNet           & 38.2\% & 25.7\% & 53.4\% & 47.2\% \\
 		\bottomrule\\
 	\end{tabular}
 	\label{tab:attacks}
@@ -230,7 +230,7 @@ We are aware of the fact that the test accuracies of our models are not state-of
 		\toprule
 		Attack & Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 		\midrule
-		\multirow{2}{*}{CW} & ConvNet & 1.4 & 0.51 & 0.67 & 0.38 \\
+		\multirow{2}{*}{CW} & ConvNet & 1.4 & 0.51 & 0.67 & 0.37 \\
 		& CapsNet            & 1.8 & 0.5 & 0.60 & 0.23 \\
 		\midrule
 		\multirow{2}{*}{Boundary} & ConvNet & 3.07 & 1.24 & 2.42 & 1.38 \\
@@ -262,6 +262,9 @@ We are aware of the fact that the test accuracies of our models are not state-of
 	\label{tab:images}
 	\captionof{figure}{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right) calculated for a capsule network.}
 \end{table}
+
+Universal perturbations computed for CNNs transfer very well to CapsNets. Maby CapsNet universal perturbations don't work well, because we used FGSM? Maybe the loss is to blame. Would FGSM with cross entropy loss work on the CapsNet? Or FGSM with margin loss on CNN?
+DeepFool actually seems to be a bit better for ConvNets. But the strong CW-attack fools both architecture with similarly small perturbations (Odd comparison, because CW is targeted. Maybe I should have used a untargeted CW version...)
 
 \subsection{Visualizing Universal Perturbations}
 
