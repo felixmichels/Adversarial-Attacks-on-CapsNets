@@ -141,7 +141,7 @@ The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust R
 
 
 \subsection{DeepFool Attack}
-Deepfool is an untargeted white-box attack developed by Moosavi-Dezfooli eta al \cite{deepfool}.
+Deepfool is an untargeted white-box attack developed by Moosavi-Dezfooli et al. \cite{deepfool}.
 The authors found, that minimal adversarial perturbations for affine multiclass classifier can be computed exactly and quickly,
 by calculated the distance to the (linear) decision boundaries and making an orthogonal projection to the nearest one.
 Deepfool initializes $\delta \gets 0$ and then iteratively approximates $F$ with its first degree Taylor polynomial at $x + \delta$, computes a perturbation $\Delta \delta$ for this approximation as described above and updates $\delta \gets \delta + \Delta \delta$.
