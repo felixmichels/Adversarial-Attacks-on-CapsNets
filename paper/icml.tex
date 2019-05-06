@@ -116,7 +116,7 @@ Adversarial attacks can be performed in different settings: in the white-box set
 
 Throughout this paper we denote the input image as $x\in [0,1]^{n\times n}$, the neural network's output logits as $Z(x)$ and the perturbation as $\delta$. If $F(x)$ is the output of the network interpretable as probability, then
 $F(x) = \softmax (Z(x))$ in the case of the ConvNet and $Z(x) = \arctanh(2F(x) - 1)$ in the case of the CapsNet. We refer to the label assigned to $x$ by the networks as $C(x)$  and to the correct label of $x$ by $C^*(x)$. Furthermore, we denote the $i$-the entry of $Z(x)$ as $Z(x)_i$.
-%\subsection{Fast-Gradient-Sign-Method}
+
 \subsection{Carlini-Wagner Attack}
 
 The Carlini-Wagner (CW) attack \yrcite{carlini} is a targeted white-box attack and performed by solving the following constrained optimization problem
@@ -129,7 +129,7 @@ The Carlini-Wagner (CW) attack \yrcite{carlini} is a targeted white-box attack a
 \end{aligned}
 \end{equation}
 
-where $G(x,\delta,t) := \max_{i\neq t}(Z(x+\delta)_i), \kappa > 0$ controls the confidence and $c>0$. The optimal value for c (i.e. the smallest value, that results in an adversarial example) is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
+where $G(x,\delta,t) := \max_{i\neq t}(Z(x+\delta)_i)$ and $c>0$. The parameter  $\kappa > 0$ controls the confidence. The optimal value for $c$, i.e. the smallest value, that results in an adversarial example, is found using a binary search. To ensure the box-constraint on $x+\delta$ the authors suggested the following transform of variables 
 \begin{equation}
 \delta = \frac{1}{2}(\tanh(w)+1)-x,
 \end{equation} 
