@@ -169,10 +169,14 @@ Since this method depends on the FGSM \cite{fgsm} it is a white-box attack.
 \subsection{Datasets and Network Architectures}
 
 We train models on each of the following benchmark datasets: MNIST \cite{mnist}, Fashion-MNIST \cite{fashion}, SVHN \cite{svhn} and CIFAR-10 \cite{cifar}. Each dataset is divided into ten different classes. 
-As a baseline architecture we use a ConvNet which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training CapsNets is in practice rather difficult, we adapt different architectures for each datasets: Like Sabour et al. \yrcite{capsules} we use a three layer network for the MNIST dataset, where we only used 64 convolutional kernels in the first layer. For the Fashion-MNIST dataset we use two convolutional layers at the beginning and for the SVHN dataset we use two convolutional layers at the beginning, larger capsules and a larger reconstruction network. Since CapsNets have problems with more complex data \cite{complex}, we use a modified DCNet \cite{denseanddiverse} with three capsule layers and "none-of-the-above" category for the dynamic routing \cite{capsules} for the CIFAR-10 dataset.
+As a baseline architecture we use a ConvNet which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training CapsNets is in practice rather difficult, we adapt different architectures for each datasets:
+
+Like Sabour et al. \yrcite{capsules} we use a three layer network for the MNIST dataset, where we only used 64 convolutional kernels in the first layer. For the Fashion-MNIST and the SVHN dataset we use two convolutional layers at the beginning (32 and 32 channels with $3\times3$ filter for Fashion-MNIST, 64 and 256 channels with $5\times5$ filter for SVHN), followed by a convolutional capsule layer with 8D capsules, 32 $9\times9$ filter with a stride of 2, and finally a capsule layer with one 16D capsule per class. Since CapsNets have problems with more complex data like CIFAR10 \cite{complex}, we use a modified DCNet \cite{denseanddiverse} with three convolutional capsule layers and "none-of-the-above" category for the dynamic routing \cite{capsules} for this dataset.
 
 For each dataset we calculate $1000$ adversarial examples on images randomly chosen from the test set using the DeepFool attack and the boundary attack.
-For the Carlini-Wagner attack we calculate 500 adversarial examples again on random samples from the test set, where we chose the hyperparameter $\kappa = 1$. Target labels not equal to true label, otherwise random. To evaluate the performance of universal perturbation we split the test set in ten parts, compute ten adversarial perturbations on each part, where we stop once accuracy is below $50\%$. However, each perturbation is evaluated on the whole test set.
+For the Carlini-Wagner attack we calculate 500 adversarial examples again on random samples from the test set, where we chose the hyperparameter $\kappa = 1$. The target labels too are chosen at random, but different from the true labels. To evaluate the performance of universal perturbation we split the test set in ten parts and compute ten adversarial perturbations on each part. However, each universal perturbation is evaluated on the whole test set.
+
+None of the attacks restrict the norm of the perturbation. This means, the Carlini-Wagner, the Boundary and the DeepFool attack generate only valid adversarial examples. In the case of the universal perturbation, we stop once accuracy falls below 50\%.
 
 %\begin{itemize}
 %	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
@@ -184,8 +188,6 @@ For the Carlini-Wagner attack we calculate 500 adversarial examples again on ran
 \subsection{Results}
 
 We are aware of the fact that the test accuracies shown in Table \ref{tab:accuracies} of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of ConvNets and CapsNets ensure comparability. 
-
-In our experiments we were able to produce fooling rates of $100\%$ for all attacks except the universal attack. For the universal attack we stopped to update the perturbation once the test accuracy on the whole test set was below $50\%$.
 
 We also compare the average euclidean norm of the perturbation for each attack, dataset and network. The results are displayed in Table \ref{tab:norms}. Our main result is that applying the Carlini-Wagner attack on the CapsNets yields smaller adversarial perturbations than on the ConvNet. However, for most dataset we found that the DeepFool attack performs worse on the CapsNets.
 
