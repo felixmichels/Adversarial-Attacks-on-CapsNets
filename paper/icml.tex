@@ -96,7 +96,7 @@
 \end{abstract}
 
 \section{Introduction}
-Adversarial attacks change the input of machine learning models in a way that the model outputs a wrong result. For neural networks these attacks were first introduced by Goodfellow et al. \yrcite{fgsm} with alarming results. Recently capsule networks (CapsNets) \cite{capsules} have been shown to be a reasonable alternative to convolutional neural networks (ConvNets) in terms of classification performance. Frosst et al. \yrcite{darccc} state that CapsNets are more robust against white-box adversarial attacks than other architectures. Adversarial robustness of CapsNets has been previously studied by Marchisio et al. \yrcite{marchisio}, but with focus on the evaluation of their proposed attack. Also Peer et al. \yrcite{training} have briefly discussed the application of the fast gradient sign method (FGSM) \cite{fgsm} on CapsNets. Results of the FGSM on CapsNets using EM routing have been reported by Hinton et al. \yrcite{em}. We want to focus on CapsNets trained using the more commonly used dynamic routing algorithm. Detecting adversarial examples using the reconstruction quality of the CapsNets has been investigated by Frosst et al. \yrcite{darccc}. 
+Adversarial attacks change the input of machine learning models in a way that the model outputs a wrong result. For neural networks these attacks were first introduced by Goodfellow et al. \yrcite{fgsm} with alarming results. Recently capsule networks (CapsNets) \cite{capsules} have been shown to be a reasonable alternative to convolutional neural networks (ConvNets). Frosst et al. \yrcite{darccc} state that CapsNets are more robust against white-box adversarial attacks than other architectures. Adversarial robustness of CapsNets has been previously studied by Marchisio et al. \yrcite{marchisio}, but with focus on the evaluation of their proposed attack. Also Peer et al. \yrcite{training} have briefly discussed the application of the fast gradient sign method (FGSM) \cite{fgsm} on CapsNets. Results of the FGSM on CapsNets using EM routing have been reported by Hinton et al. \yrcite{em}. We want to focus on CapsNets trained using the more commonly used dynamic routing algorithm. Detecting adversarial examples using the reconstruction quality of the CapsNets has been investigated by Frosst et al. \yrcite{darccc}. 
 
 In this work we compare the results of four different attacks on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. We will show that CapsNets are in general not more robust to adversarial attacks than ConvNets.
 
@@ -230,8 +230,8 @@ The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust R
 
 \subsection{DeepFool Attack}
 Deepfool is an untargeted white-box attack developed by
-Moosavi-Dezfooli et al. \yrcite{deepfool}.  The authors found, that
-minimal adversarial perturbations for affine multiclass classifier can
+Moosavi-Dezfooli et al. \yrcite{deepfool}.  The authors found that
+minimal adversarial perturbations for affine multiclass classifiers can
 be computed exactly and quickly, by calculating the distance to the
 (linear) decision boundaries and making an orthogonal projection to
 the nearest boundary.  Deepfool initializes $\delta^{(0)} \gets 0$ and then
@@ -298,7 +298,7 @@ We are aware of the fact that the test accuracies shown in Tab.~\ref{tab:accurac
 \end{table}
 
 
-We also compare the average Euclidean norm of the perturbation for each attack, dataset and network. The results are displayed in Tab.~\ref{tab:norms}. Our main result is that applying the Carlini-Wagner attack on the CapsNets yields smaller adversarial perturbations than on the ConvNet. Nevertheless, for most dataset we found that the DeepFool attack performs worse on the CapsNets.
+We also compare the average Euclidean norm of the perturbation for each attack, dataset and network. The results are displayed in Tab.~\ref{tab:norms}. Our main result is that applying the Carlini-Wagner attack on the CapsNets yields smaller adversarial perturbations than on the ConvNet. Nevertheless, for most of the dataset we found that the DeepFool attack performs worse on the CapsNets.
 
 To compare the transferability of adversarial examples we calculate
 perturbations on the ConvNet and apply those to the CapsNet and vice
