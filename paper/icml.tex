@@ -96,14 +96,14 @@
 \end{abstract}
 
 \section{Introduction}
-Adversarial attacks change the input of machine learning models in a way that the model outputs a wrong result. For neural networks these attacks were first introduced by Goodfellow et al. \yrcite{fgsm} with alarming results. Recently capsule networks (CapsNets) \cite{capsules} have been shown to be a reasonable alternative to convolutional neural networks (ConvNets) in terms of classification performance. Frosst et al. \yrcite{darccc} state that CapsNets are more robust against white-box adversarial attacks than other architectures. Adversarial attacks on CapsNets have been previously studied by Marchisio et al. \yrcite{marchisio}, but they focus on the evaluation of their proposed attack. Also Peer et al. \yrcite{training} have briefly discussed the application of the fast gradient sign method (FGSM) \cite{fgsm} on CapsNets. Results of the FGSM on CapsNets using EM routing have been reported by Hinton et al. \yrcite{em}. We want to focus on CapsNets trained using the more commonly used dynamic routing algorithm. Detecting adversarial examples using the reconstruction quality of the CapsNets has been investigated by Frosst et al. \yrcite{darccc}. 
+Adversarial attacks change the input of machine learning models in a way that the model outputs a wrong result. For neural networks these attacks were first introduced by Goodfellow et al. \yrcite{fgsm} with alarming results. Recently capsule networks (CapsNets) \cite{capsules} have been shown to be a reasonable alternative to convolutional neural networks (ConvNets) in terms of classification performance. Frosst et al. \yrcite{darccc} state that CapsNets are more robust against white-box adversarial attacks than other architectures. Adversarial robustness of CapsNets has been previously studied by Marchisio et al. \yrcite{marchisio}, but with focus on the evaluation of their proposed attack. Also Peer et al. \yrcite{training} have briefly discussed the application of the fast gradient sign method (FGSM) \cite{fgsm} on CapsNets. Results of the FGSM on CapsNets using EM routing have been reported by Hinton et al. \yrcite{em}. We want to focus on CapsNets trained using the more commonly used dynamic routing algorithm. Detecting adversarial examples using the reconstruction quality of the CapsNets has been investigated by Frosst et al. \yrcite{darccc}. 
 
-In this work we compare the results of four different attack on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. We will show that CapsNets are in general not more robust to adversarial attacks than ConvNets.
+In this work we compare the results of four different attacks on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. We will show that CapsNets are in general not more robust to adversarial attacks than ConvNets.
 
 Our paper is structured as followed: in Sec.~\ref{lab:capsules} we
 recapitulate the idea of CapsNets and the dynamic routing algorithm
 \cite{capsules}. In Sec.~\ref{lab:attacks} we describe the attacks
-we compared for CapsNets. Sec.~\ref{lab:experiments} summarizes the our experiments and our results.
+we compared for CapsNets. Sec.~\ref{lab:experiments} summarizes our experiments and our results.
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
@@ -159,7 +159,7 @@ The idea of the boundary attack as introduced by Brendel et
 al. \yrcite{boundary} is to sample a perturbation which leads to a
 missclassification of the original image $x^{(0)}:=x$. Additionally,
 the desired perturbation should have the smallest possible norm. The
-initial perturbation $\delta^{(0)}$ is component\-wise sampled from a
+initial perturbation $\delta^{(0)}$ is sampled component\-wise from a
 uniform distribution $\delta^{(0)}_{ij}\sim \mathcal{U}(0,1)$. Initial
 perturbations, which are not missclassified, are rejected. During the
 attack adversarial images are constructed iteratively
@@ -305,7 +305,7 @@ perturbations on the ConvNet and apply those to the CapsNet and vice
 versa (see Tab.~\ref{tab:attacks}). In case of the (targeted) Carlini-Wagner attack we define a network \emph{fooled} if the perturbed image is classified with the target label. For the Carlini-Wagner attack, the Boundary attack and the DeepFool attack our results fit to those displayed in Tab.~\ref{tab:norms}. Especially the perturbations calculated using the universal attack seem to generalize well on the other architecture. For this attack we also found out that the smaller perturbations calculated on the ConvNet can be successfully transferred to CapsNets, while the other way around this approach was less effective, although the norms of the perturbations for the CapsNets are very large.
 
 The adversarial examples for the CapsNets calculated with the
-Carlini-Wagner attack, the boundary and the DeepFool attack are not
+Carlini-Wagner, the boundary and the DeepFool attack are not
 visible for the human eye. Only the universal perturbations are
 observable (see Fig.~\ref{tab:images}).
 
@@ -348,7 +348,7 @@ white-box attacks. With sufficiently sophisticated attacks CapsNets
 can be fooled as easily as ConvNets.  Our experiments also show that
 the vulnerability of CapsNets and ConvNets is similar and it is hard
 to decide which model is more prone to adversarial attacks than the
-other. Moreover, we showed that adversarial examples can be transfered
+other. Moreover, we showed that adversarial examples can be transferred
 between the two architectures.
 
 
