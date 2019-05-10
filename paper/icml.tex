@@ -116,8 +116,8 @@ by Frosst et al. \yrcite{darccc}. Also Peer et al. \yrcite{training}
 have briefly discussed the application of the fast gradient sign
 method (FGSM) \cite{fgsm} on CapsNets. Hinton et al. \yrcite{em}
 report results of the FGSM on CapsNets using EM routing.  Another
-established approach for CapsnNets is the dynamic routing algorithm
-(\cite{capsules}).
+established approach for CapsNets is the dynamic routing algorithm
+\cite{capsules}.
 
 In this paper, we will focus on these variants of CapsNets and
 investigate their robustness against common adversarial attacks.  In
@@ -127,9 +127,8 @@ of adversarial perturbations. We will show that CapsNets are in
 general not more robust to adversarial attacks than ConvNets.
 
 Our paper is structured as followed: in Sec.~\ref{lab:capsules} we
-recapitulate the idea of CapsNets and the dynamic routing algorithm
-\cite{capsules}. In Sec.~\ref{lab:attacks} we describe the attacks
-we compared for CapsNets. Sec.~\ref{lab:experiments} summarizes our experiments and our results.
+recapitulate the idea of CapsNets and the dynamic routing algorithm. In Sec.~\ref{lab:attacks} we describe the attacks
+we apply to CapsNets. We summarize our experiments and results in  Sec.~\ref{lab:experiments}.
 
 \section{Capsule Networks and Dynamic Routing}
 \label{lab:capsules}
@@ -410,6 +409,9 @@ the vulnerability of CapsNets and ConvNets is similar and it is hard
 to decide which model is more prone to adversarial attacks than the
 other. Moreover, we showed that adversarial examples can be transferred
 between the two architectures.
+
+%Future work could investigate the activations of the different layers to determine which are particularly susceptible to the attacks.
+To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this paper.
 
 
 
