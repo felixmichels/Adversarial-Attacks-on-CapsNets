@@ -34,7 +34,7 @@
 
 
 % Use the following line for the initial blind version submitted for review:
-\usepackage[accepted]{icml2019}
+\usepackage{icml2019}
 
 % If accepted, instead use the following line for the camera-ready submission:
 %\usepackage[accepted]{icml2019}
@@ -69,13 +69,13 @@
 \icmlauthor{Stefan Harmeling}{hhu}
 \end{icmlauthorlist}
 
-\icmlaffiliation{hhu}{Department of Computer Science, Heinrich-Heine-Universit\"at D\"usseldorf, D\"usseldorf, Germany}
-\icmlaffiliation{fzj}{Institute of Neuroscience and Medicine INM-1, Forschungszentrum J\"ulich, J\"ulich, Germany}
+\icmlaffiliation{hhu}{Department of Computer Science, Heinrich-Heine-Universit\"at D\"usseldorf, Germany}
+\icmlaffiliation{fzj}{Institute of Neuroscience and Medicine INM-1, Forschungszentrum J\"ulich, Germany}
 
 \icmlcorrespondingauthor{Felix Michels}{felix.michels@hhu.de}
 \icmlcorrespondingauthor{Tobias Uelwer}{tobias.uelwer@hhu.de}
 \icmlcorrespondingauthor{Eric Upschulte}{e.upschulte@fz-juelich.de}
-\icmlcorrespondingauthor{Stefan Harmeling}{stefan.harmeling@hhu.de}
+\icmlcorrespondingauthor{Stefan Harmeling}{harmeling@hhu.de}
 
 % You may provide any keywords that you
 % find helpful for describing your paper; these are used to populate
@@ -103,7 +103,7 @@
 \section{Introduction}
 Adversarial attacks change the input of machine learning models in a way that the model outputs a wrong result. For neural networks these attacks were first introduced by Goodfellow et al. \yrcite{fgsm} with alarming results. Recently capsule networks (CapsNets) \cite{capsules} have been shown to be a reasonable alternative to convolutional neural networks (ConvNets). Frosst et al. \yrcite{darccc} state that CapsNets are more robust against white-box adversarial attacks than other architectures. Adversarial robustness of CapsNets has been previously studied by Marchisio et al. \yrcite{marchisio}, but with focus on the evaluation of their proposed attack. Detecting adversarial examples using the reconstruction quality of the CapsNets has been investigated by Frosst et al. \yrcite{darccc}. Also Peer et al. \yrcite{training} have briefly discussed the application of the fast gradient sign method (FGSM) \cite{fgsm} on CapsNets. Results of the FGSM on CapsNets using EM routing have been reported by Hinton et al. \yrcite{em}. We want to focus on CapsNets trained using the more commonly used dynamic routing algorithm. 
 
-In this work we compare the results of four different attacks on capsule networks trained on different datasets and examine the transferability of adversarial perturbations. We will show that CapsNets are in general not more robust to adversarial attacks than ConvNets.
+In this work we compare the results of four different attacks on CapsNets trained on different datasets and examine the transferability of adversarial perturbations. We will show that CapsNets are in general not more robust to adversarial attacks than ConvNets.
 
 Our paper is structured as followed: in Sec.~\ref{lab:capsules} we
 recapitulate the idea of CapsNets and the dynamic routing algorithm
@@ -114,7 +114,7 @@ we compared for CapsNets. Sec.~\ref{lab:experiments} summarizes our experiments 
 \label{lab:capsules}
 The concept of vector capsules and the dynamic routing algorithm was proposed by Sabour et al. \yrcite{capsules}. In an essence, neurons are grouped into vectors, so-called capsules. Each capsule vector is dedicated to a distinct abstract entity, i.e. a single object class in a classification setting. The norm of a capsule vector encodes the probability of the represented object being present in the input, while the vector orientation encodes the object's characteristics. Thus, CapsNets aim to develop dedicated representations that are distributed into multiple vectors in contrast to convolutional networks that utilize an entangled representation in a single vector at a given location. This allows the application of linear transformations directly to the representations of respective entities. Spatial relations, which can be implemented as a matrix product, can thus be modeled more efficiently.
 
-CapsNets are organized in layers. Initially, the original CapsNet applies a convolutional layer. The resulting feature maps are then processed by the so-called the primary capsule layer. Internally, it applies a series of convolutional layers on its own, each yielding a spatial grid of capsules. Within all capsule layers the \textit{squashing} function serves as a vector-to-vector non-linearity that squashes each capsule vector length between 0 and 1 while leaving the orientation unaltered. Subsequently, convolutional or densely connected capsule layers can be applied. While the latter does not utilize weight sharing, convolutional capsule layers share the kernels over the spatial grid, as well as capsules from the previous layer. These layers effectively estimate output capsules based on respective input capsules. The dynamic routing algorithm determines each agreement between estimate and iteratively calculated output capsule. This is done by introducing a scalar factor, the so-called routing coefficient, for each connection between an estimate and respective output. Such an output is defined as the sum over all respective estimates, weighted by their routing coefficients. Theoretically, that means information flows where it is needed, both during forward and backpropagation. This non-parametric procedure supports the goal of capsules with clean dedicated representations. To improve results, an additional capsule may be used within the routing algorithm to serve as a dead end for information that may not be linked to known abstract capsule categories. This is also referred to as the \emph{none-of-the-above} category.
+CapsNets are organized in layers. Initially, the original CapsNet applies a convolutional layer. The resulting feature maps are then processed by the primary capsule layer. Internally, it applies a series of convolutional layers on its own, each yielding a spatial grid of capsules. Within all capsule layers the \textit{squashing} function serves as a vector-to-vector non-linearity that squashes each capsule vector length between $0$ and $1$ while leaving the orientation unaltered. Subsequently, convolutional or densely connected capsule layers can be applied. While the latter does not utilize weight sharing, convolutional capsule layers share the kernels over the spatial grid, as well as capsules from the previous layer. These layers effectively estimate output capsules based on respective input capsules. The dynamic routing algorithm determines each agreement between estimate and iteratively calculated output capsule. This is done by introducing a scalar factor, the so-called routing coefficient, for each connection between an estimate and respective output. Such an output is defined as the sum over all respective estimates, weighted by their routing coefficients. Theoretically, that means information flows where it is needed, both during forward and backpropagation. This non-parametric procedure supports the goal of capsules with clean dedicated representations. To improve results, an additional capsule may be used within the routing algorithm to serve as a dead end for information that may not be linked to known abstract capsule categories. This is also referred to as the \emph{none-of-the-above} category.
 
 \section{Adversarial Attacks}
 \label{lab:attacks}
@@ -190,17 +190,17 @@ The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust R
 				\toprule
 				Attack & Network       & MNIST & Fashion & SVHN & CIFAR10  \\
 				\midrule
-				\multirow{2}{*}{CW} & ConvNet & {1.40} & 0.51 & 0.67 & 0.37 \\
-				& CapsNet            & 1.82 & {0.50} & {0.60} & {0.23} \\
+				\multirow{2}{*}{CW} & ConvNet & {$1.40$} & $0.51$ & $0.67$ & $0.37$ \\
+				& CapsNet            & $1.82$ & {$0.50$} & {$0.60$} & {$0.23$} \\
 				\midrule
-				\multirow{2}{*}{Boundary} & ConvNet & {3.07} & 1.24 & 2.42 & 1.38 \\
-				& CapsNet            & 3.26 & {0.93} & {1.88} & {0.72} \\
+				\multirow{2}{*}{Boundary} & ConvNet & {$3.07$} & $1.24$ & $2.42$ & $1.38$ \\
+				& CapsNet            & $3.26$ & {$0.93$} & {$1.88$} & {$0.72$} \\
 				\midrule
-				\multirow{2}{*}{DeepFool} & ConvNet & {1.07} & {0.31} & {0.41} & 0.23 \\
-				& CapsNet           & 2.02 & 0.55 & 0.80 & {0.16} \\
+				\multirow{2}{*}{DeepFool} & ConvNet & {$1.07$} & {$0.31$} & {$0.41$} & $0.23$ \\
+				& CapsNet           & $2.02$ & $0.55$ & $0.80$ & {$0.16$} \\
 				\midrule
-				\multirow{2}{*}{Universal} & ConvNet & {6.71} & {2.61} & {2.46} & {2.45} \\
-				& CapsNet           & 11.45 & 5.31 & 8.59 & 2.70 \\
+				\multirow{2}{*}{Universal} & ConvNet & {$6.71$} & {$2.61$} & {$2.46$} & {$2.45$} \\
+				& CapsNet           & $11.45$ & $5.31$ & $8.59$ & $2.70$ \\
 				\bottomrule\\
 		\end{tabular}}
 		\label{tab:norms}
@@ -213,17 +213,17 @@ The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust R
 				\toprule
 				Attack & Network       & MNIST & Fashion & SVHN & CIFAR10  \\
 				\midrule
-				\multirow{2}{*}{CW} & ConvNet & 0.8\% & 1.2\% & 2.8\% & 2.4\% \\
-				& CapsNet            & 2.0\% & 2.0\% & 3.8\% & 2.0\% \\
+				\multirow{2}{*}{CW} & ConvNet & $0.8\%$ & $1.2\%$ & $2.8\%$ & $2.4\%$ \\
+				& CapsNet            & $2.0\%$ & $2.0\%$ & $3.8\%$ & $2.0\%$ \\
 				\midrule
-				\multirow{2}{*}{Boundary} & ConvNet & 8.8\% & 9.5\% & 10.5\% & 13.4\% \\
-				& CapsNet            & 14.2\% & 14.6\% & 12.9\% & 26.1\% \\
+				\multirow{2}{*}{Boundary} & ConvNet & $8.8\%$ & $9.5\%$ & $10.5\%$ & $13.4\%$ \\
+				& CapsNet            & $14.2\%$ & $14.6\%$ & $12.9\%$ & $26.1\%$ \\
 				\midrule
-				\multirow{2}{*}{DeepFool} & ConvNet & 4.3\% & 8.5\% & 13.5\% & 11.8\% \\
-				& CapsNet           & 0.9\% & 10.9\% & 10.8\% & 14.1\% \\
+				\multirow{2}{*}{DeepFool} & ConvNet & $4.3\%$ & $8.5\%$ & $13.5\%$ & $11.8\%$ \\
+				& CapsNet           & $0.9\%$ & $10.9\%$ & $10.8\%$ & $14.1\%$ \\
 				\midrule
-				\multirow{2}{*}{Universal} & ConvNet & 4.9\% & 20.4\% & 35.0\% & 25.9\% \\
-				& CapsNet           & 38.2\% & 25.7\% & 53.4\% & 47.2\% \\
+				\multirow{2}{*}{Universal} & ConvNet & $4.9\%$ & $20.4\%$ & $35.0\%$ & $25.9\%$ \\
+				& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 				\bottomrule\\
 		\end{tabular}}
 		\label{tab:attacks}\end{minipage}
@@ -231,12 +231,12 @@ The parameters $\gamma$ and $\nu$ are adjusted dynamically, similarly to Trust R
 
 
 \subsection{DeepFool Attack}
-Deepfool is an untargeted white-box attack developed by
+DeepFool is an untargeted white-box attack developed by
 Moosavi-Dezfooli et al. \yrcite{deepfool}.  The authors found that
 minimal adversarial perturbations for affine multiclass classifiers can
 be computed exactly and quickly, by calculating the distance to the
 (linear) decision boundaries and making an orthogonal projection to
-the nearest boundary.  Deepfool initializes $\delta^{(0)} \gets 0$ and then
+the nearest boundary.  DeepFool initializes $\delta^{(0)} \gets 0$ and then
 iteratively approximates $F$ with its first degree Taylor polynomial
 at $x + \delta^{(k)}$, computes a perturbation $\Delta \delta^{(k)}$
 for this approximation as described above and updates
@@ -266,12 +266,12 @@ Since this method depends on the FGSM it is a white-box attack.
 
 We train models on each of the following benchmark datasets: MNIST \cite{mnist}, Fashion-MNIST \cite{fashion}, SVHN \cite{svhn} and CIFAR-10 \cite{cifar}. Each dataset is divided into ten different classes. As a baseline architecture we use a ConvNet which we trained on each of the datasets while using batch-normalization \cite{batchnorm} and dropout \cite{dropout}. Since training CapsNets is in practice rather difficult, we adapt different architectures for each datasets:
 
-Like Sabour et al. \yrcite{capsules} we use a three layer CapsNet for the MNIST dataset, where we only used $64$ convolutional kernels in the first layer. For the Fashion-MNIST and the SVHN dataset we use two convolutional layers at the beginning (32 and 32 channels with $3\times3$ filter for Fashion-MNIST, 64 and 256 channels with $5\times5$ filter for SVHN), followed by a convolutional capsule layer with 8D capsules, 32 filter with size $9\times9$ and a stride of 2, and finally a capsule layer with one 16D capsule per class. Since CapsNets have problems with more complex data like CIFAR10 \cite{complex}, we use a modified DCNet \cite{denseanddiverse} with three convolutional capsule layers and none-of-the-above category for the dynamic routing \cite{capsules} for this dataset.
+Like Sabour et al. \yrcite{capsules} we use a three layer CapsNet for the MNIST dataset, where we only used $64$ convolutional kernels in the first layer. For the Fashion-MNIST and the SVHN dataset we use two convolutional layers at the beginning ($32$ and $32$ channels with $3\times3$ filter for Fashion-MNIST, $64$ and $256$ channels with $5\times5$ filter for SVHN), followed by a convolutional capsule layer with $8$D capsules, $32$ filter with size $9\times9$ and a stride of $2$, and finally a capsule layer with one 16D capsule per class. Since CapsNets have problems with more complex data like CIFAR10 \cite{complex}, we use a modified DCNet \cite{denseanddiverse} with three convolutional capsule layers and none-of-the-above category for the dynamic routing for this dataset. We train all CapsNet architectures using the margin loss and the reconstruction loss for regularization \cite{capsules}.
 
-For each dataset we calculate 1000 adversarial examples on images randomly chosen from the test set using the DeepFool attack and the boundary attack.
-For the Carlini-Wagner attack we calculate 500 adversarial examples again on random samples from the test set, where we chose the hyperparameter $\kappa = 1$. The target labels too are chosen at random, but different from the true labels. To evaluate the performance of universal perturbation we split the test set in ten parts and compute ten adversarial perturbations according to the procedure described in Sec.~\ref{sec:universal} on each part.
+For each dataset we calculate $1000$ adversarial examples on images randomly chosen from the test set using the DeepFool attack and the boundary attack.
+For the Carlini-Wagner attack we calculate $500$ adversarial examples again on random samples from the test set, where we chose the hyperparameter $\kappa = 1$. The target labels too are chosen at random, but different from the true labels. To evaluate the performance of universal perturbation we split the test set in ten parts and compute ten adversarial perturbations according to the procedure described in Sec.~\ref{sec:universal} on each part.
 
-None of the attacks restrict the norm of the perturbation. This means, the Carlini-Wagner, the boundary and the DeepFool attack generate only valid adversarial examples. In the case of the universal perturbation, we stop once accuracy falls below 50\%.
+None of the attacks restrict the norm of the perturbation. This means, the Carlini-Wagner, the boundary and the DeepFool attack generate only valid adversarial examples. In the case of the universal perturbation, we stop once accuracy falls below $50\%$.
 
 %\begin{itemize}
 %	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
@@ -292,8 +292,8 @@ We are aware of the fact that the test accuracies shown in Tab.~\ref{tab:accurac
 			\toprule
 			Network       & MNIST & Fashion-MNIST & SVHN & CIFAR10  \\
 			\midrule
-			ConvNet           & 99.39\% & 92.90\% & 92.57\% & 88.22\% \\
-			CapsNet           & 99.40\% & 92.65\% & 92.35\% & 88.21\% \\
+			ConvNet           & $99.39\%$ & $92.90\%$ & $92.57\%$ & $88.22\%$ \\
+			CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
 			\bottomrule\\
 	\end{tabular}}
 	\label{tab:accuracies}
@@ -304,7 +304,7 @@ We also compare the average Euclidean norm of the perturbation for each attack, 
 
 To compare the transferability of adversarial examples we calculate
 perturbations on the ConvNet and apply those to the CapsNet and vice
-versa (see Tab.~\ref{tab:attacks}). In case of the (targeted) Carlini-Wagner attack we define a network \emph{fooled} if the perturbed image is classified with the target label. For the Carlini-Wagner attack, the Boundary attack and the DeepFool attack our results fit to those displayed in Tab.~\ref{tab:norms}. Especially the perturbations calculated using the universal attack seem to generalize well on the other architecture. For this attack we also found out that the smaller perturbations calculated on the ConvNet can be successfully transferred to CapsNets, while the other way around this approach was less effective, although the norms of the perturbations for the CapsNets are very large.
+versa (see Tab.~\ref{tab:attacks}). In case of the (targeted) Carlini-Wagner attack we define a network \emph{fooled} if the perturbed image is classified with the target label. For the Carlini-Wagner attack, the boundary attack and the DeepFool attack our results fit to those displayed in Tab.~\ref{tab:norms}. Especially the perturbations calculated using the universal attack seem to generalize well on the other architecture. For this attack we also found out that the smaller perturbations calculated on the ConvNet can be successfully transferred to CapsNets, while the other way around this approach was less effective, although the norms of the perturbations for the CapsNets are very large.
 
 The adversarial examples for the CapsNets calculated with the
 Carlini-Wagner, the boundary and the DeepFool attack are not
