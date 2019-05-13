@@ -19,7 +19,7 @@ print(cnn_perturbations.shape)
 perturbations = np.vstack([caps_perturbations, cnn_perturbations])
 print(perturbations.shape)
 
-perurbations = (perturbations.T/np.linalg.norm(perturbations, axis=1)).T
+perturbations = (perturbations.T/np.linalg.norm(perturbations, axis=1)).T
 
 t = TSNE(n_components=2, random_state=1234)
 output = t.fit_transform(perturbations)

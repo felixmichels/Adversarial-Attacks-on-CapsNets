@@ -159,6 +159,6 @@ def _binary_search_min(func, init_c, max_iter=10):
         c = c_max
 
     # Return slightly larger c for safety
-    if c is not None:
+    if c_max is not None:
         c += 1e-3*(c_max - c_min)
         return c + 1e-3*(c_max - c_min)
