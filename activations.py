@@ -15,6 +15,8 @@ _io_dict = {}
 def register_io(a):
     scope = tf.get_default_graph().get_name_scope()
     scope = scope.split('/')
+    # don't need unnecessary scopes,
+    # model name and conscruct (encoder/decoder is enough)
     scope = '_'.join([scope[0], scope[-1]])
     _io_dict[scope] = a
 
@@ -23,6 +25,10 @@ def _nice_tensor_name(v):
     name = getattr(v, 'name', 'unknown_object')
     name = name.split('/')[-2:]
     name = '_'.join(name)
+    # Number at the beginning is enough,
+    # delete the rest
+    name = name[:name.rfind(':')]
+
     return name
 
 
@@ -59,7 +65,7 @@ tc.layers.new_io = new_io_with_act
 def save_activations(sess, feed_dict, directory='.', file_prefix=''):
     activations = sess.run(get_ios(), feed_dict=feed_dict)
 
-    for scope, acts in activations:
+    for scope, acts in activations.items():
         file = os.path.join(directory, file_prefix + scope)
         np.savez(file, **acts)
 
@@ -80,9 +86,9 @@ def attack_activations(sess, attack_name, dataset, model):
     directory = get_dir(cfg.data_dir, dataset.name, attack_name, 'activations')
 
     tf.logging.info('Measuring originals')
-    save_activations(sess, feed_dict={model.img: orig}, directory=directory, file_prefix='original_')
+    save_activations(sess, feed_dict={model.img: orig, model.label: [0]}, directory=directory, file_prefix='original_')
     tf.logging.info('Measuring adversarial examples')
-    save_activations(sess, feed_dict={model.img: adv}, directory=directory, file_prefix='adversarial_')
+    save_activations(sess, feed_dict={model.img: adv, model.label: [0]}, directory=directory, file_prefix='adversarial_')
 
 
 def main(args):
