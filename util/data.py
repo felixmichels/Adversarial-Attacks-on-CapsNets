@@ -176,4 +176,6 @@ def get_adv(model_name, attack_name, dataset_name):
     """
     att_dir = os.path.join(cfg.data_dir, dataset_name, attack_name, model_name)
     adv_files = [f for f in os.listdir(att_dir) if f.endswith('.npy')]
-    return np.concatenate([np.load(os.path.join(att_dir, f)) for f in adv_files])
+    adv_files = [os.path.join(att_dir, f) for f in adv_files]
+    tf.logging.debug('Loading adversarial examples from %s', adv_files)
+    return np.concatenate([np.load(f) for f in adv_files])

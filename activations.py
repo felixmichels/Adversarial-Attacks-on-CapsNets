@@ -65,6 +65,8 @@ def save_activations(sess, feed_dict, directory='.', file_prefix=''):
 
 
 def attack_activations(sess, attack_name, dataset, model):
+    tf.logging.info('Activations for %s', attack_name)
+
     orig, _ = get_attack_original(attack_name, dataset)
     adv = get_adv(model.name, attack_name, dataset.name)
 
@@ -75,9 +77,11 @@ def attack_activations(sess, attack_name, dataset, model):
     else:
         adv = adv[:cfg.batch_size]
 
-    directory = get_dir(cfg.data_dir, dataset.name, cfg.attack_name, 'activations')
+    directory = get_dir(cfg.data_dir, dataset.name, attack_name, 'activations')
 
+    tf.logging.info('Measuring originals')
     save_activations(sess, feed_dict={model.img: orig}, directory=directory, file_prefix='original_')
+    tf.logging.info('Measuring adversarial examples')
     save_activations(sess, feed_dict={model.img: adv}, directory=directory, file_prefix='adversarial_')
 
 
