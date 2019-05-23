@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 import __main__
 
@@ -19,7 +20,7 @@ flags.DEFINE_boolean('restore', False, 'If true, restore from last checkpoint')
 
 flags.DEFINE_string('ckpt_dir', 'ckpt', 'checkpoint directory')
 flags.DEFINE_string('model_pck', 'models', 'package name of models')
-flags.DEFINE_string('data_dir', 'data', 'directory for generated perturbations')
+flags.DEFINE_string('../data_dir', 'data', 'directory for generated perturbations')
 flags.DEFINE_string('log_dir', 'logdir', 'directory for graphs and summaries')
 flags.DEFINE_string('dataset_dir', 'datasets', 'directory for training/test data')
 flags.DEFINE_string('param_dir', 'parameters', 'directory for (hyper-)parameters')
@@ -42,8 +43,12 @@ flags.DEFINE_string('extra_cfg', '', 'extra config files')
 
 if _is_interactive():
     flags.DEFINE_string('f', '', 'kernel')
+else:
+    code_dir = os.path.dirname(os.path.realpath(__main__.__file__))
+    os.chdir(code_dir)
 
 cfg = flags.FLAGS
+
 
 if cfg.test:
     cfg.epochs = 0
