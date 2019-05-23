@@ -1,4 +1,5 @@
 import os
+import sys
 import tensorflow as tf
 import __main__
 
@@ -20,7 +21,7 @@ flags.DEFINE_boolean('restore', False, 'If true, restore from last checkpoint')
 
 flags.DEFINE_string('ckpt_dir', 'ckpt', 'checkpoint directory')
 flags.DEFINE_string('model_pck', 'models', 'package name of models')
-flags.DEFINE_string('../data_dir', 'data', 'directory for generated perturbations')
+flags.DEFINE_string('data_dir', '../data', 'directory for generated perturbations')
 flags.DEFINE_string('log_dir', 'logdir', 'directory for graphs and summaries')
 flags.DEFINE_string('dataset_dir', 'datasets', 'directory for training/test data')
 flags.DEFINE_string('param_dir', 'parameters', 'directory for (hyper-)parameters')
@@ -46,6 +47,9 @@ if _is_interactive():
 else:
     code_dir = os.path.dirname(os.path.realpath(__main__.__file__))
     os.chdir(code_dir)
+    tfcaps_dir = os.path.join(code_dir, 'tensorflow-capsules')
+    sys.path.append(tfcaps_dir)
+
 
 cfg = flags.FLAGS
 
@@ -78,7 +82,7 @@ def load_config(mod_name, optional=False):
         _load_config(mod_name)
     
 
-mod_name = __main__.__file__[:-3] if not _is_interactive() else 'default'
+mod_name = __main__.__file__.split('/')[-1][:-3] if not _is_interactive() else 'default'
 load_config(mod_name, optional=True)
 
 if cfg.extra_cfg != '':
