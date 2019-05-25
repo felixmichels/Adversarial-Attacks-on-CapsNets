@@ -45,6 +45,13 @@
 \usepackage[colorlinks,citecolor=blue,linkcolor=black]{hyperref} %anklickbares Inhaltsverzeichnis
 \usepackage[style=authoryear,natbib=true,backend=biber,mincitenames=1,maxcitenames=2,maxbibnames=99,uniquelist=false,dashed=false]{biblatex}
 
+%% Extra packages
+%% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\DeclareMathOperator*{\minimize}{minimize}
+
 % https://tex.stackexchange.com/a/334703/8850
 \AtEveryBibitem{%
   \clearfield{issn}

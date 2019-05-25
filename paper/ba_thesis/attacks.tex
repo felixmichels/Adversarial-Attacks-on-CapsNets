@@ -1,0 +1,49 @@
+% !TeX root = ba.tex
+
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
+
+\section{Adversarial Attacks}
+- Explain what adversarial attacks are \\
+- Different attack settings
+
+\subsection{Carlini-Wagner Attack}
+
+Carlini and Wagner extensively evaluated a wide range of adversarial attacks \cite{carlini}.
+In particular they developed the following white-box, targeted attack, that will be referred to as the Carilini-Wagner (CW) attack.
+
+Starting with the general problem for targeted attacks
+
+\begin{equation}
+\begin{aligned}
+& \minimize_{\delta} && \norm{\delta} \\
+& \text{subject to} && C(x + \delta) = t \\
+& && x + \delta \in [0,1]^n
+\end{aligned}
+\end{equation}
+
+Using lagrangian relaxation, this is transformed to
+
+\begin{equation}
+\begin{aligned}
+& \minimize_{\delta} && \norm{\delta} + c \cdot f(x + \delta)\\
+& \text{subject to} && x + \delta \in [0,1]^n
+\end{aligned}
+\end{equation}
+
+where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e. a function with the property, that
+$f(x + \delta) \leq 0$ if and only if $C(x + \delta) = t$.
+There are many possible objective functions, but a particularly good choice is
+$f(x') = \max \{ \max \{Z(x')_i : i \neq t \} - Z(x')_t, -\kappa \}$.
+% TODO Sounds weird...
+The \emph{confidence parameter} $\kappa$ determines, how close to the decision boundary the adversarial example is.
+The optimal value for $c$ is the smallest value, that results in an adversarial example and is found using a binary search.
+
+This box-constrained problem can further be simplified by introducing the variable $w \in \mathbb{R}^n$ and setting $\delta_i = \frac{1}{2} (\tanh(w_i) + 1)$.
+This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam (\cite{adam}) optimizer.
+
+The Carlini-Wagner attack is generally a quite strong attack and leads to almost undetectable adversarial examples.
+% TODO citation
+In particular, it can find adversarial examples even when defensive techniques like distillation are utilized \cite{carlini}.
+However, due to the binary search it can often be quite slow.
+
+\subsection{Boundary Attack}
