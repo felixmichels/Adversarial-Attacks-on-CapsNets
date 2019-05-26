@@ -3,13 +3,31 @@
 \newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
 
 \section{Adversarial Attacks}
-- Explain what adversarial attacks are \\
-- Different attack settings
+
+\todo{Explain potential dangers due to attacks}
+In general adversarial attacks describe any techniques, that cause machine learning models to perform poorly.
+While adversarial attacks exist for a wide variety of applications like speech recognition or natural language processing, this work will concentrate on adversarial attacks on image classification tasks.
+In particular \emph{adversarial examples} refer to modified images which are very close to some original image, but are classified differently by the model.
+The \emph{adversarial perturbation} is the difference between the adversarial example and the original.
+- Different attack scenarios:
+white-box / black-box \\
+targeted / untargeted \\
+specific / universal \\
+An important problem to consider is the definition of \emph{close} to the original image. Possibilities for such an image similarity metric include simple $L_p$ norms (including $p=0$),
+or more sophisticated metrics, like entropy based metrics \todo{Find that paper with the umbrellas}.
+While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \cite{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_p$ norm \todo{explain why}.
+
+Throughout this work $x \in [0,1]^n$ will denote the input image $\delta \in [0,1]^n$ the perturbation.
+The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.
+$Z(X)$ is the networks output as logits and $F(x)$ is the output interpretable as probability.
+This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$.
+
+
 
 \subsection{Carlini-Wagner Attack}
 
 Carlini and Wagner extensively evaluated a wide range of adversarial attacks \cite{carlini}.
-In particular they developed the following white-box, targeted attack, that will be referred to as the Carilini-Wagner (CW) attack.
+In particular they developed the following white-box, targeted attack, that will be referred to as the Carlini-Wagner (CW) attack.
 
 Starting with the general problem for targeted attacks
 
@@ -21,7 +39,7 @@ Starting with the general problem for targeted attacks
 \end{aligned}
 \end{equation}
 
-Using lagrangian relaxation, this is transformed to
+Using Lagrangian relaxation, this is transformed to
 
 \begin{equation}
 \begin{aligned}
@@ -53,3 +71,10 @@ Unlike other attacks, the boundary attack does not start with the original image
 
 \todo{write the rest}
 Random walk, bla bla
+
+\subsection{DeepFool Attack}
+Moosavi-Dezfooli et al. developed the untargeted white-box attack \emph{DeepFool} \cite{deepfool}.
+The authors calculated minimal adversarial perturbations for linear classifier, by projecting the original image to the nearest decision boundary.
+
+\subsection{Universal Adversarial Perturbations}
+The concept of universal adversarial perturbations was proposed by Moosavi-Dezfooli et al. \cite{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
