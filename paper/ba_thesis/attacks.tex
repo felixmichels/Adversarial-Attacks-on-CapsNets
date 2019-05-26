@@ -34,7 +34,7 @@ where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective functi
 $f(x + \delta) \leq 0$ if and only if $C(x + \delta) = t$.
 There are many possible objective functions, but a particularly good choice is
 $f(x') = \max \{ \max \{Z(x')_i : i \neq t \} - Z(x')_t, -\kappa \}$.
-% TODO Sounds weird...
+\todo{Sounds weird, rewrite this}
 The \emph{confidence parameter} $\kappa$ determines, how close to the decision boundary the adversarial example is.
 The optimal value for $c$ is the smallest value, that results in an adversarial example and is found using a binary search.
 
@@ -42,8 +42,14 @@ This box-constrained problem can further be simplified by introducing the variab
 This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam (\cite{adam}) optimizer.
 
 The Carlini-Wagner attack is generally a quite strong attack and leads to almost undetectable adversarial examples.
-% TODO citation
+\todo{citation}
 In particular, it can find adversarial examples even when defensive techniques like distillation are utilized \cite{carlini}.
 However, due to the binary search it can often be quite slow.
 
 \subsection{Boundary Attack}
+
+The boundary attack is a black-box attack proposed by Brendel et al. \cite{boundary}. It is furthermore a \emph{decision based} attack. This means, not only is no knowledge of the model architecture or the learned weights required, but also the output scores of the network are hidden from the attack. Only the final decision $C(x)$ can be used to construct an adversarial example.
+Unlike other attacks, the boundary attack does not start with the original image and modifies it, but instead starts with a (possible random) misclassified image and changes it to resemble the original.
+
+\todo{write the rest}
+Random walk, bla bla
