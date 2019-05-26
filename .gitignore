@@ -27,6 +27,7 @@ datasets/*
 *.synctex.gz
 *.run.xml
 *.bcf
+*.tdo
 
 paper/ba_thesis/ba.pdf
 
