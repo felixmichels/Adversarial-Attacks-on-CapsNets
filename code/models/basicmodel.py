@@ -112,6 +112,10 @@ class BasicModel(ABC):
     def prediction(self):
         return tf.argmax(self.probabilities, axis=-1)
 
+    @lazy_scope_property
+    def one_hot_label(self):
+        return tf.one_hot(self.label, self.num_classes)
+
     @abstractmethod
     def loss(self):
         """Total loss"""

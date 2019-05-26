@@ -9,15 +9,24 @@ Created on Tue Mar 26 12:36:43 2019
 import tensorflow as tf
 import models.basicmodel
 from util.lazy import lazy_scope_property
+from tfcaps.layers import new_io
+
 
 class SimpleNet(models.basicmodel.BasicModel):
-         
+
     @lazy_scope_property
     def logits(self):
-        w = tf.get_variable(name='weights', shape=(32*32*3, 10), initializer=tf.random_normal_initializer(0, 0.01))
-        b = tf.get_variable(name='bias', shape=(1, 10), initializer=tf.zeros_initializer())
-        return tf.matmul(tf.layers.flatten(self.img), w) + b
-        
+        i, o = new_io(self.img)
+        i(tf.layers.flatten(self.img))
+        i(2 * (o() - 1))
+
+        regularizer = tf.contrib.layers.l1_l2_regularizer(
+            scale_l1=self.l1_scale,
+            scale_l2=self.l2_scale)
+
+        i(tf.layers.dense(o(), self.num_classes, kernel_regularizer=regularizer))
+        return o()
+
     @lazy_scope_property
     def probabilities(self):
         return tf.nn.softmax(self.logits)
@@ -31,8 +40,14 @@ class SimpleNet(models.basicmodel.BasicModel):
     def summary(self):
         tf.summary.scalar('Accuracy', self.accuracy)
         tf.summary.scalar('Loss', self.loss)
+        tf.summary.scalar('Regularization', self.regularization_loss)
         
     @lazy_scope_property
     def loss(self):
-        entropy = tf.nn.softmax_cross_entropy_with_logits(logits=self.logits, labels=tf.one_hot(self.label,10), name='entropy')
-        return tf.reduce_mean(entropy, name='loss')
+        entropy = tf.nn.softmax_cross_entropy(self.one_hot_label, self.logits)
+
+        return tf.reduce_mean(entropy, name='loss') + self.regularization_loss
+
+    @lazy_scope_property
+    def regularization_loss(self):
+        return tf.losses.get_regularization_loss()
