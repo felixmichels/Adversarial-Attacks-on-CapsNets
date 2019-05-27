@@ -1,6 +1,7 @@
 % !TeX root = ba.tex
 
-\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert _2}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
 
 \section{Adversarial Attacks}
 
@@ -18,9 +19,10 @@ or more sophisticated metrics, like entropy based metrics \todo{Find that paper 
 While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \cite{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_p$ norm \todo{explain why}.
 
 Throughout this work $x \in [0,1]^n$ will denote the input image $\delta \in [0,1]^n$ the perturbation.
-The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.
+The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
 $Z(X)$ is the networks output as logits and $F(x)$ is the output interpretable as probability.
-This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$.
+This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$. \\
+Furthermore, any gradient in the following section refers to the gradient with respect to the input image $x$ and not the networks learned parameters.
 
 
 
@@ -74,7 +76,21 @@ Random walk, bla bla
 
 \subsection{DeepFool Attack}
 Moosavi-Dezfooli et al. developed the untargeted white-box attack \emph{DeepFool} \cite{deepfool}.
-The authors calculated minimal adversarial perturbations for linear classifier, by projecting the original image to the nearest decision boundary.
+The authors calculated minimal adversarial perturbations for linear classifier, by projecting the original image to the nearest decision boundary. By approximating the network with its first order Taylor polynomial, these calculations can be applied to the nonlinear classifier.
+In detail, the perturbation is initialized as $\delta^{(0)} = 0$. For each class label $i \neq C^*(x)$ the distance to the decision boundary is estimated with
+
+\begin{equation}
+%\begin{aligned}
+\frac{
+	\abs{Z_i(x + \delta^{(k)}) - Z_{C^*(x)}(x + \delta^{(k)})}
+}
+{
+	\norm{\nabla Z_i(x + \delta^{(k)}) - \nabla Z_{C^*(x)}(x + \delta^{(k)})}
+}
+%\end{aligned}
+\end{equation}
+
+and $\delta^{(k+1)}$ is the projection to the nearest boundary under the distance approximation from above. Our version of the DeepFool attack slightly differs from the original version in \cite{deepfool} insofar that we clip $\delta^{(k)}$ to obtain $x + \delta^{(k)} \in [0,1]^n$, and that we restrict $\norm{\delta^{(k)}}$ which yields better adversarial examples in our experience.
 
 \subsection{Universal Adversarial Perturbations}
 The concept of universal adversarial perturbations was proposed by Moosavi-Dezfooli et al. \cite{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
