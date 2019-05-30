@@ -2,7 +2,7 @@
 ckpt/
 data/
 logdir/
-datasets/*
+code/datasets/*
 !datasets/get_datasets.sh
 
 # LaTeX

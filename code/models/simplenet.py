@@ -18,7 +18,7 @@ class SimpleNet(models.basicmodel.BasicModel):
     def logits(self):
         i, o = new_io(self.img)
         i(tf.layers.flatten(self.img))
-        i(2 * (o() - 1))
+        i(2*o() - 1)
 
         regularizer = tf.contrib.layers.l1_l2_regularizer(
             scale_l1=self.l1_scale,
@@ -44,7 +44,7 @@ class SimpleNet(models.basicmodel.BasicModel):
         
     @lazy_scope_property
     def loss(self):
-        entropy = tf.nn.softmax_cross_entropy(self.one_hot_label, self.logits)
+        entropy = tf.losses.softmax_cross_entropy(self.one_hot_label, self.logits)
 
         return tf.reduce_mean(entropy, name='loss') + self.regularization_loss
 
