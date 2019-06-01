@@ -118,3 +118,14 @@ and $\delta^{(k+1)}$ is the projection to the nearest boundary under the distanc
 
 \subsection{Universal Adversarial Perturbations}
 The concept of universal adversarial perturbations was proposed by Moosavi-Dezfooli et al. \cite{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
+To do this, we use following variation of there algorithm:
+
+As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
+\begin{enumerate}
+	\item Initialize $\delta^{(0)} \gets 0$.
+	\item Sample a batch $X^{(k)} = \{x_1^{(k)}, ..., x_N^{(k)}\}$ of images with $\forall x \in\ X^{(k)}:  C(x + \delta^{(k)}) = C^*(x)$.
+	\item For each $x_i^{(k)}$ compute a perturbation $\delta_i^{(k+1)}$ using FGSM \cite{fgsm}.
+	\item Update the perturbation: $$\delta^{(k+1)} \gets \delta^{(k)} + \frac{1}{N} \sum\limits_{i=0}^N \delta_i^{(k+1)}$$
+\end{enumerate}
+
+This differs insofar from the original algorithm described in \cite{unversal}, that in step 3 approximate perturbations for a whole batch is computed, while the computed an optimal perturbation for each $x_i$ using their previous work DeepFool.  In principle many other attacks instead of FGSM can be used, however we found, that for our applications FGSM reached adequate results compared to much slower methods. Since FGSM uses the gradient of the network, FGSM and therefore this algorithm for computing universal adversarial perturbations, are white-box attacks.
