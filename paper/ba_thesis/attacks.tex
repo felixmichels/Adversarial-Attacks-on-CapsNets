@@ -14,7 +14,7 @@ There are different attack scenarios differing in the knowledge, goals and abili
 In white-box attacks, all information about the model architecture, training images and learned parameters is available to the attacker, while in the black-box scenario only the networks output can be observed. These terms are in general not strictly defined and many intermediate stages are possible, including limited access to the models output, information about the architecture but not the learned parameters or knowledge about the training images but not the architecture etc. \\
 \emph{Targeted} and \emph{untargeted} describes the objective of the attacker. With an untargeted attack an adversarial example is just classified as any other label than the true label, while an adversarial example from a targeted attack has to be classified as a specific target label chosen by the attacker beforehand. Of course targeted attacks are strictly more difficult for the attacker, but also more useful \todo{ name examples}.
 Furthermore, in some instances untargeted adversarial examples are easy to generate, or rather are near impossible to defend against, just because some classes may be conceptually very close to each other.
-For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet can even be for humans quite challenging. \\
+For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet \cite{imagenet} can even be for humans quite challenging. \\
 The last type of adversarial attacks that we will test are \emph{universal perturbations}. Most attacks compute a different adversarial perturbation for each input image, but a universal perturbation aims to fool many images while using the same perturbation.
 Non-universal perturbations are of course easier to find, but universal perturbations are simpler for the attacker to apply in a realistic attack scenario. Additionally the mere existence of universal perturbations reveals significant flaws in the used architecture, more so than that of normal adversarial examples. \todo{Explain why. (Compare to humans)}
 \todo{Talk about further scenarios (poisoning, real world etc.)}
@@ -75,8 +75,25 @@ However, due to the binary search it can often be quite slow.
 The boundary attack is a black-box attack proposed by Brendel et al. \cite{boundary}. It is furthermore a \emph{decision based} attack. This means, not only is no knowledge of the model architecture or the learned weights required, but also the output scores of the network are hidden from the attack. Only the final decision $C(x)$ can be used to construct an adversarial example.
 Unlike other attacks, the boundary attack does not start with the original image and modifies it, but instead starts with a (possible random) misclassified image and changes it to resemble the original.
 
-\todo{write the rest}
-Random walk, bla bla
+The boundary attack iteratively generates adversarial examples $x^{(k)}$ (and therefore perturbations $\delta^{(k)} = x^{(k)} - x$) using a random walk. At the beginning it samples $x^{(0)} \sim \mathcal{U}(0,1)^n$ until $C(x^{(0)}) \neq C^*(x)$, i.e. $x^{(0)}$ is a adversarial example for $x$.
+The next iteration should then fulfill the following criteria to ensure that the sequence $(x^{(k)})_{k \in \mathbb{N}}$ has a limit point on the decision boundary:
+
+\begin{enumerate}
+	\item The new image $x^{(k+1)}$ is in the range of a valid image,
+	i.e. $x^{(k+1)}\in [0,1]^n$.
+	\item The proportion of the size of the perturbation $\delta^{(k)}$
+	and the distance to the given image is equal to a given parameter
+	$\gamma > 0$.
+	\item The reduction of the distance from the adversarial image to the
+	original image $\delta^{(k)} - \delta^{(k)}$ is proportional to
+	$\delta^{(k)}$ with a factor $\nu>0$.
+\end{enumerate}
+
+While these conditions are difficult to meet exactly, they are approximated by sampling from a normal distribution orthogonal to $\delta^{(k)}$ and making a step with size $\nu$ in this direction. If this point is still adversarial, a step towards $x$ is made with size $\gamma$. The parameters $\nu$ and $\gamma$ are adapted dynamically, similarly to Trust Region methods.
+A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value.
+The success rate for the orhogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear, then approximately $50\%$ of random orthogonal steps should pass the decision boundary.
+The target success rate for the direct step is set to a value around $0.25$. This ensures, that $\gamma$ doesn't decrease too quickly and the decision boundary is found in few steps.
+The algorithm terminates, once $\gamma$ is close to zero.
 
 \subsection{DeepFool Attack}
 Moosavi-Dezfooli et al. developed the untargeted white-box attack \emph{DeepFool} \cite{deepfool}.
