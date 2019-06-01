@@ -45,17 +45,22 @@
 \usepackage[colorlinks,citecolor=blue,linkcolor=black]{hyperref} %anklickbares Inhaltsverzeichnis
 \usepackage[style=authoryear,natbib=true,backend=biber,mincitenames=1,maxcitenames=2,maxbibnames=99,uniquelist=false,dashed=false]{biblatex}
 
+%% My stuff
 %% Extra packages
 \usepackage[colorinlistoftodos,obeyFinal]{todonotes}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 
+\graphicspath{{../figures/}}
+
 %% Math
 \usepackage{amsmath}
 \usepackage{amssymb}
 
 \DeclareMathOperator*{\minimize}{minimize}
+
+%% End, My stuff
 
 % https://tex.stackexchange.com/a/334703/8850
 \AtEveryBibitem{%
