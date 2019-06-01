@@ -9,11 +9,15 @@
 In general adversarial attacks describe any techniques, that cause machine learning models to perform poorly.
 While adversarial attacks exist for a wide variety of applications like speech recognition or natural language processing, this work will concentrate on adversarial attacks on image classification tasks.
 In particular \emph{adversarial examples} refer to modified images which are very close to some original image, but are classified differently by the model.
-The \emph{adversarial perturbation} is the difference between the adversarial example and the original.
-- Different attack scenarios:
-white-box / black-box \\
-targeted / untargeted \\
-specific / universal \\
+The \emph{adversarial perturbation} is the difference between the adversarial example and the original. \\
+There are different attack scenarios differing in the knowledge, goals and abilities of the attacker. \\
+In white-box attacks, all information about the model architecture, training images and learned parameters is available to the attacker, while in the black-box scenario only the networks output can be observed. These terms are in general not strictly defined and many intermediate stages are possible, including limited access to the models output, information about the architecture but not the learned parameters or knowledge about the training images but not the architecture etc. \\
+\emph{Targeted} and \emph{untargeted} describes the objective of the attacker. With an untargeted attack an adversarial example is just classified as any other label than the true label, while an adversarial example from a targeted attack has to be classified as a specific target label chosen by the attacker beforehand. Of course targeted attacks are strictly more difficult for the attacker, but also more useful \todo{ name examples}.
+Furthermore, in some instances untargeted adversarial examples are easy to generate, or rather are near impossible to defend against, just because some classes may be conceptually very close to each other.
+For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet can even be for humans quite challenging. \\
+The last type of adversarial attacks that we will test are \emph{universal perturbations}. Most attacks compute a different adversarial perturbation for each input image, but a universal perturbation aims to fool many images while using the same perturbation.
+Non-universal perturbations are of course easier to find, but universal perturbations are simpler for the attacker to apply in a realistic attack scenario. Additionally the mere existence of universal perturbations reveals significant flaws in the used architecture, more so than that of normal adversarial examples. \todo{Explain why. (Compare to humans)}
+\todo{Talk about further scenarios (poisoning, real world etc.)}
 An important problem to consider is the definition of \emph{close} to the original image. Possibilities for such an image similarity metric include simple $L_p$ norms (including $p=0$),
 or more sophisticated metrics, like entropy based metrics \todo{Find that paper with the umbrellas}.
 While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \cite{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_p$ norm \todo{explain why}.
@@ -81,6 +85,7 @@ In detail, the perturbation is initialized as $\delta^{(0)} = 0$. For each class
 
 \begin{equation}
 %\begin{aligned}
+l_i = 
 \frac{
 	\abs{Z_i(x + \delta^{(k)}) - Z_{C^*(x)}(x + \delta^{(k)})}
 }
@@ -89,6 +94,8 @@ In detail, the perturbation is initialized as $\delta^{(0)} = 0$. For each class
 }
 %\end{aligned}
 \end{equation}
+
+\todo{How is this similar to Carlini-Wagner?}
 
 and $\delta^{(k+1)}$ is the projection to the nearest boundary under the distance approximation from above. Our version of the DeepFool attack slightly differs from the original version in \cite{deepfool} insofar that we clip $\delta^{(k)}$ to obtain $x + \delta^{(k)} \in [0,1]^n$, and that we restrict $\norm{\delta^{(k)}}$ which yields better adversarial examples in our experience.
 
