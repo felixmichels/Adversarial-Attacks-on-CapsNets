@@ -69,7 +69,7 @@
 \author{Felix Michels$^{\ast1}$, Tobias Uelwer$^{\ast1}$, Eric Upschulte$^{\ast2}$, Stefan Harmeling$^1$ } % Author(s)
 
 \institute{$^1$ Department of Computer Science,  Heinrich-Heine-Universi\"at D\"usseldorf, \\
-$^2$ Institute of Neuroscience and Medicine INM-1,Forschungszentrum J\"ulich\\
+$^2$ Institute of Neuroscience and Medicine INM-1, Forschungszentrum J\"ulich\\
 $^*$ Equal contribution} % Institution(s)
 
 
@@ -92,7 +92,7 @@ $^*$ Equal contribution} % Institution(s)
 \begin{alertblock}{Our Contribution}
 
 \begin{itemize}
-\item We extensively evaluates the vulnerability of capsule networks to different adversarial attacks.
+\item We extensively evaluate the vulnerability of capsule networks to different adversarial attacks.
 \item Our experiments show that capsule networks can be fooled by white-box and black-box attacks as easily as convolutional neural networks.
 \item Adversarial examples can be transferred between capsule networks and convolutional neural networks.
 \end{itemize}
@@ -104,7 +104,7 @@ Recently capsule networks (CapsNets) \cite{capsules}
 have been shown to be a reasonable alternative to convolutional neural
 networks (ConvNets). For our experiments we focus on CapsNets using the dynamic routing algorithm \cite{capsules}. Frosst et al. \cite{darccc} state that CapsNets
 are more robust against white-box adversarial attacks than other
-architectures. We evaluate the following attacks:
+architectures. We evaluate the following attacks on CapsNets:
 \begin{itemize}
     \item Carlini-Wagner attack (targeted, white-box) \cite{carlini}
     \item Boundary attack (untargeted, black-box) \cite{boundary}
@@ -112,7 +112,6 @@ architectures. We evaluate the following attacks:
     \item Universal perturbation (untargeted, white-box) \cite{universal}
 \end{itemize}
 \end{block}
-
 
 %\begin{figure}
 %\includegraphics[width=0.8\linewidth]{placeholder.jpg}
@@ -132,8 +131,8 @@ architectures. We evaluate the following attacks:
 
 
 \begin{block}{Architectures}
-
-Our test accuracies shown in Tab.~\ref{tab:accuracies} of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of both architectures ensure comparability. \vspace{1cm}
+For each dataset we adapt the model architecture.
+\vspace{1cm}
 
 \begin{table}[h]
 	\centering\scalebox{0.85}{
@@ -148,12 +147,16 @@ Our test accuracies shown in Tab.~\ref{tab:accuracies} of our models are not sta
 	\caption{Test accuracies achieved by our networks.}
 	\label{tab:accuracies}
 \end{table}
+
+Our test accuracies shown in Tab.~\ref{tab:accuracies} of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of both architectures ensure comparability. 
+
 \end{block}
 
 \end{column} % End of column 2.1
 
 \begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
 \begin{block}{Transferrability of Adversarial Examples}
+	
 \begin{table}
 		\centering\scalebox{0.85}{
 			\begin{tabular}{llcccc}
@@ -173,7 +176,7 @@ Our test accuracies shown in Tab.~\ref{tab:accuracies} of our models are not sta
 				& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 				\bottomrule\\
 		\end{tabular}}
-		\caption{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
+		\caption{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. Especially the small universal perturbations calculated on the ConvNet generalize well on the CapsNet.}
 		\label{tab:attacks}
 \end{table}
 
@@ -227,6 +230,8 @@ other:
 		\label{tab:norms}
 \end{table}
 
+The Carlini-Wagner, the boundary and the DeepFool attack calculate adversarial examples that lead to missclassification, whereas the universal perturbations are considered adversarial if the test accuracy on the batch is less than $50\%$.
+
 \end{block}
 \end{column} % End of column 2.1
 
@@ -267,8 +272,7 @@ other:
 
 Our experiments show that CapsNets are not in general more robust to
 white-box attacks. With sufficiently sophisticated attacks CapsNets
-can be fooled as easily as ConvNets.  Moreover, we showed that adversarial examples can be transferred
-between the two architectures. To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this paper.
+can be fooled as easily as ConvNets.  Moreover, we showed that adversarial examples can be transferred between the two architectures. To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this paper.
 
 \end{block}
 
@@ -289,8 +293,8 @@ between the two architectures. To fully understand the possibly distinguishable 
 
 \begin{itemize}
 %\item Web: \href{https://www.cs.hhu.de/en/research-groups/machine-learning.html}{https://www.cs.hhu.de/en/research-groups/machine-learning.html}
-\item Email: \href{mailto:tobias.uelwer@hhu.de}{tobias.uelwer@hhu.de}  
-\item Email: \href{mailto:felix.michels@hhu.de}{felix.michels@hhu.de}
+\item Mail: \texttt{\href{mailto:tobias.uelwer@hhu.de}{tobias.uelwer@hhu.de}  }
+\item Mail: \texttt{\href{mailto:felix.michels@hhu.de}{felix.michels@hhu.de}}
 \end{itemize}
 
 \end{alertblock}
