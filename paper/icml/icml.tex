@@ -265,7 +265,7 @@ step $k$.
 
 \subsection{Universal Adversarial Perturbations}
 \label{sec:universal}
-A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for multiple $x$ sampled from the input image distribution. This concept was proposed by Moosave-Dezfooli et al. \yrcite{universal} and we use a variation of their algorithm, which we briefly describe in the following. As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
+A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for multiple $x$ sampled from the input image distribution. This concept was proposed by Moosavi-Dezfooli et al. \yrcite{universal} and we use a variation of their algorithm, which we briefly describe in the following. As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
 \begin{enumerate}
 	\item Initialize $\delta^{(0)} \gets 0$.
 	\item Sample a batch $X^{(k)} = \{x_1^{(k)}, ..., x_N^{(k)}\}$ of images with $\forall x \in\ X^{(k)}:  C(x + \delta^{(k)}) = C^*(x)$.
