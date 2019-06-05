@@ -75,6 +75,20 @@
 
 \begin{document}
 	
+	\addtobeamertemplate{headline}{} 
+	{
+		\begin{tikzpicture}[remember picture,overlay] 
+		\node [shift={(-15 cm,-12cm)}] at (current page.north east) {\includegraphics[height=10cm]{hhu.jpg}}; 
+		\end{tikzpicture} 
+	}
+	
+	\addtobeamertemplate{headline}{} 
+	{
+		\begin{tikzpicture}[remember picture,overlay] 
+		\node [shift={(15 cm,-12cm)}] at (current page.north west) {\includegraphics[height=5cm]{fzj.pdf}}; 
+		\end{tikzpicture} 
+	}
+	
 	\addtobeamertemplate{block end}{}{\vspace*{2ex}} % White space under blocks
 	\addtobeamertemplate{block alerted end}{}{\vspace*{2ex}} % White space under highlighted (alert) blocks
 	
@@ -149,7 +163,7 @@
 									CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
 									\bottomrule\\
 							\end{tabular}}
-							\caption{Test accuracies achieved by our networks.}
+							\caption{\phantom{T}Test accuracies achieved by our networks.}
 						\end{table}
 						
 						The test accuracies of our models are not state-of-the-art. However, we found our models to be suitable for the given task, since the similar performances of both architectures ensure comparability. 
@@ -181,7 +195,7 @@
 									& CapsNet           & $11.45$ & $5.31$ & $8.59$ & $2.70$ \\
 									\bottomrule\\
 							\end{tabular}}
-							\caption{Average perturbation norms for each attack and architecture.}
+							\caption{\phantom{T}Average perturbation norms for each attack and architecture.}
 							\label{tab:norms}
 						\end{table}
 						
@@ -213,7 +227,7 @@
 									& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 									\bottomrule\\
 							\end{tabular}}
-							\caption{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. Especially the small universal perturbations calculated on the ConvNet generalize well on the CapsNet.}
+							\caption{\phantom{T}Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. Especially the small universal perturbations calculated on the ConvNet generalize well on the CapsNet.}
 							\label{tab:attacks}
 						\end{table}
 						
