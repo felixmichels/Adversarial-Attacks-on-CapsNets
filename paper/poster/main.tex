@@ -124,11 +124,11 @@
 			\begin{block}{Attacks}
 				%We evaluate the following attacks on CapsNets:
 				\begin{itemize}
-					\item Carlini-Wagner attack (targeted, white-box) \cite{carlini}: Solves an unconstrained optimization problem to calculate a perturbation with a specified label.
-					\item Boundary attack (untargeted, black-box) \cite{boundary}: Performs a random walk close to the
+					\item \textbf{Carlini-Wagner attack} (targeted, white-box) \cite{carlini}: Solves an unconstrained optimization problem to calculate a perturbation with a specified label.
+					\item \textbf{Boundary attack} (untargeted, black-box) \cite{boundary}: Performs a random walk close to the
 					decision boundary while the norm of the perturbation is minimized.
-					\item DeepFool attack (untargeted, white-box) \cite{deepfool}: Approximates the network output by a Taylor polynomial and computes perturbations exactly for this approximation.
-					\item Universal perturbation (untargeted, white-box) \cite{universal}: Calculates and combines multiple adversarial examples using FGSM \cite{fgsm}.
+					\item \textbf{DeepFool attack} (untargeted, white-box) \cite{deepfool}: Approximates the network output by a Taylor polynomial and computes perturbations exactly for this approximation.
+					\item \textbf{Universal perturbation} (untargeted, white-box) \cite{universal}: Calculates and combines multiple adversarial examples using FGSM \cite{fgsm}.
 				\end{itemize}
 			\end{block}
 			
