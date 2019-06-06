@@ -203,8 +203,7 @@
 				\begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
 					\begin{block}{Transferability of Adversarial Examples}
 						
-						
-					
+	
 					   \begin{figure}
 						\centering
 						\scalebox{2.5}{%
@@ -259,9 +258,12 @@
 						}
 						\draw[arrow](pertcaps) to [bend right,looseness=1.2] node[above] {evaluate} (convnet);
 						\draw[arrow](pertconv) to [bend right,looseness=1.2] node[above] {evaluate} (capsnet);
-						\end{tikzpicture}}\caption{\phantom{T}Our methodology.}
+						\end{tikzpicture}}\caption{\phantom{T}Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations.}
 					\end{figure}
 				
+					To quantify the transferability we evaluate the perturbations on the other architecture. The fooling rates corresponding to the (dark) orange arrows are shown in Tab.~\ref{tab:attacks}. Especially the smaller universal perturbations calculated on the ConvNet generalize well to the CapsNet (see also Tab.~\ref{tab:norms}).
+				
+				\vspace{1cm}
 				\begin{table}
 					\centering\small{
 						\begin{tabular}{llcccc}
@@ -281,7 +283,7 @@
 							& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 							\bottomrule\\
 					\end{tabular}}
-					\caption{\phantom{T}Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. Especially the small universal perturbations calculated on the ConvNet generalize well on the CapsNet.}
+					\caption{\phantom{T}Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa.}
 					\label{tab:attacks}
 				\end{table}
 						
