@@ -59,6 +59,7 @@
 \hyphenation{Caps-Nets}
 \hyphenation{Conv-Net}
 \hyphenation{Conv-Nets}
+\hyphenation{rou-ting}
 
 \usepackage{graphicx}  % Required for including images
 \usepackage{booktabs} % Top and bottom rules for tables
@@ -69,8 +70,8 @@
 
 \author{Felix Michels$^{\ast}$, Tobias Uelwer$^{\ast}$, Eric Upschulte$^{\ast}$, Stefan Harmeling } % Author(s)
 
-\institute{Department of Computer Science,  \\
-	Heinrich-Heine-Universit\"at D\"usseldorf\\
+\institute{Department of Computer Science,\\
+	Heinrich-Heine-Universit\"at D\"usseldorf, Germany\\
 	$^*$ Equal contribution} % Institution(s)
 
 
@@ -166,7 +167,7 @@
 					\end{block}
 					
 					\begin{block}{Results}
-						Our experiments also show that
+						Our experiments show that
 						the vulnerability of CapsNets and ConvNets is similar and it is hard
 						to decide which model is more prone to adversarial attacks than the
 						other:
@@ -190,11 +191,11 @@
 									& CapsNet           & $11.45$ & $5.31$ & $8.59$ & $2.70$ \\
 									\bottomrule\\
 							\end{tabular}}
-							\caption{\phantom{T}Average perturbation norms for each attack and architecture.}
+							\caption{\phantom{T}Average Euclidean norm of the perturbations for each attack and architecture.}
 							\label{tab:norms}
 						\end{table}
 						
-						The Carlini-Wagner, the boundary and the DeepFool attack calculate adversarial examples that lead to missclassification, whereas the universal perturbations are considered adversarial if the test accuracy on the batch is less than $50\%$.
+						The Carlini-Wagner, the boundary and the DeepFool attack calculate adversarial examples that lead to misclassification, whereas the universal perturbations are considered adversarial if the test accuracy on the batch is less than $50\%$.
 						
 					\end{block}
 					
@@ -257,7 +258,7 @@
 								font=\fontsize{8}{8}\selectfont},
 						}
 						\draw[arrow](pertcaps) to [bend right,looseness=1.2] node[above] {evaluate} (convnet);
-						\draw[arrow](pertconv) to [bend right,looseness=1.2] node[above] {evaluate} (capsnet);
+						\draw[arrow](pertconv) to [bend right,looseness=1.2] node[below] {evaluate} (capsnet);
 						\end{tikzpicture}}\caption{\phantom{T}Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations.}
 					\end{figure}
 				
@@ -329,7 +330,7 @@
 				
 				Our experiments show that CapsNets are not in general more robust to
 				white-box attacks. With sufficiently sophisticated attacks CapsNets
-				can be fooled as easily as ConvNets.  Moreover, we showed that adversarial examples can be transferred between the two architectures. To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this work.
+				can be fooled as easily as ConvNets.  Moreover, we show that adversarial examples can be transferred between the two architectures. To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this work.
 				
 			\end{block}
 			
