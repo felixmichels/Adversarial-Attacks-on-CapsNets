@@ -34,10 +34,10 @@
 
 
 % Use the following line for the initial blind version submitted for review:
-\usepackage{icml2019}
+%\usepackage{icml2019}
 
 % If accepted, instead use the following line for the camera-ready submission:
-%\usepackage[accepted]{icml2019}
+\usepackage[accepted]{icml2019}
 
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
@@ -65,16 +65,15 @@
 \begin{icmlauthorlist}
 \icmlauthor{Felix Michels}{equal,hhu}
 \icmlauthor{Tobias Uelwer}{equal,hhu}
-\icmlauthor{Eric Upschulte}{equal,fzj}
+\icmlauthor{Eric Upschulte}{equal,hhu}
 \icmlauthor{Stefan Harmeling}{hhu}
 \end{icmlauthorlist}
 
 \icmlaffiliation{hhu}{Department of Computer Science, Heinrich-Heine-Universit\"at D\"usseldorf, Germany}
-\icmlaffiliation{fzj}{Institute of Neuroscience and Medicine INM-1, Forschungszentrum J\"ulich, Germany}
 
 \icmlcorrespondingauthor{Felix Michels}{felix.michels@hhu.de}
 \icmlcorrespondingauthor{Tobias Uelwer}{tobias.uelwer@hhu.de}
-\icmlcorrespondingauthor{Eric Upschulte}{e.upschulte@fz-juelich.de}
+\icmlcorrespondingauthor{Eric Upschulte}{eric.upschulte@hhu.de}
 \icmlcorrespondingauthor{Stefan Harmeling}{harmeling@hhu.de}
 
 % You may provide any keywords that you
@@ -266,7 +265,7 @@ step $k$.
 
 \subsection{Universal Adversarial Perturbations}
 \label{sec:universal}
-A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for multiple $x$ sampled from the input image distribution. This concept was proposed by Moosave-Dezfooli et al. \yrcite{universal} and we use a variation of their algorithm, which we briefly describe in the following. As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
+A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$, such that $C(x + \delta) \neq C^*(x)$ for multiple $x$ sampled from the input image distribution. This concept was proposed by Moosavi-Dezfooli et al. \yrcite{universal} and we use a variation of their algorithm, which we briefly describe in the following. As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
 \begin{enumerate}
 	\item Initialize $\delta^{(0)} \gets 0$.
 	\item Sample a batch $X^{(k)} = \{x_1^{(k)}, ..., x_N^{(k)}\}$ of images with $\forall x \in\ X^{(k)}:  C(x + \delta^{(k)}) = C^*(x)$.
@@ -276,11 +275,8 @@ A universal perturbation is a single vector $\delta \in \mathbb{R}^{n\times n}$,
 \end{enumerate}
 Since this method depends on the FGSM it is a white-box attack.
 
-
 \section{Experiments}
 \label{lab:experiments}
-
-
 
 \subsection{Datasets and Network Architectures}
 
@@ -319,13 +315,6 @@ parts and compute ten adversarial perturbations according to the
 procedure described in Sec.~\ref{sec:universal} on each part.
 
 None of the attacks restrict the norm of the perturbation. This means, the Carlini-Wagner, the boundary and the DeepFool attack generate only valid adversarial examples. In the case of the universal perturbation, we stop once accuracy falls below $50\%$.
-
-%\begin{itemize}
-%	\item MNIST: $28\times28$ grayscale images of digits (60,000  images for training/10,000  images for testing) \cite{mnist}
-%	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training/images 10,000 for testing) \cite{fashion}
-%	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training/26,032  images for testing) \cite{svhn}
-%	\item CIFAR10: $32\times32$ color images (50.000  images for training/10.000  images for testing) \cite{cifar}
-%\end{itemize}
 
 
 \subsection{Results}
@@ -384,9 +373,6 @@ observable (see Fig.~\ref{tab:images}).
 	\caption{Original images from the CIFAR10 dataset (left), adversarial images (middle) and the corresponding perturbation (right) calculated for a CapsNet.\label{tab:images}}
 \end{figure}
 
-%Universal perturbations computed for CNNs transfer very well to CapsNets. Maby CapsNet universal perturbations don't work well, because we used FGSM? Maybe the loss is to blame. Would FGSM with cross entropy loss work on the CapsNet? Or FGSM with margin loss on CNN?
-%DeepFool actually seems to be a bit better for ConvNets. But the strong CW-attack fools both architecture with similarly small perturbations (Odd comparison, because CW is targeted. Maybe I should have used a untargeted CW version...)
-
 \subsection{Visualizing Universal Perturbations}
 
 \begin{figure}[h]
@@ -410,14 +396,7 @@ to decide which model is more prone to adversarial attacks than the
 other. Moreover, we showed that adversarial examples can be transferred
 between the two architectures.
 
-%Future work could investigate the activations of the different layers to determine which are particularly susceptible to the attacks.
 To fully understand the possibly distinguishable roles of the convolutional and capsule layers with respect to adversarial attacks, we are currently examining the effects of attacks on the activation level of single neurons.  However, this analysis is not finished yet and beyond the scope of this paper.
-
-
-
-% In the unusual situation where you want a paper to appear in the
-% references without citing it in the main text, use \nocite
-%\nocite{langley00}
 
 \bibliography{icml}
 \bibliographystyle{icml2019}
