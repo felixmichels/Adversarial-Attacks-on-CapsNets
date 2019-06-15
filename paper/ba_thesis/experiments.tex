@@ -56,4 +56,21 @@
 		\label{tab:attacks}%\end{minipage}
 \end{table*}
 
+\subsection{Difference between Adversarial Examples}
+\subsubsection{Universal Attack T-SNE}
+
+We used T-SNE \citep{tsne} to make a scatter plot.
 \includegraphics[height=7cm]{tsne.pdf}
+
+\subsubsection{SVD}
+
+In \cite{universal} the authors consider singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace.
+Let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
+and $ N = \begin{bmatrix}
+\frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
+\end{bmatrix}
+\in \mathrm{R}^{n \times k}
+$. \\
+$\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one.
+
+In this regard we find little difference between CapsNets and CNNs.
