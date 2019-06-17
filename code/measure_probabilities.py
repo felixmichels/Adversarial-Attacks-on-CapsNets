@@ -75,7 +75,13 @@ def measure_universal(dataset_name, model, sess, source_name):
     adv_files = [fn for fn in os.listdir(source_path) if fn.endswith('.npy')]
     for adv_file_name in adv_files:
         pert_file = os.path.join(source_path, adv_file_name)
+
         perts = np.load(pert_file)
+
+        if cfg.amplify_perturbation is not None:
+            tf.logging.debug('Amplifying perturbations')
+            perts *= cfg.amplify_perturbation
+
         tf.logging.info('Loaded adv images %s', pert_file)
 
         prob_list = []
@@ -121,9 +127,7 @@ def main(args):
     dataset = dataset_by_name(args[3])
 
     if len(args) < 5:
-        attacks = ['carlini_wagner', 'boundary_attack', 'deepfool']
-        if cfg.amplify_perturbation is None:
-            attacks.append('universal_perturbation')
+        attacks = ['carlini_wagner', 'boundary_attack', 'deepfool', 'universal_perturbation']
     else:
         attacks = args[4].split(',')
 
