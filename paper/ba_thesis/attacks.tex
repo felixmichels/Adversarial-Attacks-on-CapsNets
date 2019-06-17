@@ -17,9 +17,9 @@ Non-universal perturbations are of course easier to find, but universal perturba
 \todo{Talk about further scenarios (poisoning, real world etc.)}
 An important problem to consider is the definition of \emph{close} to the original image. Possibilities for such an image similarity metric include simple $L_p$ norms (including $p=0$),
 or more sophisticated metrics, like entropy based metrics \todo{Find that paper with the umbrellas}.
-While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \cite{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_p$ norm \todo{explain why}.
+While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \citep{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_2$ norm \todo{explain why}.
 
-Throughout this work $x \in [0,1]^n$ will denote the input image $\delta \in [0,1]^n$ the perturbation.
+Throughout this work $x \in [0,1]^N$ will denote the (flattened) input image $\delta \in [0,1]^n$ the perturbation.
 The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
 $Z(X)$ is the networks output as logits and $F(x)$ is the output interpretable as probability.
 This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$. \\
@@ -29,7 +29,7 @@ Furthermore, any gradient in the following section refers to the gradient with r
 
 \subsection{Carlini-Wagner Attack}
 
-Carlini and Wagner extensively evaluated a wide range of adversarial attacks \cite{carlini}.
+\citet{carlini} extensively evaluated a wide range of adversarial attacks.
 In particular they developed the following white-box, targeted attack, that will be referred to as the Carlini-Wagner (CW) attack.
 
 Starting with the general problem for targeted attacks
@@ -87,9 +87,9 @@ The next iteration should then fulfill the following criteria to ensure that the
 \end{enumerate}
 
 While these conditions are difficult to meet exactly, they are approximated by sampling from a normal distribution orthogonal to $\delta^{(k)}$ and making a step with size $\nu$ in this direction. If this point is still adversarial, a step towards $x$ is made with size $\gamma$. The parameters $\nu$ and $\gamma$ are adapted dynamically, similarly to Trust Region methods.
-A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value.
-The success rate for the orhogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear, then approximately $50\%$ of random orthogonal steps should pass the decision boundary.
-The target success rate for the direct step is set to a value around $0.25$. This ensures, that $\gamma$ doesn't decrease too quickly and the decision boundary is found in few steps.
+A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value. \\
+The success rate for the orhogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. \\
+The target success rate for the direct step is set to a value around $0.25$, which empirically leads to good adversarial examples. \\
 The algorithm terminates, once $\gamma$ is close to zero.
 
 \subsection{DeepFool Attack}
@@ -114,15 +114,15 @@ l_i =
 and $\delta^{(k+1)}$ is the projection to the nearest boundary under the distance approximation from above. Our version of the DeepFool attack slightly differs from the original version in \cite{deepfool} insofar that we clip $\delta^{(k)}$ to obtain $x + \delta^{(k)} \in [0,1]^n$, and that we restrict $\norm{\delta^{(k)}}$ which yields better adversarial examples in our experience.
 
 \subsection{Universal Adversarial Perturbations}
-The concept of universal adversarial perturbations was proposed by Moosavi-Dezfooli et al. \cite{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
+The concept of universal adversarial perturbations was proposed by \citet{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
 To do this, we use following variation of there algorithm:
 
 As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
 \begin{enumerate}
 	\item Initialize $\delta^{(0)} \gets 0$.
 	\item Sample a batch $X^{(k)} = \{x_1^{(k)}, ..., x_N^{(k)}\}$ of images with $\forall x \in\ X^{(k)}:  C(x + \delta^{(k)}) = C^*(x)$.
-	\item For each $x_i^{(k)}$ compute a perturbation $\delta_i^{(k+1)}$ using FGSM \cite{fgsm}.
+	\item For each $x_i^{(k)}$ compute a perturbation $\delta_i^{(k+1)}$ using FGSM \citep{fgsm}.
 	\item Update the perturbation: $$\delta^{(k+1)} \gets \delta^{(k)} + \frac{1}{N} \sum\limits_{i=0}^N \delta_i^{(k+1)}$$
 \end{enumerate}
 
-This differs insofar from the original algorithm described in \cite{universal}, that in step 3 approximate perturbations for a whole batch is computed, while the computed an optimal perturbation for each $x_i$ using their previous work DeepFool.  In principle many other attacks instead of FGSM can be used, however we found, that for our applications FGSM reached adequate results compared to much slower methods. Since FGSM uses the gradient of the network, FGSM and therefore this algorithm for computing universal adversarial perturbations, are white-box attacks.
+This differs insofar from the original algorithm described by \citet{universal}, that in step 3 approximate perturbations for a whole batch is computed, while the computed an optimal perturbation for each $x_i$ using their previous work DeepFool.  In principle many other attacks instead of FGSM can be used, however we found, that for our applications FGSM reached adequate results compared to much slower methods. Since FGSM uses the gradient of the network, FGSM and therefore this algorithm for computing universal adversarial perturbations, are white-box attacks.

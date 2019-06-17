@@ -64,13 +64,13 @@ We used T-SNE \citep{tsne} to make a scatter plot.
 
 \subsubsection{SVD}
 
-In \cite{universal} the authors consider singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace.
-Let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
+\citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace. \\
+For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
 and $ N = \begin{bmatrix}
 \frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
 \end{bmatrix}
 \in \mathrm{R}^{n \times k}
-$. \\
-$\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one.
+$ for some $x_1, ..., x_k$ in the test set. \\
+$\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one, i.e. only one non-zero singular value.
 
 In this regard we find little difference between CapsNets and CNNs.
