@@ -69,19 +69,19 @@ def valid_index(x):
 
 model_names = {
     'mnist': {'conv': 'ConvBaseline',
-              'simple': 'SimpleNet',
+              'linear': 'SimpleNet',
               'caps': 'CapsNetSmall'
               },
     'fashion_mnist': {'conv': 'ConvBaseline',
-                      'simple': 'SimpleNet',
+                      'linear': 'SimpleNet',
                       'caps': 'CapsNetVariant'
                       },
     'svhn': {'conv': 'ConvBaseline',
-             'simple': 'SimpleNet',
+             'linear': 'SimpleNet',
              'caps': 'CapsNetVariant'
              },
     'cifar10': {'conv': 'ConvGood',
-                'simple': 'SimpleNet',
+                'linear': 'SimpleNet',
                 'caps': 'DCNet'
                 }
 }
@@ -104,7 +104,7 @@ def main(args):
     if len(args) > 0:
         data_dir = args[0]
 
-    for model in 'caps', 'conv', 'simple':
+    for model in 'caps', 'conv', 'linear':
         data = np.empty((len(attack_names), len(dataset_names)))
         for att_idx, attack_name in enumerate(attack_names):
             for dat_idx, dataset_name in enumerate(dataset_names):
