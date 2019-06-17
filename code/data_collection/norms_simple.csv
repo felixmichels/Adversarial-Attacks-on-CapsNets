@@ -1,0 +1,5 @@
+# 	mnist	fashion_mnist	svhn	cifar10
+carlini_wagner	1.67	1.57	0.28	0.65
+boundary_attack	2.11	1.41	0.11	0.44
+deepfool	0.65	0.46	0.02	0.08
+universal_perturbation	2.12	2.74	0.82	0.45
