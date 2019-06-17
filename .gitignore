@@ -30,6 +30,7 @@ code/datasets/*
 *.tdo
 
 paper/ba_thesis/ba.pdf
+paper/ba_thesis/ba-blx.bib
 
 # vim
 *.swp
