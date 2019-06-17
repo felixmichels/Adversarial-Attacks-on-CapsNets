@@ -15,7 +15,8 @@ flags.DEFINE_float('data_aug', None, 'Amount of data augmentation. Set to None t
 flags.DEFINE_float('aug_prob', 0.75, 'Probability, that data augmentation is applied')
 flags.DEFINE_boolean('aug_flip', False, 'If training data should be randomly flipped')
 
-flags.DEFINE_integer('classes', 11, 'Number of classes of dataset') # One garbage class
+#flags.DEFINE_integer('classes', 11, 'Number of classes of dataset') # One garbage class
+flags.DEFINE_float('amplify_perturbation', None, 'Factor to amplify the perturbation for transfer')
 
 flags.DEFINE_boolean('restore', False, 'If true, restore from last checkpoint')
 

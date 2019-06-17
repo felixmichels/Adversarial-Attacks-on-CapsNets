@@ -43,9 +43,21 @@ def measure_normal_attack(attack_name, dataset_name, model, sess, source_name):
     adv_img = np.load(adv_file)
     tf.logging.info('Loaded adv images %s', adv_file)
 
+    if cfg.amplify_perturbation is not None:
+        tf.logging.debug('Amplifying perturbations')
+        attack_path = os.path.join(cfg.data_dir, dataset_name, attack_name, 'originals.npz')
+        with np.load(attack_path) as npz:
+            img = npz['img']
+        img = img[:len(adv_img)]
+        pert = adv_img - img
+        pert *= cfg.amplify_perturbation
+        adv_img = img + pert
+
     probs = get_probabilities(model, adv_img, sess, cfg.batch_size)
 
-    save_dir = get_dir(cfg.data_dir, dataset_name, attack_name, 'Measure_' + source_name + '_' + model.name)
+    amp_str = ('amp' + str(cfg.amplify_perturbation) + '_') if cfg.amplify_perturbation is not None else ''
+    save_dir = get_dir(cfg.data_dir, dataset_name, attack_name,
+            'Measure_' + source_name + '_' + amp_str + model.name)
     save_file = os.path.join(save_dir, 'probabilities_' + adv_file_name)
 
     np.save(save_file, probs)
@@ -109,7 +121,9 @@ def main(args):
     dataset = dataset_by_name(args[3])
 
     if len(args) < 5:
-        attacks = ['carlini_wagner', 'boundary_attack', 'deepfool', 'universal_perturbation']
+        attacks = ['carlini_wagner', 'boundary_attack', 'deepfool']
+        if cfg.amplify_perturbation is None:
+            attacks.append('universal_perturbation')
     else:
         attacks = args[4].split(',')
 
