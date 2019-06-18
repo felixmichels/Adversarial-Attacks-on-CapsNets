@@ -19,7 +19,7 @@ An important problem to consider is the definition of \emph{close} to the origin
 or more sophisticated metrics, like entropy based metrics \todo{Find that paper with the umbrellas}.
 While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \citep{lpnorms}, they still give us information about the robustness of the neural networks. Here we will exclusively examine adversarial perturbations optimized towards a small $L_2$ norm \todo{explain why}.
 
-Throughout this work $x \in [0,1]^N$ will denote the (flattened) input image $\delta \in [0,1]^n$ the perturbation.
+Throughout this work $x \in [0,1]^n$ will denote the (flattened) input image $\delta \in [0,1]^n$ the perturbation.
 The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
 $Z(X)$ is the networks output as logits and $F(x)$ is the output interpretable as probability.
 This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$. \\
@@ -30,7 +30,7 @@ Furthermore, any gradient in the following section refers to the gradient with r
 \subsection{Carlini-Wagner Attack}
 
 \citet{carlini} extensively evaluated a wide range of adversarial attacks.
-In particular they developed the following white-box, targeted attack, that will be referred to as the Carlini-Wagner (CW) attack.
+In particular they developed the following targeted white-box attack, that will be referred to as the Carlini-Wagner (CW) attack.
 
 Starting with the general problem for targeted attacks
 
@@ -90,7 +90,7 @@ While these conditions are difficult to meet exactly, they are approximated by s
 A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value. \\
 The success rate for the orhogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. \\
 The target success rate for the direct step is set to a value around $0.25$, which empirically leads to good adversarial examples. \\
-The algorithm terminates, once $\gamma$ is close to zero.
+The algorithm terminates once $\gamma$ is close to zero.
 
 \subsection{DeepFool Attack}
 Moosavi-Dezfooli et al. developed the untargeted white-box attack \emph{DeepFool} \cite{deepfool}.
