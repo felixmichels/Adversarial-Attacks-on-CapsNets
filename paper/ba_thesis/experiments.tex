@@ -4,7 +4,34 @@
 
 \subsection{Datasets and Network Architectures}
 
+
+
 \subsection{Results}
+ 
+ We trained models on each of the following benchmark data sets:
+
+\begin{itemize}
+	\item MNIST: $28\times28$ grayscale images of handwritten digits (60,000  images for training / 10,000  images for testing) \cite{mnist}
+	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training / images 10,000 for testing) \cite{fashion}
+	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training / 26,032 images for testing) \cite{svhn}
+	\item CIFAR10: $32\times32$ color images (50.000  images for training / 10.000  images for testing) \cite{cifar}
+\end{itemize}
+
+Each of the four data sets consist of ten classes.
+
+As baseline architectures we trained convolutional networks utilizing max-pooling,
+batch-normalization \citep{batchnorm} and dropout \citep{dropout}.
+Training capsule networks can be comparatively more difficult in practice, therefore we had to carefully construct well-suited architectures:
+
+For the MNIST data set we used three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer. \\
+For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convolutional layers in the beginning, followed by the primary capsule layer and the class capsules. \\
+Simple CapsNets however don't perform very well on more complex data like CIFAR10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
+We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the dynamic routing. \\
+All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
+For more details on the model architectures, please refer to the following tables: \todo{architecture tables}
+
+
+
 
 \todo{Nicer looking tables}
 \begin{table*}[h]
@@ -73,4 +100,4 @@ and $ N = \begin{bmatrix}
 $ for some $x_1, ..., x_k$ in the test set. \\
 $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one, i.e. only one non-zero singular value.
 
-In this regard we find little difference between CapsNets and CNNs.
+In this regard we find little difference between CapsNets and ConvNets.
