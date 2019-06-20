@@ -127,7 +127,7 @@ def main(args):
 
         save_table('norms_'+model, attack_names, dataset_names, data)
 
-    for model, other in (('caps', 'conv'), ('conv', 'caps')):
+    for model, other in (('caps', 'conv'), ('conv', 'caps'), ('caps', 'linear'), ('conv', 'linear')):
         data = np.empty((len(attack_names), len(dataset_names)))
         for att_idx, attack_name in enumerate(attack_names):
             for dat_idx, dataset_name in enumerate(dataset_names):
@@ -160,7 +160,7 @@ def main(args):
                 data[att_idx, dat_idx] = value
 
         data *= 100
-        save_table('transfer_fooling_'+model, attack_names, dataset_names, data)
+        save_table('transfer_'+other+'_to_'+model, attack_names, dataset_names, data)
 
 
 if __name__ == '__main__':
