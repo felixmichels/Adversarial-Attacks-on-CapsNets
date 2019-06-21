@@ -36,7 +36,7 @@ For more details on the model architectures, please refer to the following table
 \todo{Nicer looking tables}
 \begin{table*}[h]
 %	\begin{minipage}{.45\linewidth}
-		\caption{Average perturbation norms for each attack and architecture.}
+		\caption[Average Perturbation Norms]{Average perturbation norms for each attack and architecture.}
 		\vskip 0.15in
 		\centering\scalebox{1.0}{
 			\begin{tabular}{llcccc}
@@ -60,7 +60,7 @@ For more details on the model architectures, please refer to the following table
 		
 %	\end{minipage}\hspace{0.8cm}
 %	\begin{minipage}{.45\linewidth}
-		\caption{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
+		\caption[Transfer Fooling Rates]{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
 		\vskip 0.15in
 		\centering\scalebox{1.0}{
 			\begin{tabular}{llcccc}
@@ -84,10 +84,17 @@ For more details on the model architectures, please refer to the following table
 \end{table*}
 
 \subsection{Difference between Adversarial Examples}
-\subsubsection{Universal Attack T-SNE}
+\subsubsection{Universal Attack t-SNE}
 
 We used T-SNE \citep{tsne} to make a scatter plot.
-\includegraphics[height=7cm]{tsne.pdf}
+\begin{figure}
+	\includegraphics{tsne.pdf}
+	\label{fig:tsne}
+	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations on CIFAR-10 calculated using t-SNE \citep{tsne}. The upper right cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower left represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
+\end{figure}
+
+
+
 
 \subsubsection{SVD}
 
@@ -101,3 +108,9 @@ $ for some $x_1, ..., x_k$ in the test set. \\
 $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one, i.e. only one non-zero singular value.
 
 In this regard we find little difference between CapsNets and ConvNets.
+
+\begin{figure}
+	\caption{Singular Values of Matrix Containing Normal Vectors To the Decision Boundary}
+	\includegraphics{svd_cifar10.pdf}
+	\label{fig:svd}
+\end{figure}
