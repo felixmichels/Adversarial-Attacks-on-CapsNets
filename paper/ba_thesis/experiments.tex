@@ -30,7 +30,210 @@ We train all CapsNets using margin loss and the reconstruction loss for regulari
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
 For more details on the model architectures, please refer to the following tables: \todo{architecture tables}
 
+\begin{table}
+	
+	\caption{CapsNet on SVHN}
+	\begin{tabular}{|c|c|}
+		\hline 
+	Layer	& Output Shape \\ 
+		\hline 
+	Conv $64$ $5\times5$, valid, ReLU, BN	&  $28\times28\times64$ \\ 
+		\hline 
+	Conv $256$ $5\times5$, valid, Leaky ReLU, BN	&  $24\times24\times256$\\ 
+		\hline 
+	Primary Conv Caps, $64$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times64\times8$\\ 
+		\hline 
+	Class Caps, dim=$16$	&  $10\times16$\\ 
+		\hline 
+		& \\
+		\hline
+	FC 2048, ReLU	& 2048 \\
+		\hline
+	FC 4096, ReLU	& 4096 \\
+		\hline
+	FC 3072, sigmoid	& 3072\\
+		\hline
+	\end{tabular}
 
+	\caption{ConvNet on SVHN}
+	\begin{tabular}{|c|c|}
+		\hline 
+	Layer	&  Output Shape \\ 
+		\hline 
+	Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
+		\hline 
+	Max-Pooling $2\times2$, Dropout 0.15, BN	&  $16\times16\times32$ \\ 
+		\hline 
+	Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
+		\hline 
+	Max-Pooling $2\times2$, Dropout 0.15, BN	& $8\times8\times64$ \\
+		\hline
+	Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
+		\hline
+	Dropout 0.15, BN	& $8\times8\times128$ \\
+		\hline
+	FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		\hline
+	FC 10 & 10\\
+		\hline
+	\end{tabular}
+
+\end{table}
+
+\begin{table}
+
+	\caption{CapsNet on Fashion-MNIST}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	& Output Shape \\ 
+		\hline 
+		Conv $32$ $3\times3$, valid, ReLU, BN	&  $26\times26\times32$ \\ 
+		\hline 
+		Conv $32$ $3\times3$, valid, Leaky ReLU, BN	&  $24\times24\times32$\\ 
+		\hline 
+		Primary Conv Caps, $16$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times16\times8$\\ 
+		\hline 
+		Class Caps, dim=$16$	&  $10\times16$\\ 
+		\hline 
+		& \\
+		\hline
+		FC 512, ReLU	& 512 \\
+		\hline
+		FC 1024, ReLU	& 1024 \\
+		\hline
+		FC 784, sigmoid	& 784 \\
+		\hline
+	\end{tabular}
+
+	\caption{ConvNet on Fashion-MNIST}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	&  Output Shape \\ 
+		\hline 
+		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
+		\hline 
+		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
+		\hline
+		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
+		\hline
+		Dropout 0.15, BN	& $7\times7\times128$ \\
+		\hline
+		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		\hline
+		FC 10 & 10\\
+		\hline
+	\end{tabular} 
+
+\end{table}
+
+\begin{table}
+
+	\caption{CapsNet on MNIST}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	&  Output Shape \\ 
+		\hline 
+		Conv $64$ $9\times9$, valid, ReLU, BN & $24\times24\times64$ \\ 
+		\hline 
+		Primary Conv Caps, $32$ $9\times9$, dim=$8$, stride=2	&  $8\times8\times32\times8$ \\ 
+		\hline 
+		Class Caps, dim=16	& $10\times16$ \\ 
+		\hline 
+		& \\
+		\hline
+		FC 512, ReLU	& 512 \\
+		\hline
+		FC 1024, ReLU	& 1024 \\
+		\hline
+		FC 784, sigmoid	& 784 \\
+		\hline
+	\end{tabular} 
+
+	\caption{ConvNet on MNIST}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	&  Output Shape \\ 
+		\hline 
+		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
+		\hline 
+		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
+		\hline
+		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
+		\hline
+		Dropout 0.15, BN	& $7\times7\times128$ \\
+		\hline
+		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		\hline
+		FC 10 & 10\\
+		\hline
+	\end{tabular} 
+
+\end{table}
+
+\begin{table}
+	
+	\caption[CapsNet on CIFAR-10]{CapsNet on CIFAR-10
+		(uses none-of-the-above category in dynamic routing between all capsule layers)}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	&  Output Shape \\ 
+		\hline 
+		Densely Connected with $1$ Conv $29$ $3\times3$, ReLU and $7$ BN, Conv $32$ $3\times3$, ReLU, BN & $32\times32\times2564$ \\ 
+		\hline
+		Dropout 0.2, BN & $32\times32\times256$ \\
+		\hline
+		Primary Conv Caps, $32$ $5\times5$, dim=$12$, stride=2	&  $14\times14\times32\times12$ \\ 
+		\hline 
+		Conv Caps, $64$ $3\times3$, dim=$24$, stride=2	&  $6\times6\times64\times24$ \\ 
+		\hline 
+		Class Caps, dim=48	& $10\times48$ \\ 
+		\hline 
+		& \\
+		\hline
+		Densely Connected with 2 FC 1024, ReLU	& 2048 \\
+		\hline
+		FC 2048, ReLU	& 2048 \\
+		\hline
+		FC 3072, sigmoid	& 3072 \\
+		\hline
+	\end{tabular} 
+	
+	\caption{ConvNet on CIFAR-10}
+	\begin{tabular}{|c|c|}
+		\hline 
+		Layer	&  Output Shape \\ 
+		\hline 
+		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
+		\hline 
+		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.1, BN	&  $16\times16\times32$ \\ 
+		\hline 
+		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
+		\hline 
+		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
+		\hline 
+		Max-Pooling $2\times2$, Dropout 0.1, BN	& $8\times8\times64$ \\
+		\hline
+		Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
+		\hline
+		Max-Pooling $2\times2$, Dropout 0.1, BN	& $4\times4\times128$ \\
+		\hline
+		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		\hline
+		FC 10 & 10\\
+		\hline
+	\end{tabular} 
+	
+\end{table}
 
 
 \todo{Nicer looking tables}
