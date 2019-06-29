@@ -14,7 +14,7 @@
 	\item MNIST: $28\times28$ grayscale images of handwritten digits (60,000  images for training / 10,000  images for testing) \cite{mnist}
 	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training / images 10,000 for testing) \cite{fashion}
 	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training / 26,032 images for testing) \cite{svhn}
-	\item CIFAR10: $32\times32$ color images (50.000  images for training / 10.000  images for testing) \cite{cifar}
+	\item CIFAR-10: $32\times32$ color images (50.000  images for training / 10.000  images for testing) \cite{cifar}
 \end{itemize}
 
 Each of the four data sets consist of ten classes.
@@ -25,7 +25,7 @@ Training capsule networks can be comparatively more difficult in practice, there
 
 For the MNIST data set we used three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer. \\
 For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convolutional layers in the beginning, followed by the primary capsule layer and the class capsules. \\
-Simple CapsNets however don't perform very well on more complex data like CIFAR10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
+Simple CapsNets however don't perform very well on more complex data like CIFAR-10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the dynamic routing. \\
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
 For more details on the model architectures, please refer to the following tables: \todo{architecture tables}
@@ -236,6 +236,22 @@ For more details on the model architectures, please refer to the following table
 \end{table}
 
 
+\begin{table}
+	\caption{Test accuracies achieved by our networks.}
+	%\vskip 0.15in
+	\centering%\scalebox{0.85}{
+		\begin{tabular}{lcccc}
+			\toprule
+			Network       & MNIST & Fashion-MNIST & SVHN & CIFAR-10  \\
+			\midrule
+			ConvNet           & $99.39\%$ & $92.90\%$ & $92.57\%$ & $88.22\%$ \\
+			CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
+			\bottomrule\\
+	\end{tabular}%}
+	\label{tab:accuracies}
+\end{table}
+
+
 \todo{Nicer looking tables}
 \begin{table*}[h]
 %	\begin{minipage}{.45\linewidth}
@@ -244,7 +260,7 @@ For more details on the model architectures, please refer to the following table
 		\centering\scalebox{1.0}{
 			\begin{tabular}{llcccc}
 				\toprule
-				Attack & Network       & MNIST & Fashion & SVHN & CIFAR10  \\
+				Attack & Network       & MNIST & Fashion & SVHN & CIFAR-10  \\
 				\midrule
 				\multirow{2}{*}{CW} & ConvNet & {$1.40$} & $0.51$ & $0.67$ & $0.37$ \\
 				& CapsNet            & $1.82$ & {$0.50$} & {$0.60$} & {$0.23$} \\
@@ -268,7 +284,7 @@ For more details on the model architectures, please refer to the following table
 		\centering\scalebox{1.0}{
 			\begin{tabular}{llcccc}
 				\toprule
-				Attack & Network       & MNIST & Fashion & SVHN & CIFAR10  \\
+				Attack & Network       & MNIST & Fashion & SVHN & CIFAR-10  \\
 				\midrule
 				\multirow{2}{*}{CW} & ConvNet & $0.8\%$ & $1.2\%$ & $2.8\%$ & $2.4\%$ \\
 				& CapsNet            & $2.0\%$ & $2.0\%$ & $3.8\%$ & $2.0\%$ \\
@@ -283,7 +299,7 @@ For more details on the model architectures, please refer to the following table
 				& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 				\bottomrule\\
 		\end{tabular}}
-		\label{tab:attacks}%\end{minipage}
+		\label{tab:transfer}%\end{minipage}
 \end{table*}
 
 \subsection{Difference between Adversarial Examples}
@@ -300,7 +316,7 @@ We used T-SNE \citep{tsne} to make a scatter plot.
 
 
 \subsubsection{SVD}
-
+6
 \citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace. \\
 For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
 and $ N = \begin{bmatrix}
