@@ -9,6 +9,10 @@ def _is_interactive():
     return not hasattr(__main__, '__file__')
 
 
+# Fix stupid absl stuff
+flags.FLAGS.__delattr__('log_dir')
+
+
 flags.DEFINE_integer('batch_size', 128, 'batch size')
 flags.DEFINE_integer('epochs', 50, 'number of epochs')
 flags.DEFINE_float('data_aug', None, 'Amount of data augmentation. Set to None to disable')
