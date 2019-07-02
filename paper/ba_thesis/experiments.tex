@@ -6,7 +6,7 @@
 
 
 
-\subsection{Results}
+
  
  We trained models on each of the following benchmark data sets:
 
@@ -28,236 +28,44 @@ For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convoluti
 Simple CapsNets however don't perform very well on more complex data like CIFAR-10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the dynamic routing. \\
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
-For more details on the model architectures, please refer to the following tables: \todo{architecture tables}
+For more details on the model architectures, please refer to the tables in ~\ref{lab:networks}.
 
-\begin{table}
+The test accuracies of our networks on the respective data sets are displayed in Table~\ref{tab:accuracies}.
+While these accuracies do not reach the state of the art, the similarity between the performances of the CapsNets and ConvNets indicates their suitability to the task of comparing adversarial robustness.
+
+\begin{table}[h]
 	
-	\caption{CapsNet on SVHN}
-	\begin{tabular}{|c|c|}
-		\hline 
-	Layer	& Output Shape \\ 
-		\hline 
-	Conv $64$ $5\times5$, valid, ReLU, BN	&  $28\times28\times64$ \\ 
-		\hline 
-	Conv $256$ $5\times5$, valid, Leaky ReLU, BN	&  $24\times24\times256$\\ 
-		\hline 
-	Primary Conv Caps, $64$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times64\times8$\\ 
-		\hline 
-	Class Caps, dim=$16$	&  $10\times16$\\ 
-		\hline
-		& \\
-		\hline
-	FC 2048, ReLU	& 2048 \\
-		\hline
-	FC 4096, ReLU	& 4096 \\
-		\hline
-	FC 3072, sigmoid	& 3072\\
-		\hline
-	\end{tabular}
-
-	\caption{ConvNet on SVHN}
-	\begin{tabular}{|c|c|}
-		\hline 
-	Layer	&  Output Shape \\ 
-		\hline 
-	Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
-		\hline 
-	Max-Pooling $2\times2$, Dropout 0.15, BN	&  $16\times16\times32$ \\ 
-		\hline 
-	Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
-		\hline 
-	Max-Pooling $2\times2$, Dropout 0.15, BN	& $8\times8\times64$ \\
-		\hline
-	Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
-		\hline
-	Dropout 0.15, BN	& $8\times8\times128$ \\
-		\hline
-	FC 1024, ReLU, Dropout 0.5 & 1024 \\
-		\hline
-	FC 10 & 10\\
-		\hline
-	\end{tabular}
-
-\end{table}
-
-\begin{table}
-
-	\caption{CapsNet on Fashion-MNIST}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	& Output Shape \\ 
-		\hline 
-		Conv $32$ $3\times3$, valid, ReLU, BN	&  $26\times26\times32$ \\ 
-		\hline 
-		Conv $32$ $3\times3$, valid, Leaky ReLU, BN	&  $24\times24\times32$\\ 
-		\hline 
-		Primary Conv Caps, $16$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times16\times8$\\ 
-		\hline 
-		Class Caps, dim=$16$	&  $10\times16$\\ 
-		\hline 
-		& \\
-		\hline
-		FC 512, ReLU	& 512 \\
-		\hline
-		FC 1024, ReLU	& 1024 \\
-		\hline
-		FC 784, sigmoid	& 784 \\
-		\hline
-	\end{tabular}
-
-	\caption{ConvNet on Fashion-MNIST}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	&  Output Shape \\ 
-		\hline 
-		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
-		\hline 
-		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
-		\hline
-		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
-		\hline
-		Dropout 0.15, BN	& $7\times7\times128$ \\
-		\hline
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
-		\hline
-		FC 10 & 10\\
-		\hline
-	\end{tabular} 
-
-\end{table}
-
-\begin{table}
-
-	\caption{CapsNet on MNIST}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	&  Output Shape \\ 
-		\hline 
-		Conv $64$ $9\times9$, valid, ReLU, BN & $24\times24\times64$ \\ 
-		\hline 
-		Primary Conv Caps, $32$ $9\times9$, dim=$8$, stride=2	&  $8\times8\times32\times8$ \\ 
-		\hline 
-		Class Caps, dim=16	& $10\times16$ \\ 
-		\hline 
-		& \\
-		\hline
-		FC 512, ReLU	& 512 \\
-		\hline
-		FC 1024, ReLU	& 1024 \\
-		\hline
-		FC 784, sigmoid	& 784 \\
-		\hline
-	\end{tabular} 
-
-	\caption{ConvNet on MNIST}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	&  Output Shape \\ 
-		\hline 
-		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
-		\hline 
-		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
-		\hline
-		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
-		\hline
-		Dropout 0.15, BN	& $7\times7\times128$ \\
-		\hline
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
-		\hline
-		FC 10 & 10\\
-		\hline
-	\end{tabular} 
-
-\end{table}
-
-\begin{table}
-	
-	\caption[CapsNet on CIFAR-10]{CapsNet on CIFAR-10
-		(uses none-of-the-above category in dynamic routing between all capsule layers)}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	&  Output Shape \\ 
-		\hline 
-		Densely Connected with $1$ Conv $29$ $3\times3$, ReLU and $7$ BN, Conv $32$ $3\times3$, ReLU, BN & $32\times32\times2564$ \\ 
-		\hline
-		Dropout 0.2, BN & $32\times32\times256$ \\
-		\hline
-		Primary Conv Caps, $32$ $5\times5$, dim=$12$, stride=2	&  $14\times14\times32\times12$ \\ 
-		\hline 
-		Conv Caps, $64$ $3\times3$, dim=$24$, stride=2	&  $6\times6\times64\times24$ \\ 
-		\hline 
-		Class Caps, dim=48	& $10\times48$ \\ 
-		\hline 
-		& \\
-		\hline
-		Densely Connected with 2 FC 1024, ReLU	& 2048 \\
-		\hline
-		FC 2048, ReLU	& 2048 \\
-		\hline
-		FC 3072, sigmoid	& 3072 \\
-		\hline
-	\end{tabular} 
-	
-	\caption{ConvNet on CIFAR-10}
-	\begin{tabular}{|c|c|}
-		\hline 
-		Layer	&  Output Shape \\ 
-		\hline 
-		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
-		\hline 
-		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.1, BN	&  $16\times16\times32$ \\ 
-		\hline 
-		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
-		\hline 
-		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
-		\hline 
-		Max-Pooling $2\times2$, Dropout 0.1, BN	& $8\times8\times64$ \\
-		\hline
-		Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
-		\hline
-		Max-Pooling $2\times2$, Dropout 0.1, BN	& $4\times4\times128$ \\
-		\hline
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
-		\hline
-		FC 10 & 10\\
-		\hline
-	\end{tabular} 
-	
-\end{table}
-
-
-\begin{table}
-	\caption{Test accuracies achieved by our networks.}
 	%\vskip 0.15in
 	\centering%\scalebox{0.85}{
-		\begin{tabular}{lcccc}
-			\toprule
-			Network       & MNIST & Fashion-MNIST & SVHN & CIFAR-10  \\
-			\midrule
-			ConvNet           & $99.39\%$ & $92.90\%$ & $92.57\%$ & $88.22\%$ \\
-			CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
-			\bottomrule\\
+	\begin{tabular}{lcccc}
+		\toprule
+		Network       & MNIST & Fashion-MNIST & SVHN & CIFAR-10  \\
+		\midrule
+		ConvNet           & $99.39\%$ & $92.90\%$ & $92.57\%$ & $88.22\%$ \\
+		CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
+		\bottomrule\\
 	\end{tabular}%}
+	\caption{Test accuracies achieved by our networks.}
 	\label{tab:accuracies}
 \end{table}
 
+For each of the data sets we compute adversarial examples using our four chose attacks in the following manner: \\
+\todo{Make this less horrible}
+We randomly select $1000$ each from the test set and attack them with DeepFool and the boundary attack.
+For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (but that are different from the true labels). In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
 
-\todo{Nicer looking tables}
-\begin{table*}[h]
-%	\begin{minipage}{.45\linewidth}
-		\caption[Average Perturbation Norms]{Average perturbation norms for each attack and architecture.}
-		\vskip 0.15in
-		\centering\scalebox{1.0}{
+We do not restrict the maximal perturbation norm for any of the attacks and hence the Carlini-Wagner, the boundary and the DeepFool attack only generate valid adversarial examples.
+Regarding the universal perturbations, we terminate the algorithm once accuracy falls below $50\%$.
+We found, that the universal perturbations generalize well: while only a tenth of the test set is used to generate each universal perturbation, they can reduce the test accuracy of the whole test set to $50\pm2.5\%$.
+
+
+
+\subsection{Robustness to Adversarial Attacks}
+
+\begin{table}[h]
+		
+	\centering\
+		\scalebox{1.0}{
 			\begin{tabular}{llcccc}
 				\toprule
 				Attack & Network       & MNIST & Fashion & SVHN & CIFAR-10  \\
@@ -276,10 +84,10 @@ For more details on the model architectures, please refer to the following table
 				\bottomrule\\
 		\end{tabular}}
 		\label{tab:norms}
+		\caption[Average Perturbation Norms]{Average perturbation norms for each attack and architecture.}
 		
-%	\end{minipage}\hspace{0.8cm}
-%	\begin{minipage}{.45\linewidth}
-		\caption[Transfer Fooling Rates]{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
+		\vspace{0.75cm}
+		
 		\vskip 0.15in
 		\centering\scalebox{1.0}{
 			\begin{tabular}{llcccc}
@@ -299,13 +107,17 @@ For more details on the model architectures, please refer to the following table
 				& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 				\bottomrule\\
 		\end{tabular}}
-		\label{tab:transfer}%\end{minipage}
-\end{table*}
+		\label{tab:transfer}
+		\caption[Transfer Fooling Rates]{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
+\end{table}
 
-\subsection{Difference between Adversarial Examples}
+\subsection{Structural Analysis of Adversarial Examples}
+
+While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest, that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
+
 \subsubsection{Universal Attack t-SNE}
 
-We used T-SNE \citep{tsne} to make a scatter plot.
+We used t-SNE \citep{tsne} to make a scatter plot.
 \begin{figure}
 	\includegraphics{tsne.pdf}
 	\label{fig:tsne}
@@ -316,7 +128,6 @@ We used T-SNE \citep{tsne} to make a scatter plot.
 
 
 \subsubsection{SVD}
-6
 \citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace. \\
 For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
 and $ N = \begin{bmatrix}
@@ -329,7 +140,12 @@ $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably sm
 In this regard we find little difference between CapsNets and ConvNets.
 
 \begin{figure}
+	\centering
+	\includegraphics[width=.9\textwidth]{svd_cifar10.pdf}
+	\caption{CIFAR-10}
+
+	\includegraphics[width=.95\textwidth]{svd_mnist.pdf}
+	\caption{MNIST}
 	\caption{Singular Values of Matrix Containing Normal Vectors To the Decision Boundary}
-	\includegraphics{svd_cifar10.pdf}
 	\label{fig:svd}
 \end{figure}
