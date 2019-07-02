@@ -28,12 +28,10 @@ For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convoluti
 Simple CapsNets however don't perform very well on more complex data like CIFAR-10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the dynamic routing. \\
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
-For more details on the model architectures, please refer to the following tables: 
+For more details on the model architectures, please refer to the following tables: \todo{architecture tables}
 
-
-\todo{better architecture tables}
 \begin{table}
-
+	
 	\caption{CapsNet on SVHN}
 	\begin{tabular}{|c|c|}
 		\hline 
