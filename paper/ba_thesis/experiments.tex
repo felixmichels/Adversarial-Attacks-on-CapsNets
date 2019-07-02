@@ -1,6 +1,7 @@
 % !TeX root = ba.tex
 
 \section{Experiments}
+\label{sec:experiments}
 
 \subsection{Datasets and Network Architectures}
 
@@ -20,12 +21,12 @@
 Each of the four data sets consist of ten classes.
 
 As baseline architectures we trained convolutional networks utilizing max-pooling,
-batch-normalization \citep{batchnorm} and dropout \citep{dropout}.
+batch normalization \citep{batchnorm} and dropout \citep{dropout}.
 Training capsule networks can be comparatively more difficult in practice, therefore we had to carefully construct well-suited architectures:
 
 For the MNIST data set we used three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer. \\
 For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convolutional layers in the beginning, followed by the primary capsule layer and the class capsules. \\
-Simple CapsNets however don't perform very well on more complex data like CIFAR-10 \citep{complex}, therefore we use a modified DCNet \citep{denseanddiverse} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
+Simple CapsNets however don't perform very well on more complex data like CIFAR-10 \citep{complex}, therefore we use a modified DCNet \citep{dcnet} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing. \\
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the dynamic routing. \\
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}. \\
 For more details on the model architectures, please refer to the tables in ~\ref{lab:networks}.
