@@ -1,6 +1,7 @@
 % !TeX root = ba.tex
 
 \section{Capsule Networks}
+\label{sec:capsules}
 
 \todo{Rewrite this whole section}
 
@@ -21,3 +22,22 @@ Squashing:
 & \sum_{i} c_{ij} \hat{u}_{j \vert i}, & & \hat{u}_{j \vert i} = W_{ij}u_j
 \end{aligned}
 \end{equation}
+
+\algtext*{EndFor} % Remove end for text
+\begin{algorithm}
+\caption{Routing-by-agreement}
+\label{alg:foobar}
+\begin{algorithmic}[1]
+	
+\Procedure{Foo}{$x$}
+	\State $\forall i,j: b_{ij} \gets 0$
+	\For{$r$ iterations}
+		\State $c_{ij} \gets \frac{\exp(b_{ij})}{\sum_{k}{\exp(b_{ik})}}$ \Comment{Softmax}
+		\State $s_j \gets \sum_{i}{c_{ij}\hat{u}_{j \vert i}}$
+		\State $v_j = \frac{\norm{s_j}}{1 + \norm{s_j}^2} s_j$ \Comment{Squash capsules}
+		\State $b_{ij} \gets b_{ij} + \langle v_j, \hat{u}_{j \vert i} \rangle$
+	\EndFor
+\EndProcedure
+	
+\end{algorithmic}
+\end{algorithm}

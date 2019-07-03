@@ -6,10 +6,20 @@
 
 \subsection{Detailed Description of Neural Network Architectures}
 \label{lab:networks}
+
+The following tables describe the structure of the neural networks we used in detail. Each row represents a layer (for brevity's sake some types of layers are merged into a single row).
+The tables for the CapsNets are separated into two parts: The encoder network (top) and the decoder network (bottom).
+Some expressions may need further explanation:
+
+\begin{itemize}
+	\item BN: spatial batch normalization
+	\item Conv $K$ $F \times F$, \{valid,same\}: Convolutional layer with $F$ filters of shape $F \times F$ and either valid padding (i.e. no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
+	\item FC $n$: Fully connected with $n$ units
+	\item Densely Connected: A densely connected block \citep{denselyconnected} contains multiple layers in such a way, that the input for each layer the concatenated output of all previous layer in this block is.
+\end{itemize}
 \todo{Explain tables (BN, Dense...)}
 
 \begin{table}
-	
 	\centering
 	
 	\begin{tabular}{lc}
@@ -33,7 +43,7 @@
 	\end{tabular} 
 	\caption{CapsNet on MNIST}
 	\label{tab:capsnet:mnist}
-	
+
 	\vspace{0.75cm}
 	
 	\begin{tabular}{lc}
@@ -180,7 +190,7 @@
 		Layer	&  Output Shape \\ 
 		\midrule
 		Densely Connected with \\
-		$1$ Conv $29$ $3\times3$, ReLU and  & $32\times32\times2564$ \\
+		$1$ Conv $29$ $3\times3$, ReLU and  & $32\times32\times256$ \\
 		$7$ BN, Conv $32$ $3\times3$, ReLU, BN \\ 
 		\midrule
 		Dropout 0.2, BN & $32\times32\times256$ \\
@@ -236,6 +246,7 @@
 \end{table}
 
 \subsection{Adversarial Examples}
+\label{lab:images}
 
 \begin{figure}
 	\centering
@@ -332,4 +343,4 @@
 
 \subsection{ICML Paper}
 
-\includepdf[pages={-}, scale=.9, pagecommand={}]{icml.pdf}
+\includepdf[pages={1-4}, nup=2x2]{icml.pdf}
