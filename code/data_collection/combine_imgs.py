@@ -20,10 +20,16 @@ model_types = ['conv', 'caps']
 
 def save_grid(outfile, width, height, *infiles):
     outfile = os.path.join(OUT_DIR, outfile)
+    outfile_tmp = outfile + '.tmp'
     scale = '{}x{}'.format(IMG_WIDTH, IMG_WIDTH)
     tile = '{}x{}'.format(width, height)
     opts = ['-tile', tile, '-geometry', '+4+4', '-scale', scale]
-    check_call(["montage"] + list(infiles) + opts + [outfile])
+    check_call(["montage"] + list(infiles) + opts + ['pdf:'+outfile_tmp])
+
+    # Change pdf metadata, so git doesn't freak out
+    stampfile = os.path.join(OUT_DIR, 'pdftimestamp.txt')
+    check_call(['pdftk', outfile_tmp, 'update_info', stampfile, 'output', outfile])
+    os.remove(outfile_tmp)
 
 
 def img_file_name(dataset, attack, model_type, img_type, num):
@@ -36,12 +42,12 @@ def main():
     for attack in attack_names:
         for model_type in model_types:
             # Small cifar10 images
-            infiles = [img_file_name('cifar10', attack, model_type, img_type, 0)
+            infiles = [img_file_name('cifar10', attack, model_type, img_type, 1)
                      for img_type in ('adv', 'pertvisible')]
             outfile = '_'.join(['cifar10', attack, model_type + '.pdf'])
             save_grid(outfile, 2, 1, *infiles)
             
-            infile = img_file_name('cifar10', attack, model_type, 'orig', 0)
+            infile = img_file_name('cifar10', attack, model_type, 'orig', 1)
             outfile = '_'.join(['cifar10', attack, 'orig.pdf'])
             save_grid(outfile, 1, 1, infile)
             

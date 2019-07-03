@@ -1,0 +1,20 @@
+InfoBegin
+InfoKey: ModDate
+InfoValue: D:20190703170642
+InfoBegin
+InfoKey: CreationDate
+InfoValue: D:20190703170642
+InfoBegin
+InfoKey: Title
+InfoValue: out2&#0;
+InfoBegin
+InfoKey: Producer
+InfoValue: https://imagemagick.org
+PdfID0: 53209ebe7fe161b03d29543d2563851e77bcb6ffa4edbde807f2469120b775c2
+PdfID1: 53209ebe7fe161b03d29543d2563851e77bcb6ffa4edbde807f2469120b775c2
+NumberOfPages: 1
+PageMediaBegin
+PageMediaNumber: 1
+PageMediaRotation: 0
+PageMediaRect: 0 0 232 232
+PageMediaDimensions: 232 232
