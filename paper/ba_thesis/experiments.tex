@@ -5,11 +5,7 @@
 
 \subsection{Datasets and Network Architectures}
 
-
-
-
- 
- We trained models on each of the following benchmark data sets:
+We trained models on each of the following benchmark data sets:
 
 \begin{itemize}
 	\item MNIST: $28\times28$ grayscale images of handwritten digits (60,000  images for training / 10,000  images for testing) \cite{mnist}
@@ -58,6 +54,24 @@ For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversari
 We do not restrict the maximal perturbation norm for any of the attacks and hence the Carlini-Wagner, the boundary and the DeepFool attack only generate valid adversarial examples.
 Regarding the universal perturbations, we terminate the algorithm once accuracy falls below $50\%$.
 We found, that the universal perturbations generalize well: while only a tenth of the test set is used to generate each universal perturbation, they can reduce the test accuracy of the whole test set to $50\pm2.5\%$.
+
+In Figure~\ref{tab:images} some examples of the product of the attacks on CIFAR-10 can be seen. The Carlini-Wagner, the boundary and the DeepFool attack result in humanly imperceptible adversarial examples. Only the universal perturbations are clearly visible. Furthermore we can observe some differences in the structure of the adversarial perturbations. While the black-box attack (boundary attacks) produces perturbations that resemble random noise, some noticeable patterns emerge in the perturbations of the white-box attacks. For more examples of adversarial images for this and the other data sets, see ~\ref{lab:images}.
+
+\begin{center}
+\begin{longtable}{rccc}
+	
+	CW & \includegraphics[height=2cm]{cifar10_carlini_wagner_orig.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_caps.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_conv.pdf}\\
+	\\
+	Boundary & \includegraphics[height=2cm]{cifar10_boundary_attack_orig.pdf} & \includegraphics[height=2cm]{cifar10_boundary_attack_caps.pdf} & \includegraphics[height=2cm]{cifar10_boundary_attack_conv.pdf}\\
+	\\
+	DeepFool & \includegraphics[height=2cm]{cifar10_deepfool_orig.pdf} & \includegraphics[height=2cm]{cifar10_deepfool_caps.pdf} & \includegraphics[height=2cm]{cifar10_deepfool_conv.pdf}\\
+	\\
+	Universal & \includegraphics[height=2cm]{cifar10_universal_perturbation_orig.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_caps.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_conv.pdf}\\
+	\\
+\end{longtable}
+	\captionof{figure}[Adversarial Examples on CIFAR-10]{Original images from the CIFAR-10 dataset (left), adversarial examples and perturbations for CapsNet (middle) and adversarial examples and perturbations for ConvNet (right). Pixel values of perturbation images are scaled for visibility.}
+\label{tab:images}
+\end{center}
 
 
 
