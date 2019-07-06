@@ -1,0 +1,38 @@
+%% Extra packages
+\usepackage[colorinlistoftodos,obeyFinal]{todonotes}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{pdfpages}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{longtable}
+\usepackage{capt-of}
+
+% Automatic FloatBarrier at and of section and subsection
+\usepackage[section]{placeins}
+\AtBeginDocument{%
+	\expandafter\renewcommand\expandafter\subsection\expandafter{%
+		\expandafter\@fb@secFB\subsection
+	}%
+}
+
+\graphicspath{{../figures/}}
+
+%% Math stuff
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\DeclareMathOperator*{\minimize}{minimize}
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert _2}
+\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
+
+\usepackage{cleveref}
+
+\hyphenation{Caps-Net}
+\hyphenation{Caps-Nets}
+\hyphenation{Conv-Net}
+\hyphenation{Conv-Nets}

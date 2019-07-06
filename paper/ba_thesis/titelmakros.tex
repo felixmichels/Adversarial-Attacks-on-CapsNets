@@ -45,47 +45,9 @@
 \usepackage[colorlinks,citecolor=blue,linkcolor=black]{hyperref} %anklickbares Inhaltsverzeichnis
 \usepackage[style=authoryear,natbib=true,backend=bibtex,mincitenames=1,maxcitenames=2,maxbibnames=99,uniquelist=false,dashed=false]{biblatex}
 
-%% My stuff
-%% Extra packages
-\usepackage[colorinlistoftodos,obeyFinal]{todonotes}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{hhline}
-\usepackage{subcaption}
-\usepackage[export]{adjustbox}
-\usepackage{pdfpages}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{longtable}
-\usepackage{capt-of}
-
-\usepackage[section]{placeins}
-\makeatletter
-\AtBeginDocument{%
-	\expandafter\renewcommand\expandafter\subsection\expandafter{%
-		\expandafter\@fb@secFB\subsection
-	}%
-}
-\makeatother
-
-\graphicspath{{../figures/}}
-
-%% Math
-\usepackage{amsmath}
-\usepackage{amssymb}
-
-\DeclareMathOperator*{\minimize}{minimize}
-\newcommand{\norm}[1]{\left \lVert #1 \right \rVert _2}
-\newcommand{\abs}[1]{\left \lvert #1 \right \rvert}
-
-\usepackage{cleveref}
-
-\hyphenation{Caps-Net}
-\hyphenation{Caps-Nets}
-\hyphenation{Conv-Net}
-\hyphenation{Conv-Nets}
-%% End, My stuff
+% My stuff
+\usepackage{custom_ba} % Extra packages, macros etc.
+% End my stuff
 
 % https://tex.stackexchange.com/a/334703/8850
 \AtEveryBibitem{%
