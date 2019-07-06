@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+Creates csv tables of average perturbations norms
+and transfer fooling rates using the data in the directory
+../data or, if specified, args[0]
+"""
+
 
 import numpy as np
 import os
@@ -97,7 +103,10 @@ adv_numbers = {
 attack_names = list(adv_numbers.keys())
 
 def targeted(name):
-    return name == 'carlini_wagner'
+    return name.lower() == 'carlini_wagner'
+
+def universal(name):
+    return 'universal' in name.lower()
 
 def main(args):
     data_dir = '../data'
@@ -150,7 +159,7 @@ def main(args):
                 preds = probs.argmax(axis=-1)
                 preds = preds[:adv_numbers[attack_name]]
 
-                if attack_name == 'universal_perturbation':
+                if universal(attack_name):
                     value = np.concatenate([(prob.argmax(axis=-1) != label) for prob in probs]).mean()
                 elif targeted(attack_name):
                     value = (preds == target[:len(preds)]).mean()
@@ -159,6 +168,7 @@ def main(args):
 
                 data[att_idx, dat_idx] = value
 
+        # To percent
         data *= 100
         save_table('transfer_'+other+'_to_'+model, attack_names, dataset_names, data)
 
