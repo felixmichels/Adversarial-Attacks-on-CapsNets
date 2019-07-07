@@ -58,7 +58,7 @@ We found, that the universal perturbations generalize well: while only a tenth o
 In Figure~\ref{tab:images} some examples of the product of the attacks on CIFAR-10 can be seen. The Carlini-Wagner, the boundary and the DeepFool attack result in humanly imperceptible adversarial examples. Only the universal perturbations are clearly visible. Furthermore we can observe some differences in the structure of the adversarial perturbations. While the black-box attack (boundary attacks) produces perturbations that resemble random noise, some noticeable patterns emerge in the perturbations of the white-box attacks. For more examples of adversarial images for this and the other data sets, see Appendix~\ref{lab:images}.
 
 \begin{center}
-\begin{longtable}{rccc}
+\begin{longtable*}{rccc}
 	
 	CW & \includegraphics[height=2cm]{cifar10_carlini_wagner_orig.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_caps.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_conv.pdf}\\
 	\\
@@ -68,9 +68,9 @@ In Figure~\ref{tab:images} some examples of the product of the attacks on CIFAR-
 	\\
 	Universal & \includegraphics[height=2cm]{cifar10_universal_perturbation_orig.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_caps.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_conv.pdf}\\
 	\\
-\end{longtable}
+\end{longtable*}
 % This should count as a figure and not as a table
-\addtocounter{table}{-1}
+%\addtocounter{table}{-1}
 \captionof{figure}[Adversarial Examples on CIFAR-10]{Original images from the CIFAR-10 dataset (left), adversarial examples and perturbations for CapsNet (middle) and adversarial examples and perturbations for ConvNet (right). Pixel values of perturbation images are scaled for visibility.}
 \label{tab:images}
 \end{center}
@@ -151,14 +151,20 @@ While we have found, that CapsNets are not necessarily more robust against adver
 
 \subsubsection{Universal Attack t-SNE}
 
-We used t-SNE \citep{tsne} to make a scatter plot.
+We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see Figure~\ref{fig:tsne}).
+We discover, that for all data sets there is a clear distinction between the perturbations calculated for the different architectures.
+Although t-SNE can often distinguish the perturbations of models that are trained slightly different, this is not just a outcome of this phenomenon.
+By including another ConvNet in the diagram we find the clusters of the ConvNets almost perfectly matching while the cluster for the CapsNet is still separated.
+This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
+
+In Figure~\ref{fig:tsne} can furthermore subclusters based on the data set splits used to calculate the perturbations be seen.
+These distinctions are however less pronounced with the other data sets besides CIFAR-10.
+
 \begin{figure}
 	\includegraphics{tsne.pdf}
-	\label{fig:tsne}
 	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations on CIFAR-10 calculated using t-SNE \citep{tsne}. The upper right cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower left represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
+	\label{fig:tsne}
 \end{figure}
-
-
 
 
 \subsubsection{SVD}
@@ -168,19 +174,27 @@ and $ N = \begin{bmatrix}
 \frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
 \end{bmatrix}
 \in \mathrm{R}^{n \times k}
-$ for some $x_1, ..., x_k$ in the test set. \\
-$\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of N give us information about the decision boundary. For example, for an binary linear classifier, N would have a rank of one, i.e.\ only one non-zero singular value.
+$ for some $x_1, ..., x_k$ in the test set with $k > n$. \\
+$\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of $N$ give us information about the decision boundary. For example, for an binary linear classifier, $N$ would have a rank of one, i.e.\ only one non-zero singular value.
 
-In this regard we find little difference between CapsNets and ConvNets.
+Accurately computing $\delta(x)$ is very challenging, so we used the DeepFool attack as an approximation. We computed an additional $5000$ adversarial examples and plot the size of the singular values of the resulting Matrix $N$ together with a matrix containing columns sampled from the unit sphere $S^{n-1}$ in Figure~\ref{fig:svd}.
+
+For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
+In this regard the difference between CapsNets and ConvNets is inconclusive.
+Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 data set, the opposite occurs for the other cases.
+
 
 \begin{figure}
 	\centering
-	\includegraphics[width=.9\textwidth]{svd_cifar10.pdf}
-	\caption{CIFAR-10}
-
-	\includegraphics[width=.95\textwidth]{svd_mnist.pdf}
-	\caption{MNIST}
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=.95\textwidth]{svd_cifar10.pdf}
+		\caption{CIFAR-10}
+	\end{subfigure}
+	\begin{subfigure}{\textwidth}
+		\includegraphics[width=.95\textwidth]{svd_mnist.pdf}
+		\caption{MNIST}
+	\end{subfigure}
 	
-	\caption{Singular Values of Matrix Containing Normal Vectors To the Decision Boundary}
+	\caption{Singular values of the matrix containing normal vectors to the decision boundary.}
 	\label{fig:svd}
 \end{figure}
