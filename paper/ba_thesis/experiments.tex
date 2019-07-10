@@ -198,3 +198,23 @@ Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet i
 	\caption{Singular values of the matrix containing normal vectors to the decision boundary.}
 	\label{fig:svd}
 \end{figure}
+
+\subsection{Effects on Activations}
+What am I even doing here.
+
+$d(z, w) = \frac{\norm[\infty]{z - w}}{\norm[\infty]{z}}$
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\includegraphics{activation_error_caps.pdf}
+		\caption{CapsNet. Dashed lines are capsule norms}
+	\end{subfigure}
+		\begin{subfigure}{\textwidth}
+		\includegraphics{activation_error_conv.pdf}
+		\caption{ConvNet}
+	\end{subfigure}
+
+	\caption[Activation errors]{Activation errors of select layers}
+	\label{fig:activation}
+\end{figure}
