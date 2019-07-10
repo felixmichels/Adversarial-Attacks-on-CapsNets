@@ -89,7 +89,7 @@ The next iteration should then fulfill the following criteria to ensure that the
 
 While these conditions are difficult to meet exactly, they are approximated by sampling from a normal distribution orthogonal to $\delta^{(k)}$ and making a step with size $\nu$ in this direction. If this point is still adversarial, a step towards $x$ is made with size $\gamma$. The parameters $\nu$ and $\gamma$ are adapted dynamically, similarly to Trust Region methods.
 A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value. \\
-The success rate for the orhogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. \\
+The success rate for the orthogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. \\
 The target success rate for the direct step is set to a value around $0.25$, which empirically leads to good adversarial examples. \\
 The algorithm terminates once $\gamma$ is close to zero.
 
