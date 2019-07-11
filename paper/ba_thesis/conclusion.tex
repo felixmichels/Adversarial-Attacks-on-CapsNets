@@ -1,0 +1,17 @@
+% !TeX root = ba.tex
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+By applying sufficiently strong attacks to the trained networks we showed that CapsNets can be fooled by imperceptible adversarial examples just as easily as ConvNets. In general CapsNets and ConvNets have a similar level of vulnerability to adversarial attacks and it can be difficult to determine which model is more robust in a specific situation.
+CapsNets also do not show more resistance against white-box attacks compared to black-box attacks as previously suspected.
+We could also demonstrate that adversarial examples can be transferred between the two architectures.
+Specifically using universal perturbations computed for fooling the ConvNet to attack the CapsNet can lead to a higher fooling rate than the original universal perturbation, even though the transfer attack is in this context a black-box attack.
+
+Moreover we could ascertain that adversarial perturbations of CapsNets exist in a low dimensional subspace, like it was previously known to be the case for ConvNets.
+Despite the comparable effectiveness of adversarial examples on CapsNets and CapsNets we discovered underlying structural differences.
+By embedding the universal perturbation in a two dimensional space a clear distinction became noticeable.
+
+Through analysis of activations between layers we could recognize the roles of capsule layers in the networks with respect to adversarial attacks. The routing-by-agreement algorithm not only fails to amend missteps of the earlier convolutional layer by establishing equivariance in the capsule vector direction and invariance in their norm, but also offers another layer for an adversarial example to intensify their deceiving effect when propagating through the network.
+
+Further work should include the study of additional CapsNet architectures, especially ones utilizing other routing algorithms as well as attempts to help CapsNets detect and defend against adversarial attacks.
