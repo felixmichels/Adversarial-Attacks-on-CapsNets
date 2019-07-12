@@ -251,8 +251,12 @@ Some expressions may need further explanation:
 
 The following pages display adversarial examples categorized by attack.
 The pixel values for the perturbations are scaled for visibility in the following way:
-$\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.5em}\norm[\infty]{\delta}}$.
-Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$
+\begin{equation*}
+\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em}\norm[\infty]{\delta}}
+\end{equation*}
+Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$.
+
+All images are chosen at random.
 
 \begin{figure}
 	\centering
@@ -349,6 +353,6 @@ Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n
 
 \subsection{ICML Paper}
 
-Our work resulted in a poster presentation at ICML 2019.
+Our work resulted in a paper \citep*{mine} that was accepted as a poster presentation at ICML 2019.
 
-\includepdf[pages={1-4}, nup=2x2]{icml.pdf}
+\includepdf[pages=-, scale=.95]{icml.pdf}
