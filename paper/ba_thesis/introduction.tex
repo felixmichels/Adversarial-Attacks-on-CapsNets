@@ -1,4 +1,32 @@
 \section{Introduction}
 \label{sec:introduction}
 
-In this bachelor thesis I will show, that capsule networks are horrible
+\emph{Adversarial attacks} describe any technique designed to cause machine learning models to perform poorly.
+An attack can start before the model is even trained, e.g.\ by maliciously manipulating the training data (poisoning).
+\emph{Adversarial examples} are modified inputs that
+
+Security in machine learning is important.
+\citet{intriguing} demonstrated the vulnerability of neural networks.
+\citet{fgsm} demonstrated that deep neural networks are vulnerable to adversarial examples.
+This is not just problematic for security-sensitive applications like self-driving cars, but also casts doubt an their ability to generalize in a meaningful way.
+
+Capsule networks (CapsNets) \citep{capsules,em} are a novel form of neural networks that partition units in layer into groups called \emph{capsules}. This aims to develop a part whole relationship of objects similar to those in the human mind. 
+This is a short sentence that describes how they work in succinct way.
+They have been shown to be a plausible alternative to convolutional neural networks 
+They might do some things better than convolutional neural networks (ConvNets).
+They have been used for some things.
+
+We will inspect the robustness of CapsNets against multiple common adversarial attacks and attack scenarios across four different popular image data sets.
+We also look at the structural difference of the generated adversarial examples, the transferability of perturbations and activations between layers.
+We show that CapsNets are not in general less susceptible to adversarial examples.
+
+This thesis is structured as follows: In \Cref{sec:capsules} we reiterate the concept of capsule networks and the routing-by-agreement algorithm. In \Cref{sec:attacks} we describe the attacks we use to test the CapsNets. We present the results and interpretations of our experiments in \Cref{sec:experiments}.
+
+
+\section{Related Work}
+\label{sec:related}
+
+\citet{capsattacktraffic} studied adversarial robustness of CapsNets with regard to their own proposed attack.
+\citet{em} showed that CapsNets with EM Routing are more robust against FGSM \citep{fgsm} and the basic iterative method \citep{bim} than standard ConvNets.
+\citet{darccc} showed that CapsNets can detect adversarial attacks.
+\citet{scaledagreement} showed, that their routing algorithm is even more resistant against FGSM than the commonly used routing-by-agreement.
