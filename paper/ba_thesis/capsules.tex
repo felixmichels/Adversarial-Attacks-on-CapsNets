@@ -29,12 +29,12 @@ For a capsule $i$ of dimension $d_1$ let us designate the output with $u_i \in \
 If $i$ is connected to a capsule $j$ of the next layer with dimension $d_2$ the network includes a learned transformation matrix $W_{ij} \in \mathbb{R}^{d_1 \times d_2}$.
 Thus we can compute $\uhat = W_{ij} u_i$.
 The vector $\uhat$ can be seen as a prediction of the feature's parameters in capsule $j$ given the information of the feature in capsule $i$.
-The output for the capsule $j$ then is a linear combination with dynamically computed coupling coefficients of these predictions over all connected capsules in the previous layer as described in Algorithm~\ref{alg:routing}.
+The output for the capsule $j$ then is a linear combination with dynamically computed coupling coefficients of these predictions over all connected capsules in the previous layer as described in \Cref{alg:routing}.
 The routing-by-agreement algorithm aims to find coefficients such that the instantiation parameters of predictions $\uhat$ with high coupling coefficients $c_{ij}$ match those of the capsule $j$ in the next layer, i.e. the angle between $\uhat$ and $v_j$ is low.
 Thereby CapsNets are meant to achieve the "explaining away" necessary for segmenting overlapping objects.
 
 The routing in this way is differentiable and can be trained using backpropagation.
-The $b_{ij}$ used in Algorithm~\ref{alg:routing} are logits for the coupling coefficients, therefore their initial value can be seen as a bias for the routing algorithm and can be trained.
+The $b_{ij}$ used in \Cref{alg:routing} are logits for the coupling coefficients, therefore their initial value can be seen as a bias for the routing algorithm and can be trained.
 This seems to offer little benefit, so we initialize them as zero (as done by \cite{capsules}).
 
 Like in conventional neural networks there are multiple types of layers depending on the possible connections to the units in the lower layer.
