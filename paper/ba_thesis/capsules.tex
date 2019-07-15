@@ -11,12 +11,12 @@ The idea was that properly working capsules should have equivariant instantiatio
 
 While conventional neural networks form a entangled representation of features in each layer, capsules aim to produce dedicated representations.
 CapsNets may utilize these separated representation to improve the information flow to the next layer.
-In other words, since the output of each capsule is a vector (or a matrix) and not a scalar like those of units in ordinary neural networks some advanced \emph{routing algorithm} may be employed.
+Ordinary neural network with scalar valued units can control gradient routing in some limited way with max pooling or similar operations, but since the output of each capsule is a vector (or a matrix) some advanced \emph{routing algorithm} may be employed.
 
 \citet{capsules} first developed such a dynamic routing algorithm, routing-by-agreement, constructed a concrete CapsNet architecture and applied it for the segmentation of highly overlapping digits and other tasks with remarkable results.
-Most actual CapsNets use a linear transformation as the internal action for each capsule, but there have been multiple other routing algorithm introduced, most notable EM Routing \citep{em} but also Cognitive Consistency Routing \citep{cognitive}, Dynamic Deep Routing \citep{training} and more.
+Most actual CapsNets use a linear transformation as the internal action for each capsule, but there have been multiple other routing algorithm introduced, most notable EM Routing \citep{em} but also scaled-distance-agreement \citep{scaledagreement}, Cognitive Consistency Routing \citep{cognitive} and more.
 
-Given that routing-by-agreement is still the most commonly used method we will exclusively consider this approach in this paper.
+Given that routing-by-agreement is still the most commonly used method we will exclusively consider this approach in this thesis.
 
 \subsection{Routing-By-Agreement}
 
@@ -26,9 +26,9 @@ A capsule in the routing-by-agreement setting consists of a vector in the unit b
 Its direction encodes the instantiation parameters and its euclidean length the probability that the attached entity is present.
 
 For a capsule $i$ of dimension $d_1$ let us designate the output with $u_i \in \Set{ \mathbb{R}^{d_1} | \norm{u} \leq 1}$.
-If $i$ is connected to a capsule $j$ of the next layer with dimension $d_2$ the network includes a learned transformation matrix $W_{ij} \in \mathbb{R}^{d_1 \times d_2}$.
+If $i$ is connected to a capsule $j$ in the next layer with dimension $d_2$ the network includes a learned transformation matrix $W_{ij} \in \mathbb{R}^{d_1 \times d_2}$.
 Thus we can compute $\uhat = W_{ij} u_i$.
-The vector $\uhat$ can be seen as a prediction of the feature's parameters in capsule $j$ given the information of the feature in capsule $i$.
+The vector $\uhat$ can be seen as a prediction of the feature's parameters modeled by capsule $j$ given the information of the feature in capsule $i$.
 The output for the capsule $j$ then is a linear combination with dynamically computed coupling coefficients of these predictions over all connected capsules in the previous layer as described in \Cref{alg:routing}.
 The routing-by-agreement algorithm aims to find coefficients such that the instantiation parameters of predictions $\uhat$ with high coupling coefficients $c_{ij}$ match those of the capsule $j$ in the next layer, i.e. the angle between $\uhat$ and $v_j$ is low.
 Thereby CapsNets are meant to achieve the "explaining away" necessary for segmenting overlapping objects.
@@ -38,17 +38,17 @@ The $b_{ij}$ used in \Cref{alg:routing} are logits for the coupling coefficients
 This seems to offer little benefit, so we initialize them as zero (as done by \cite{capsules}).
 
 Like in conventional neural networks there are multiple types of layers depending on the possible connections to the units in the lower layer.
-If each capsule in a layer is connected with every capsule in the layer before it, we call it a \emph{dense capsule layer}.
+If each capsule in a layer is connected to every capsule in the layer before it, we call it a \emph{dense capsule layer}.
 Like in a convolutional layer, capsule can also be arranged in a spatial grid (in the shape of $height \times width \times types \times dimension$) where each capsule is only connected to those in it's receptive field and capsules of the same type share weights.
 Such a configuration is called a \emph{convolutional capsule layer}.
 Of course such layers, and the routing used between them, are only applicable if two capsule layers are placed consecutively.
 To convert the output of scalar layers to capsules we use \emph{primary capsule layers}.
 These layers either apply a fully connected or a convolutional layer to their input, reshape the result into capsules and squashes them so that their vector length is between zero and one.
 
-A typical CapsNet for image recognition begins with one or more convolutional layers, followed by a primary convolutional layer, optionally some number of convolutional capsule layers and finally a dense capsule layer with one capsule per class.
+A typical CapsNet for image classification begins with one or more convolutional layers, followed by a primary convolutional layer, optionally some number of convolutional capsule layers and finally a dense capsule layer with one capsule per class.
 In a fully trained CapsNet those class capsules should contain all instantiation parameters necessary to recreate the input image.
 Thus a \emph{reconstruction network} that takes the capsule of the class capsule with largest norm as input and tries to reconstruct the input image can be trained simultaneously.
-The euclidean distance between the original image and reconstruction, the \emph{reconstruction loss}, may be used as a regularization technique.
+The euclidean distance between the original image and reconstruction, the \emph{reconstruction loss}, may be minimized as a regularization technique.
 Since images also often contain some unneeded information that cannot be sensibly linked to a capsule in the next layer, an additional capsule may be used to serve as a dead end, which is referred to as the \emph{none-of-the-above} category.
 
 \algtext*{EndFor} % Remove end for text
