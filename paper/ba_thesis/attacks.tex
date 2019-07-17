@@ -52,6 +52,7 @@ Starting with the general problem for targeted attacks
 Using Lagrangian relaxation, this is transformed to
 
 \begin{equation}
+\label{eq:cwproblem}
 \begin{aligned}
 & \minimize_{\delta} && \norm{\delta} + c \cdot f(x + \delta)\\
 & \text{subject to} && x + \delta \in [0,1]^n
@@ -61,10 +62,14 @@ Using Lagrangian relaxation, this is transformed to
 where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e. a function with the property, that
 $f(x + \delta) \leq 0$ if and only if $C(x + \delta) = t$.
 There are many possible objective functions, but a particularly good choice is
-$f(x') = \max \{ \max \{Z(x')_i : i \neq t \} - Z(x')_t, -\kappa \}$.
-\todo{Sounds weird, rewrite this}
-The \emph{confidence parameter} $\kappa$ determines, how close to the decision boundary the adversarial example is.
-The optimal value for $c$ is the smallest value, that results in an adversarial example and is found using a binary search.
+
+\begin{equation}
+\label{eq:cwobjective}
+f(x') = \max \{ \max \{Z(x')_i : i \neq t \} - Z(x')_t, -\kappa \}
+\end{equation}
+
+The \emph{confidence parameter} $\kappa$ determines, with how much confidence the adversarial example is classified as the target class, i.e.\ how close to the decision boundary it is.
+The optimal value for $c$ in \Cref{eq:cwproblem} is the smallest value, that results in an adversarial example and is found using a binary search.
 
 This box-constrained problem can further be simplified by introducing the variable $w \in \mathbb{R}^n$ and setting $\delta_i = \frac{1}{2} (\tanh(w_i) + 1)$.
 This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam optimizer \citep{adam}.
@@ -76,31 +81,37 @@ However, due to the binary search it can often be quite slow.
 
 \subsection{Boundary Attack}
 
-The boundary attack is a black-box attack proposed by \citet{boundary}. It is furthermore a \emph{decision based} attack. This means, not only is no knowledge of the model architecture or the learned weights required, but also the output scores of the network are hidden from the attack. Only the final decision $C(x)$ can be used to construct an adversarial example.
-Unlike other attacks, the boundary attack does not start with the original image and modifies it, but instead starts with a (possible random) misclassified image and changes it to resemble the original.
+The Boundary attack is a black-box attack proposed by \citet{boundary}. It is furthermore a \emph{decision based} attack. This means, not only is no knowledge of the model architecture or the learned weights required, but also the output scores of the network are hidden from the attack. Only the final decision $C(x)$ can be used to construct an adversarial example.
+Unlike other attacks, the Boundary attack does not start with the original image and modifies it, but instead starts with a (possible random) misclassified image and changes it to resemble the original.
 
-The boundary attack iteratively generates adversarial examples $x^{(k)}$ (and therefore perturbations $\delta^{(k)} = x^{(k)} - x$) using a random walk. At the beginning it samples $x^{(0)} \sim \mathcal{U}(0,1)^n$ until $C(x^{(0)}) \neq C^*(x)$, i.e. $x^{(0)}$ is a adversarial example for $x$.
+The boundary attack iteratively generates adversarial examples $x^{(k)}$ (and therefore perturbations $\delta^{(k)} = x^{(k)} - x$) using a random walk. At the beginning it samples $x^{(0)} \sim \mathcal{U}(0,1)^n$ until $C(x^{(0)}) \neq C^*(x)$, i.e. $x^{(0)}$ is an adversarial example for $x$.
 The next iteration should then fulfill the following criteria to ensure that the sequence $(x^{(k)})_{k \in \mathbb{N}}$ has a limit point on the decision boundary:
 
 \begin{enumerate}
-	\item The new image $x^{(k+1)}$ is in the range of a valid image,
-	i.e. $x^{(k+1)}\in [0,1]^n$.
-	\item The proportion of the size of the perturbation $\delta^{(k)}$
-	and the distance to the given image is equal to a given parameter
-	$\gamma > 0$.
-	\item The reduction of the distance from the adversarial image to the
-	original image $\delta^{(k)} - \delta^{(k)}$ is proportional to
-	$\delta^{(k)}$ with a factor $\nu>0$.
+	\item The new image $x^{(k+1)}$ is in the range of a valid image:
+	\begin{equation*}
+	x^{(k+1)}\in [0,1]^n
+	\end{equation*}
+	
+	\item The size of the random step is proportional to the size of the perturbation $\delta^{(k)}$ for a parameter $\gamma > 0$:
+	\begin{equation*}
+	\norm{\delta^{(k+1)} - \delta^{(k)}} = \gamma \cdot \norm{\delta^{(k)}}
+	\end{equation*}
+	
+	\item The distance to the original is reduced with a factor $0<\nu<1$:
+	\begin{equation*}
+	\norm{\delta^{(k+1)}} = \nu \cdot \norm{\delta^{(k)}}
+	\end{equation*}
 \end{enumerate}
 
-While these conditions are difficult to meet exactly, they are approximated by sampling from a normal distribution orthogonal to $\delta^{(k)}$ and making a step with size $\nu$ in this direction.
-If this point is still adversarial, a step towards $x$ is made with size $\gamma$.
-The parameters $\nu$ and $\gamma$ are adapted dynamically, similarly to Trust Region methods.
+While these conditions are difficult to meet exactly, they are approximated by sampling from a normal distribution orthogonal to $\delta^{(k)}$ and making a step with size $\gamma$ in this direction.
+If this point is still adversarial, a step towards $x$ is made with size $\nu$.
+The parameters $\gamma$ and $\nu$ are adapted dynamically, similarly to Trust Region methods.
 A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value.
 
 The success rate for the orthogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. 
 The target success rate for the direct step is set to a value around $0.25$, which empirically leads to good adversarial examples.
-The algorithm terminates once $\gamma$ is close to zero.
+The algorithm terminates once $\nu$ is close to zero.
 
 \subsection{DeepFool Attack}
 
@@ -130,7 +141,7 @@ Our version of the DeepFool attack slightly differs from the original version in
 \subsection{Universal Adversarial Perturbations}
 
 The concept of universal adversarial perturbations was proposed by \citet{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
-To do this, we use following variation of there algorithm:
+To do this, we use following variation of their algorithm:
 
 As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
 \begin{enumerate}

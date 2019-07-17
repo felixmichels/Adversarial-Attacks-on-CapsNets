@@ -8,27 +8,27 @@
 We trained models on each of the following benchmark data sets:
 
 \begin{itemize}
-	\item MNIST: $28\times28$ grayscale images of handwritten digits (60,000  images for training / 10,000  images for testing) \cite{mnist}
-	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items (60,000 images for training / images 10,000 for testing) \cite{fashion}
-	\item SVHN: $32\times32$ color images of house numbers (73,257  images for training / 26,032 images for testing) \cite{svhn}
-	\item CIFAR-10: $32\times32$ color images of animals and vehicles (50.000  images for training / 10.000  images for testing) \cite{cifar}
+	\item MNIST: $28\times28$ grayscale images of handwritten digits ($60000$  images for training, $10000$  images for testing) \cite{mnist}
+	\item Fashion-MNIST:  $28\times28$ grayscale images of fashion items ($60000$ images for training, images $10000$ for testing) \cite{fashion}
+	\item SVHN: $32\times32$ color images of house numbers ($73257$  images for training, $26032$ images for testing) \cite{svhn}
+	\item CIFAR-10: $32\times32$ color images of animals and vehicles ($50000$  images for training, $10000$  images for testing) \cite{cifar}
 \end{itemize}
 
 Each of the four data sets consists of ten classes.
 
-As baseline architectures we trained convolutional networks utilizing max-pooling, batch normalization \citep{batchnorm} and dropout \citep{dropout}.
+As baseline architectures we trained convolutional networks utilizing max pooling, batch normalization \citep{batchnorm} and dropout \citep{dropout}.
 Training capsule networks can be comparatively more difficult in practice, therefore we had to carefully construct well-suited architectures:
 
-For the MNIST data set we used three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer.
+For the MNIST data set we used a three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer.
 For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convolutional layers in the beginning, followed by the primary capsule layer and the class capsules.
 
 Simple CapsNets however do not perform very well on more complex data like \mbox{CIFAR-10} \citep{complex}, therefore we use a modified DCNet \citep{dcnet} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing.
 
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the routing algorithm.
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}.
-For more details on the model architectures, please refer to the tables in Appendix~\ref{lab:networks}.
+For more details on the model architectures, please refer to the tables in \Cref{lab:networks}.
 
-The test accuracies of our networks on the respective data sets are displayed in Table~\ref{tab:accuracies}.
+The test accuracies of our networks on the respective data sets are displayed in \Cref{tab:accuracies}.
 While these accuracies do not reach the state of the art, the similarity between the performances of the CapsNets and ConvNets indicates their suitability for the task of comparing adversarial robustness.
 
 \begin{table}	
@@ -45,22 +45,22 @@ While these accuracies do not reach the state of the art, the similarity between
 	\label{tab:accuracies}
 \end{table}
 
-For each of the data sets we compute adversarial examples using our four chose attacks in the following manner: \\
+For each of the data sets we compute adversarial examples using our four chosen attacks in the following manner:\\
 \todo{Make this less horrible}
-We randomly select $1000$ each from the test set and attack them with DeepFool and the boundary attack.
-For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (but that are different from the true labels).
+We randomly select $1000$ images from the test set and attack them with DeepFool and the boundary attack.
+For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels). \todo{explain choice of initial c}
 In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
 
 We do not restrict the maximal perturbation norm for any of the attacks and hence the Carlini-Wagner, the boundary and the DeepFool attack only generate valid adversarial examples.
 Regarding the universal perturbations, we terminate the algorithm once accuracy falls below $50\%$.
 We found that the universal perturbations generalize well: while only a tenth of the test set is used to generate each universal perturbation, they can reduce the accuracy on the whole test set to $50\pm2.5\%$.
 
-In Figure~\ref{tab:images} some examples of the product of the attacks on CIFAR-10 can be seen.
+In \Cref{fig:images} some examples of the product of the attacks on CIFAR-10 can be seen.
 The Carlini-Wagner, the boundary and the DeepFool attack result in humanly imperceptible adversarial examples.
 Only the universal perturbations are clearly visible.
 Furthermore we can observe some differences in the structure of the adversarial perturbations.
 While the black-box attack (boundary attacks) produces perturbations that resemble random noise, some noticeable patterns emerge in the perturbations of the white-box attacks.
-For more examples of adversarial images for this and the other data sets, see Appendix~\ref{lab:images}.
+For more examples of adversarial images for this and the other data sets, see \Cref{lab:images}.
 
 \begin{center}
 \begin{longtable*}{rccc}
@@ -77,25 +77,15 @@ For more examples of adversarial images for this and the other data sets, see Ap
 % This should count as a figure and not as a table
 %\addtocounter{table}{-1}
 \captionof{figure}[Adversarial Examples on CIFAR-10]{Original images from the CIFAR-10 dataset (left), adversarial examples and perturbations for CapsNet (middle) and adversarial examples and perturbations for ConvNet (right). Pixel values of perturbation images are scaled for visibility.}
-\label{tab:images}
+\label{fig:images}
 \end{center}
 
 \subsection{Robustness to Adversarial Attacks}
 
-The most import aspect with respect to the dangers of adversarial attacks is how much an image has to be modified for an successful attack
-(i.e.\ the size of the perturbation in some metric. In our case this is the euclidean norm, see Section~\ref{sec:attacks} \todo{check if ref is correct after I write introduction}).
-These results are displayed in Table~\ref{tab:norms}.
-On the data sets except MNSIST the CapsNets is more susceptible to the Carlini-Wagner attack than the ConvNets.
-
-We observe the same trend for the adversarial examples calculated using the boundary attack.
-This means, that CapsNets are in general neither more robust against white-box attacks nor against black-box attacks than ConvNets, as long as the attacks are sufficiently strong.
-Against DeepFool however the CapsNets perform slightly better and have significantly higher adversarial perturbation norms at all data sets except CIFAR-10.
-
-The biggest difference between the architectures is the behavior against universal perturbations, where the norms of the perturbations for the CapsNets are considerably higher for the MNIST, Fashion-MNIST and SVHN data sets. Especially the perturbations on SVHN calculated for the CapsNet are not just clearly humanly visible, the original image is in some cases not recognizable anymore (see Figure~\ref{fig:universal-img}).
-Only the universal perturbations on CIFAR-10 have similar norms for the CapsNet and the ConvNet.
-
-However we have to mention, that while the existence of adversarial examples with small norms shows the lack of robustness, proving resistance to adversarial attacks is vastly more difficult.
-After all, adversarial perturbations with large norms can just be the result of an inadequate attack.
+The most important aspect with respect to the dangers of adversarial attacks is how much an image has to be modified for an successful attack
+(i.e.\ the distance to the original image in some metric. In our case this is the euclidean norm, see \Cref{sec:attacks} \todo{check if ref is correct after I write introduction}).
+These results are displayed in \Cref{tab:norms}.
+On all data sets except MNIST the CapsNets is more susceptible to the Carlini-Wagner attack than the ConvNets.
 
 \begin{table}
 	\centering\
@@ -120,20 +110,88 @@ After all, adversarial perturbations with large norms can just be the result of 
 	\label{tab:norms}
 \end{table}
 
-\citet{transfer} demonstrated the existence of \emph{cross-technique transferability} for a wide variety of machine learning techniques. This means, that adversarial examples constructed for a specific classifier may also be able to fool another classifier using a vastly different machine learning model. Such transfer attacks can be seen as black-box attacks where the first model functions as a oracle.
+We observe the same trend for the adversarial examples calculated using the boundary attack.
+This means, that CapsNets are in general neither more robust against white-box attacks nor against black-box attacks than ConvNets, as long as the attacks are sufficiently strong.
+Against DeepFool however the CapsNets perform slightly better and have significantly higher adversarial perturbation norms for all data sets except CIFAR-10.
 
-To measure the transferability we evaluate the fooling rate of the adversarial examples calculated for CapsNets when applied to the ConvNets and vice versa (see Table~\ref{tab:transfer}). We define an image to \emph{fool} a network in the case of the untargeted attacks (boundary, DeepFool, universal) if it is misclassified and in the case of targeted attacks (Carlini-Wagner) if it is classified as the target label for that the adversarial example was computed. \todo{Include graphic?}
+The biggest difference between the architectures is the behavior against universal perturbations, where the norms of the perturbations for the CapsNets are considerably higher for the MNIST, Fashion-MNIST and SVHN data sets. Especially the perturbations on SVHN calculated for the CapsNet are not just clearly humanly visible, the original image is in some cases not recognizable anymore (see \Cref{fig:universal-img}).
+Only the universal perturbations on CIFAR-10 have similar norms for the CapsNet and the ConvNet.
 
-The transfer fooling rates for the Carlini-Wagner attack are quite small, even though we used a non-zero confidence parameter of $\kappa=1$.
-The untargeted boundary and DeepFool attacks have higher fooling rates in general and match the result of Table~\ref{tab:norms} for most data sets, as in adversarial examples with high norms lead to a higher transfer fooling rate.
-This is not the case for the boundary attack with MNIST and the DeepFool attack with Fashion-MNIST. However the difference in fooling rates for the latter case is quite small and it is not surprising that MNIST would produce an outlier, since the adversarial perturbations for this data set are so large. \todo{This doesn't really make sense this way}
+However we have to mention that while the existence of adversarial perturbations with small norms shows the lack of robustness, proving resistance to adversarial attacks is vastly more difficult.
+After all, adversarial perturbations with large norms can just be the result of an inadequate attack.
 
+\citet{transfer} demonstrated the existence of \emph{cross-technique transferability} for a wide variety of machine learning techniques.
+This means that adversarial examples constructed for a specific classifier may also be able to fool another classifier using a vastly different machine learning model.
+Such transfer attacks can be seen as black-box attacks where the first model functions as a oracle (or substitute) for the second one.
 
-The most noteworthy finding here are the fooling rates for the universal perturbations.
-Although the norms of the CapsNet universal perturbations were much larger (see Table~\ref{tab:norms}), they perform poorly on the ConvNet, while the small perturbations computed for the ConvNet achieve relatively high fooling rates on the CapsNet.
-Especially for SVHN the universal perturbation of the ConvNet is much more effective on the CapsNet than the perturbations computed on the CapsNet itself.
+\definecolor{dblue}  {RGB}{20,66,129}
+\definecolor{norange}{RGB}{230,120,20}
 
+\begin{figure}
+	\centering
+	%\scalebox{1}{%
+		\begin{tikzpicture}
+		\tikzset{
+			node distance = 9em and 4em,
+			sloped,
+			box/.style = {%
+				shape=rectangle,
+				rounded corners,
+				draw=dblue!70,
+				fill=dblue!10,
+				align=center,
+				font=\fontsize{12}{12}\selectfont},
+			arrow/.style = {%
+				draw=dblue!70,
+				line width=1mm,% <-- select desired width
+				-{Triangle[length=3mm]},
+				shorten >=1mm, shorten <=1mm,
+				font=\fontsize{8}{8}\selectfont},
+		}
 		
+		\node[box] at (0,0)(capsnet){CapsNet};
+		\node[box] at (0,6)(convnet){ConvNet};
+		\node[box] at (2,3)(pertconv){Perturbations};
+		\node[box] at (-2,3)(pertcaps){Perturbations};
+		\draw[arrow](capsnet) to [bend right,looseness=1] node[below] {calculate} (pertconv);
+		\draw[arrow](convnet) to [bend right,looseness=1] node[above] {calculate} (pertcaps);
+		\tikzset{
+			node distance = 9em and 4em,
+			sloped,
+			arrow/.style = {%
+				draw=norange!70,
+				line width=1mm,% <-- select desired width
+				-{Triangle[length=3mm]},
+				shorten >=1mm, shorten <=1mm,
+				font=\fontsize{8}{8}\selectfont},
+		}
+		
+		\draw[arrow](pertcaps) to [bend right,looseness=1] node[below] {evaluate} (capsnet);
+		\draw[arrow](pertconv) to [bend right,looseness=1] node[above] {evaluate} (convnet);
+		
+		\tikzset{
+			node distance = 9em and 4em,
+			sloped,
+			arrow/.style = {%
+				draw=norange!30,
+				line width=1mm,% <-- select desired width
+				-{Triangle[length=3mm]},
+				shorten >=1mm, shorten <=1mm,
+				font=\fontsize{8}{8}\selectfont},
+		}
+		\draw[arrow](pertcaps) to [bend right,looseness=1.2] node[above] {evaluate} (convnet);
+		\draw[arrow](pertconv) to [bend right,looseness=1.2] node[below] {evaluate} (capsnet);
+		\end{tikzpicture}%}
+	\caption[Evaluation procedure]{Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations used in \Cref{tab:norms} while the dark orange arrows show the application used in \Cref{tab:transfer}}
+	\label{fig:eval}
+\end{figure}
+
+To measure the transferability we evaluate the fooling rate of the adversarial examples calculated for CapsNets when applied to the ConvNets and vice versa (see \Cref{fig:eval}). We define an image to \emph{fool} a network in the case of the untargeted attacks (boundary, DeepFool, universal) if it is misclassified and in the case of targeted attacks (Carlini-Wagner) if it is classified as the target label for that the adversarial example was computed.
+
+The transfer fooling rates (\Cref{tab:transfer}) for the Carlini-Wagner attack are quite small, even though we used a non-zero confidence parameter of $\kappa=1$.
+The untargeted boundary and DeepFool attacks have higher fooling rates in general and match the result of \Cref{tab:norms} for most data sets, as in adversarial examples with high norms lead to a higher transfer fooling rate.
+This is not the case for the boundary attack with MNIST and the DeepFool attack with Fashion-MNIST. However the difference in fooling rates for the latter case is quite small and it is not surprising that MNIST would produce an outlier, since the adversarial perturbations for this data set are so large.
+
 \begin{table}
 	\centering
 	\begin{tabular}{llcccc}
@@ -157,23 +215,28 @@ Especially for SVHN the universal perturbation of the ConvNet is much more effec
 	\label{tab:transfer}
 \end{table}
 
+The most noteworthy finding here are the fooling rates for the universal perturbations.
+Although the norms of the CapsNet universal perturbations were much larger (see \Cref{tab:norms}), they perform poorly on the ConvNet, while the small perturbations computed for the ConvNet achieve relatively high fooling rates on the CapsNet.
+Especially for SVHN the universal perturbations of the ConvNet are much more effective on the CapsNet than the perturbations computed on the CapsNet itself.
+
 \subsection{Structural Analysis of Adversarial Examples}
 
-While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest, that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
+While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets. \todo{Write more?}
 
 \subsubsection{Universal Attack t-SNE}
 
-We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see Figure~\ref{fig:tsne}).
+We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
 We discover, that for all data sets there is a clear distinction between the perturbations calculated for the different architectures.
-Although t-SNE can often distinguish the perturbations of models that are trained slightly different, this is not just a outcome of this phenomenon.
+Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just a outcome of this phenomenon.
 By including another ConvNet in the diagram we find the clusters of the ConvNets almost perfectly matching while the cluster for the CapsNet is still separated.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
-In Figure~\ref{fig:tsne} can furthermore subclusters based on the data set splits used to calculate the perturbations be seen.
+In \Cref{fig:tsne} we can furthermore see subclusters based on the data set splits used to calculate the perturbations.
 These distinctions are however less pronounced with the other data sets besides CIFAR-10.
 
 \begin{figure}
-	\includegraphics{tsne.pdf}
+	\centering
+	\includegraphics[scale=.75]{tsne.pdf}
 	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations on CIFAR-10 calculated using t-SNE \citep{tsne}. The upper right cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower left represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
 	\label{fig:tsne}
 \end{figure}
@@ -185,15 +248,16 @@ For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturb
 and $ N = \begin{bmatrix}
 \frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
 \end{bmatrix}
-\in \mathrm{R}^{n \times k}
+\in \mathbb{R}^{n \times k}
 $ for some $x_1, ..., x_k$ in the test set with $k > n$. \\
 $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of $N$ give us information about the decision boundary. For example, for an binary linear classifier, $N$ would have a rank of one, i.e.\ only one non-zero singular value.
 
-Accurately computing $\delta(x)$ is very challenging, so we used the DeepFool attack as an approximation. We computed an additional $5000$ adversarial examples and plot the size of the singular values of the resulting Matrix $N$ together with a matrix containing columns sampled from the unit sphere $S^{n-1}$ in Figure~\ref{fig:svd}.
+Accurately computing $\delta(x)$ is very challenging, so we use the DeepFool attack as an approximation.
+We computed an additional $5000$ adversarial examples and plot the size of the singular values of the resulting Matrix $N$ together with a matrix containing columns randomly sampled from the unit sphere $S^{n-1}$ in \Cref{fig:svd}.
 
 For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
 In this regard the difference between CapsNets and ConvNets is inconclusive.
-Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 data set, the opposite occurs for the other cases.
+Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 data set, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
 
 
 \begin{figure}
@@ -216,7 +280,7 @@ Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet i
 To further the efforts in creating architectures robust to adversarial attack, we need to inspect which parts of the networks are responsible for their failure.
 This is particularly important for the difference between CapsNets and ConvNets.
 The primary capsule layer seems to need sufficiently complex features as input in order for the network to achieve adequate test performance.
-For this reason CapsNets usually start with a series of convolutional layers.
+For this reason, CapsNets usually start with a series of convolutional layers.
 If an attack can perturb the leading convolutional layers in a considerable way, the following capsule layers will not be able to rectify the error.
 
 To test this, we examine the difference of the layer's activations in out network when applied to unaltered and adversarial images. As a dimension and scale invariant metric we define
@@ -227,7 +291,7 @@ To test this, we examine the difference of the layer's activations in out networ
 Regarding CapsNets we can differentiate between the activation of the instantiation parameters and that of the probabilities of presence. Since we are using vector capsules, in our case the instantiation parameters is simply the complete output of a capsule layer and the probability of presence is given by the euclidean norm of the capsules.
 
 We compute the average activation error $d(z, w)$ for select layers over $128$ adversarial examples for our CIFAR-10 networks. Our CapsNet trained on CIFAR-10 begins with eight denseley connected convolutional layers and is therefore an apt choice for this comparison.
-The results appear in Figure~\ref{fig:activation}.
+The results appear in \Cref{fig:activation}.
 
 \begin{figure}
 	\centering
@@ -240,17 +304,19 @@ The results appear in Figure~\ref{fig:activation}.
 		\includegraphics[scale=.5]{activation_error_caps.pdf}
 		\caption{CapsNet. Dashed lines are capsule norms}
 	\end{subfigure}
-	\caption[Activation errors]{Activation errors of select layers}
+	\caption[Activation errors]{Activation errors of select layers. For the CapsNet we show the difference in the whole activation of each layer (instantiation parameters) and the difference of the capsule norms (probability of entity's presence).}
 	\label{fig:activation}
 \end{figure}
 
-For the ConvNet the activation errors of the DeepFool, Boundary and Carlini-Wagner attacks are almost monotonically increasing. This means, that not just a single layer is culpable for their deficiency to inhibit adversarial attacks, but instead the error accumulates over all the layers.
+For the ConvNet the activation errors of the DeepFool, Boundary and Carlini-Wagner attacks are almost monotonically increasing.
+This means, that not just a single layer is culpable for their deficiency to inhibit adversarial attacks, but instead the error accumulates over all the layers.
 Curiously the universal perturbation creates substantially higher errors in the internal layers, but not so much in the final layer.
 This is most likely the case, because a universal adversarial example not only has to disturb the activations of few features that are used for a specific image, but of all possible features. 
-We want to mention, that a high activation error in the last layer not necessarily corresponds to misclassifications of high confidence.
+We want to mention that a high activation error in the last layer not necessarily corresponds to misclassifications of high confidence.
 It can merely signify a change in \emph{many} class scores, not just those of the true class and the actually assigned false class.
 
-The activation errors of the instantiation parameters match those of the ConvNetbut, meaning that even after convolutional layers in the beginning the error accumulates further.
+The activation errors of the instantiation parameters match those of the ConvNet, meaning that even after convolutional layers in the beginning the error accumulates further.
+While the error for the convolutional layers at the start seems large, we want to point out that the first error depicted is the result of eight convolutional layers and that the primary capsule layer has a direct skip connection to the input, but the activation error rises considerably in just the last two capsule layers.
 We can notice that the error in the capsule norms starts with a dip in the primary capsule layer.
 This is not automatically meaningful, since the two types of activations measure different aspects.
 However, in all cases the error of the capsule norms escalates remarkably in the next capsule layer.

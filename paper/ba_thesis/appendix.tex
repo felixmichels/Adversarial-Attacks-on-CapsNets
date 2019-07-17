@@ -16,8 +16,8 @@ Some expressions may need further explanation:
 	\item Conv $K$ $F \times F$, \{valid,same\}: Convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e. no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
 	\item FC $n$: Fully connected with $n$ units
 	\item Densely Connected: A densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layer in this block.
-	\item (Primary) Conv Caps, dim=$d$: A convolutional ()primary) capsule layer with capsules of dimension $d$ as explained in Section~\ref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
-	\item Dense Caps, dim=$d$: A dense capsule layer with capsules of dimension $d$ as explained in Section~\ref{sec:capsules}.
+	\item (Primary) Conv Caps, dim=$d$: A convolutional ()primary) capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
+	\item Dense Caps, dim=$d$: A dense capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}.
 \end{itemize}
 
 \begin{table}
@@ -251,8 +251,12 @@ Some expressions may need further explanation:
 
 The following pages display adversarial examples categorized by attack.
 The pixel values for the perturbations are scaled for visibility in the following way:
-$\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.5em}\norm[\infty]{\delta}}$.
-Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$
+\begin{equation*}
+\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em}\norm[\infty]{\delta}}
+\end{equation*}
+Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$.
+
+All images are chosen at random.
 
 \begin{figure}
 	\centering
@@ -342,13 +346,17 @@ Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n
 		\includegraphics[width=.95\textwidth, right]{universal_perturbation_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Universal Adversarial Perturbation Adversarial Examples]{Universal Adversarial Perturbation adversarial examples and perturbations.}
+	\caption[Universal Adversarial Perturbation Adversarial Examples]{Universal Perturbation adversarial examples and perturbations.}
 	\label{fig:universal-img}
 	
 \end{figure}
 
 \subsection{ICML Paper}
 
-Our work resulted in a poster presentation at ICML 2019.
+Our work resulted in a paper \citep*{mine} that was accepted as a poster presentation at ICML 2019.
 
-\includepdf[pages={1-4}, nup=2x2]{icml.pdf}
+\includepdf[pages=-, scale=.95]{icml.pdf}
+
+\subsection{Source Code}
+
+All of our source code used for this thesis is available at \url{https://github.com/felixmichels/Adversarial-Attacks-on-CapsNets}

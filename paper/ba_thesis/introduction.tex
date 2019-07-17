@@ -1,4 +1,30 @@
 \section{Introduction}
 \label{sec:introduction}
 
-In this bachelor thesis I will show, that capsule networks are horrible
+Capsule networks (CapsNets) are a novel form of artificial neural networks introduced by \citet{capsules,em} which partition the neurons of a layer into groups called \emph{capsules} and route their output dynamically.
+This aims to preserve information about hierarchical spatial relationships between objects and thereby to generalize better to new viewpoints.
+In some computer vision tasks CapsNets have reached the state-of-the-art of convolutional neural networks (ConvNets), and have surpassed them in some particular functions like segmenting highly overlapping objects.
+As a possible alternative to ConvNets, they also face some of the same challenges.
+
+With the recent emergence of deep learning in many real-world applications, from face recognition to brain tumor detection and satellite imagery analysis, security in machine learning causes growing concerns.
+Adversarial attacks describe any technique designed to cause machine learning models to perform poorly.
+An attack can start before the model is even trained, e.g.\ by maliciously manipulating the training data (poisoning), but test-time attacks are more widely applicable and pose a bigger threat.
+
+In computer vision tasks specifically \emph{adversarial examples} \citep{intriguing} refer to images  that are designed in such a way that a machine learning system make mistakes, but still appear to be an ordinary image to a human viewer.
+\citet{fgsm} hypothesize that linear behavior in high-dimensional spaces is the causes for the existence of adversarial examples and develop an attack which finds adversarial examples for deep neural networks with particular ease.
+This is not just problematic for security-sensitive applications like self-driving cars, but also casts doubt an their ability to generalize in a meaningful way.
+
+The effects of adversarial attacks on CapsNets have not yet been studied in a satisfactory manner.
+We will investigate the robustness of CapsNets in comparison to ConvNets against multiple common adversarial attacks and attack scenarios across four different popular image data sets.
+We also look at the structural difference of the generated adversarial examples, the transferability of perturbations between architectures and unit activations between layers.
+We show that CapsNets are in general no less susceptible to adversarial examples than ConvNets.
+
+This thesis is structured as follows: In \Cref{sec:capsules} we reiterate the concept of capsule networks and the routing-by-agreement algorithm. In \Cref{sec:attacks} we describe the attacks we use to test the CapsNets. We present the results and interpretations of our experiments in \Cref{sec:experiments}.
+
+\section{Related Work}
+\label{sec:related}
+
+\citet{em} show that CapsNets with EM Routing are less vulnerable to the simple white-box attacks FGSM \citep{fgsm} and the Basic Iterative Method \citep{bim} than standard ConvNets.
+\citet{capsattacktraffic} study adversarial robustness of CapsNets using the usual routing-by-agreement, although they focus on the performance of their own proposed black-box algorithm and their own definition of imperceptibility.
+\citet{darccc} claim the robustness of CapsNets against white-box attacks and approach the problem further by detecting adversarial examples through use of the reconstruction network which is trained alongside the CapsNet in most applications anyway.
+\citet{scaledagreement} introduce a further routing algorithm and demonstrate its robustness against FGSM.
