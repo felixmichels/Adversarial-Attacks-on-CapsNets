@@ -3,9 +3,9 @@
 \section{Adversarial Attacks}
 \label{sec:attacks}
 
-In general adversarial attacks describe any techniques which cause machine learning models to perform poorly.
+In general adversarial attacks describe any techniques with the purpose to disturb the performance of machine learning models.
 While adversarial attacks exist for a wide variety of applications like speech recognition or natural language processing, this work will concentrate on adversarial attacks on image classification tasks.
-\emph{adversarial examples} refer to modified images which are very close to some original image, but are classified differently by the model.
+\emph{Adversarial examples} refer to modified images which are very close to some original image, but are classified differently by the model.
 In our context they are in particular only mentioned in relationship to the original image.
 The \emph{adversarial perturbation} is the difference between the adversarial example and the original.
 
@@ -18,18 +18,19 @@ These terms are in general not strictly defined and many intermediate stages are
 With an untargeted attack an adversarial example is just classified as any other label than the true label, while an adversarial example from a targeted attack has to be classified as a specific target label chosen by the attacker beforehand.
 Of course targeted attacks are strictly more difficult for the attacker, but also more useful.
 Furthermore, in some instances untargeted adversarial examples are easy to generate, or rather are near impossible to defend against, just because some classes may be conceptually very close to each other.
-For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet \citep{imagenet} can even be for humans quite challenging.
+For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet \citep{imagenet} can even be quite challenging for humans.
 
-The last type of adversarial attacks that we will test are \emph{universal perturbations}. Most attacks compute a different adversarial perturbation for each input image, but a universal perturbation aims to fool many images while using the same perturbation.
+The last type of adversarial attacks that we will test are \emph{universal perturbations}.
+Most attacks compute a different adversarial perturbation for each input image, but a universal perturbation aims to fool many images while using the same perturbation.
 Non-universal perturbations are of course easier to find, but universal perturbations are simpler for the attacker to apply in a realistic attack scenario.
 Additionally the mere existence of universal perturbations reveals significant flaws in the used architecture, more so than that of normal adversarial examples.
 
 An important problem to consider is the definition of \emph{close} to the original image. Possibilities for such an image similarity metric include simple $L_p$ norms (including $p=0$),
 or more sophisticated metrics, like entropy based metrics \citep{umbrella}.
 While no metric exists which reliable simulates human perception of image similarity, and $L_p$ norms may be insufficient in this regard \citep{lpnorms}, they still give us information about the robustness of the neural networks.
-Here we will exclusively examine adversarial perturbations optimized towards a small $L_2$ norm.
+Here we will examine adversarial perturbations optimized towards a small $L_2$ norm, since it is often used in discussion about adversarial attacks and is a good compromise between the other commonly used, but more specific scenario targeting $L_0$ and $L_\infty$ norms.
 
-Throughout this work $x \in [0,1]^n$ will denote the (flattened) input image $\delta \in [0,1]^n$ the perturbation.
+Throughout this work $x \in [0,1]^n$ will denote the (flattened) input image and $\delta \in [0,1]^n$ the perturbation.
 The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
 $Z(X)$ is the networks output as logits and $F(x)$ is the output interpretable as probabilities.
 This means, in the case of the ConvNet we have $F(x) = \mathrm{softmax}(Z(x))$ and in the case of the CapsNet $Z(x) = \mathrm{arctanh}(2F(x) - 1)$. \\
@@ -38,9 +39,9 @@ Furthermore, any gradient in the following section refers to the gradient with r
 \subsection{Carlini-Wagner Attack}
 
 \citet{carlini} extensively evaluated a wide range of adversarial attacks.
-In particular they developed the following targeted white-box attack, that will be referred to as the Carlini-Wagner (CW) attack.
+In particular they developed the following targeted white-box attack which will be referred to as the Carlini-Wagner (CW) attack.
 
-Starting with the general problem for targeted attacks
+Starting with the general problem for targeted attacks, where $t$ is a chosen target label
 
 \begin{equation}
 \begin{aligned}
@@ -60,7 +61,7 @@ Using Lagrangian relaxation, this is transformed to
 \end{aligned}
 \end{equation}
 
-where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e. a function with the property, that
+where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e.\ a function with the property, that
 $f(x + \delta) \leq 0$ if and only if $C(x + \delta) = t$.
 There are many possible objective functions, but a particularly good choice is
 
@@ -77,14 +78,14 @@ This substitution yields an unconstrained problem, which can be solved with vari
 
 The Carlini-Wagner attack is generally a quite strong attack and leads to almost undetectable adversarial examples.
 In particular, it can find adversarial examples even when defensive techniques like distillation are utilized \citep{carlini}.
-However, due to the binary search it can often be quite slow.
+However, due to the binary search it can often be rather slow.
 
 \subsection{Boundary Attack}
 
 The Boundary attack is a black-box attack proposed by \citet{boundary}. It is furthermore a \emph{decision based} attack. This means, not only is no knowledge of the model architecture or the learned weights required, but also the output scores of the network are hidden from the attack. Only the final decision $C(x)$ can be used to construct an adversarial example.
 Unlike other attacks, the Boundary attack does not start with the original image and modifies it, but instead starts with a (possible random) misclassified image and changes it to resemble the original.
 
-The boundary attack iteratively generates adversarial examples $x^{(k)}$ (and therefore perturbations $\delta^{(k)} = x^{(k)} - x$) using a random walk. At the beginning it samples $x^{(0)} \sim \mathcal{U}(0,1)^n$ until $C(x^{(0)}) \neq C^*(x)$, i.e. $x^{(0)}$ is an adversarial example for $x$.
+The boundary attack iteratively generates adversarial examples $x^{(k)}$ (and therefore perturbations $\delta^{(k)} = x^{(k)} - x$) using a random walk. At the beginning it samples $x^{(0)} \sim \mathcal{U}(0,1)^n$ until $C(x^{(0)}) \neq C^*(x)$, i.e.\ $x^{(0)}$ is an adversarial example for $x$.
 The next iteration should then fulfill the following criteria to ensure that the sequence $(x^{(k)})_{k \in \mathbb{N}}$ has a limit point on the decision boundary:
 
 \begin{enumerate}
@@ -109,7 +110,7 @@ If this point is still adversarial, a step towards $x$ is made with size $\nu$.
 The parameters $\gamma$ and $\nu$ are adapted dynamically, similarly to Trust Region methods.
 A moving average of the success rate of the orthogonal of the direct step is kept and the parameters are increased or decrease, if this average deviates too much from beforehand chosen optimal value.
 
-The success rate for the orthogonal step should be close to $0.5$, the idea being, that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural nets, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. 
+The success rate for the orthogonal step should be close to $0.5$, the idea being that if $x^{(k)}$ is close to the decision boundary, which is locally linear almost everywhere for most types of neural networks, then approximately $50\%$ of random orthogonal steps should pass the decision boundary. 
 The target success rate for the direct step is set to a value around $0.25$, which empirically leads to good adversarial examples.
 The algorithm terminates once $\nu$ is close to zero.
 
@@ -136,11 +137,11 @@ l_i =
 \todo{How is this similar to Carlini-Wagner?}
 
 and $\delta^{(k+1)}$ is the projection to the nearest boundary under the distance approximation from above.
-Our version of the DeepFool attack slightly differs from the original version in insofar that we clip $\delta^{(k)}$ to obtain $x + \delta^{(k)} \in [0,1]^n$, and that we restrict $\norm{\delta^{(k)}}$ which yields better adversarial examples in our experience.
+Our version of the DeepFool attack slightly differs from the original version in insofar that we clip $\delta^{(k)}$ to obtain $x + \delta^{(k)} \in [0,1]^n$, and that we restrict $\norm{\delta^{(k)}}$ at each step, which yields better adversarial examples in our experience.
 
 \subsection{Universal Adversarial Perturbations}
 
-The concept of universal adversarial perturbations was proposed by \citet{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$, such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
+The concept of universal adversarial perturbations was proposed by \citet{universal} and refers to a single perturbation vector $\delta \in \mathbb{R}^n$ such that $C(x + \delta) \neq C^*(x)$ for many different $x$ sampled from the input image distribution.
 To do this, we use following variation of their algorithm:
 
 As long as the accuracy on the test set is above a previously chosen threshold, repeat these steps:
@@ -148,10 +149,10 @@ As long as the accuracy on the test set is above a previously chosen threshold, 
 	\item Initialize $\delta^{(0)} \gets 0$.
 	\item Sample a batch $X^{(k)} = \{x_1^{(k)}, ..., x_N^{(k)}\}$ of images with $\forall x \in\ X^{(k)}:  C(x + \delta^{(k)}) = C^*(x)$.
 	\item For each $x_i^{(k)}$ compute a perturbation $\delta_i^{(k+1)}$ using FGSM \citep{fgsm}.
-	\item Update the perturbation: $$\delta^{(k+1)} \gets \delta^{(k)} + \frac{1}{N} \sum\limits_{i=0}^N \delta_i^{(k+1)}$$
+	\item Update the perturbation: $\delta^{(k+1)} \gets \delta^{(k)} + \frac{1}{N} \sum\limits_{i=0}^N \delta_i^{(k+1)}$
 \end{enumerate}
 
 This differs insofar from the original algorithm described by \citet{universal} that in step 3 approximate perturbations for a whole batch is computed, while the computed an optimal perturbation for each $x_i$ using their previous work DeepFool.
 
-In principle many other attacks instead of FGSM can be used, however we found, that for our applications FGSM reached adequate results compared to much slower methods.
+In principle many other attacks instead of FGSM can be used, however we found that for our applications FGSM reached adequate results compared to much slower methods.
 Since FGSM uses the gradient of the network, FGSM and therefore this algorithm for computing universal adversarial perturbations, are white-box attacks.

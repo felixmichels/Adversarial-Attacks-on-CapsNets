@@ -22,7 +22,7 @@ Training capsule networks can be comparatively more difficult in practice, there
 For the MNIST data set we used a three layer CapsNet like that of \citet{capsules}, but with only 64 convolutional kernels in the first layer.
 For the Fashion-MNIST and the SVHN data sets we used CapsNets with two convolutional layers in the beginning, followed by the primary capsule layer and the class capsules.
 
-Simple CapsNets however do not perform very well on more complex data like \mbox{CIFAR-10} \citep{complex}, therefore we use a modified DCNet \citep{dcnet} with three convolutional capsule layers and a non-of-the-above category for the dynamic routing.
+Simple CapsNets however do not perform very well on more complex data like \mbox{CIFAR-10} \citep{complex}, therefore we use a modified DCNet \citep{dcnet} with three convolutional capsule layers and a non-of-the-above category (see \Cref{sec:capsules}) for the dynamic routing.
 
 We train all CapsNets using margin loss and the reconstruction loss for regularization \citep{capsules}, and we use three iterations in the routing algorithm.
 All CapsNets as well as ConvNets are trained with the Adam optimizer \citep{adam}.
@@ -46,7 +46,7 @@ While these accuracies do not reach the state of the art, the similarity between
 \end{table}
 
 For each of the data sets we compute adversarial examples using our four chosen attacks in the following manner:\\
-We randomly select $1000$ images each from the test set and attack them with DeepFool and the boundary attack.
+We randomly select $1000$ images each from the test set and attack them with DeepFool and the Boundary attack.
 For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels).
 We make five steps with the binary search for the $c$ value in \Cref{eq:cwproblem}, but we determine a favorable initial value for $c$ by performing some runs with more iterations for each architecture and dataset combination.
 In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
@@ -59,7 +59,7 @@ In \Cref{fig:images} some examples of the product of the attacks on CIFAR-10 can
 The Carlini-Wagner, the boundary and the DeepFool attack result in humanly imperceptible adversarial examples.
 Only the universal perturbations are clearly visible.
 Furthermore we can observe some differences in the structure of the adversarial perturbations.
-While the black-box attack (boundary attacks) produces perturbations that resemble random noise, some noticeable patterns emerge in the perturbations of the white-box attacks.
+While the black-box attack (Boundary attack) produces perturbations that resemble random noise, some noticeable patterns emerge in the perturbations of the white-box attacks.
 For more examples of adversarial images for this and the other data sets, see \Cref{lab:images}.
 
 \begin{center}
@@ -110,11 +110,11 @@ On all data sets except MNIST the CapsNets is more susceptible to the Carlini-Wa
 	\label{tab:norms}
 \end{table}
 
-We observe the same trend for the adversarial examples calculated using the boundary attack.
-This means, that CapsNets are in general neither more robust against white-box attacks nor against black-box attacks than ConvNets, as long as the attacks are sufficiently strong.
-Against DeepFool however the CapsNets perform slightly better and have significantly higher adversarial perturbation norms for all data sets except CIFAR-10.
+We observe the same trend for the adversarial examples calculated using the Boundary attack.
+This means that CapsNets are in general neither more robust against white-box attacks nor against black-box attacks than ConvNets, as long as the attacks are sufficiently strong.
+Against DeepFool however the CapsNets perform slightly better and have significantly higher adversarial perturbation norms for all datasets except CIFAR-10.
 
-The biggest difference between the architectures is the behavior against universal perturbations, where the norms of the perturbations for the CapsNets are considerably higher for the MNIST, Fashion-MNIST and SVHN data sets. Especially the perturbations on SVHN calculated for the CapsNet are not just clearly humanly visible, the original image is in some cases not recognizable anymore (see \Cref{fig:universal-img}).
+The biggest difference between the architectures is the behavior against universal perturbations, where the norms of the perturbations for the CapsNets are considerably higher for the MNIST, Fashion-MNIST and SVHN datasets. Especially the perturbations on SVHN calculated for the CapsNet are not just clearly humanly visible, the original image is in some cases not recognizable anymore (see \Cref{fig:universal-img}).
 Only the universal perturbations on CIFAR-10 have similar norms for the CapsNet and the ConvNet.
 
 However we have to mention that while the existence of adversarial perturbations with small norms shows the lack of robustness, proving resistance to adversarial attacks is vastly more difficult.
@@ -186,11 +186,11 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 	\label{fig:eval}
 \end{wrapfigure}
 
-To measure the transferability we evaluate the fooling rate of the adversarial examples calculated for CapsNets when applied to the ConvNets and vice versa (see \Cref{fig:eval}). We define an image to \emph{fool} a network in the case of the untargeted attacks (boundary, DeepFool, universal) if it is misclassified and in the case of targeted attacks (Carlini-Wagner) if it is classified as the target label for that the adversarial example was computed.
+To measure the transferability we evaluate the fooling rate of the adversarial examples calculated for CapsNets when applied to the ConvNets and vice versa (see \Cref{fig:eval}). We define an image to \emph{fool} a network in the case of the untargeted attacks (Boundary, DeepFool, universal) if it is misclassified and in the case of targeted attacks (Carlini-Wagner) if it is classified as the target label for that the adversarial example was computed.
 
 The transfer fooling rates (\Cref{tab:transfer}) for the Carlini-Wagner attack are quite small, even though we used a non-zero confidence parameter of $\kappa=1$.
 The untargeted boundary and DeepFool attacks have higher fooling rates in general and match the result of \Cref{tab:norms} for most data sets, as in adversarial examples with high norms lead to a higher transfer fooling rate.
-This is not the case for the boundary attack with MNIST and the DeepFool attack with Fashion-MNIST. However the difference in fooling rates for the latter case is quite small and it is not surprising that MNIST would produce an outlier, since the adversarial perturbations for this data set are so large.
+This is not the case for the Boundary attack with MNIST and the DeepFool attack with Fashion-MNIST. However the difference in fooling rates for the latter case is quite small and it is not surprising that MNIST would produce an outlier, since the adversarial perturbations for this data set are so large.
 
 \begin{table}
 	\centering
@@ -221,7 +221,7 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 
 \subsection{Structural Analysis of Adversarial Examples}
 
-While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
+While we have found, that CapsNets are not necessarily more robust against adversarial attacks, the low success rate of the transfer attacks and the radically different construction of the networks themselves suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
 \subsubsection{Universal Attack t-SNE}
 
