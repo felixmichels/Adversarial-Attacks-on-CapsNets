@@ -83,7 +83,7 @@ For more examples of adversarial images for this and the other data sets, see \C
 \subsection{Robustness to Adversarial Attacks}
 
 The most important aspect with respect to the dangers of adversarial attacks is how much an image has to be modified for an successful attack
-(i.e.\ the distance to the original image in some metric. In our case this is the euclidean norm, see \Cref{sec:attacks} \todo{check if ref is correct after I write introduction}).
+(i.e.\ the distance to the original image in some metric. In our case this is the euclidean norm, see \Cref{sec:attacks}).
 These results are displayed in \Cref{tab:norms}.
 On all data sets except MNIST the CapsNets is more susceptible to the Carlini-Wagner attack than the ConvNets.
 
@@ -226,13 +226,13 @@ While we have found, that CapsNets are not necessarily more robust against adver
 \subsubsection{Universal Attack t-SNE}
 
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
-We discover, that for all data sets there is a clear distinction between the perturbations calculated for the different architectures.
+We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
 Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just a outcome of this phenomenon.
 By including another ConvNet in the diagram we find the clusters of the ConvNets almost perfectly matching while the cluster for the CapsNet is still separated.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
-In \Cref{fig:tsne} we can furthermore see subclusters based on the data set splits used to calculate the perturbations.
-These distinctions are however less pronounced with the other data sets besides CIFAR-10.
+In \Cref{fig:tsne} we can furthermore see subclusters based on the dataset splits used to calculate the perturbations.
+These distinctions are however less pronounced with the other datasets besides CIFAR-10.
 
 \begin{figure}
 	\centering
@@ -264,7 +264,7 @@ We computed an additional $5000$ adversarial examples and plot the size of the s
 
 For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
 In this regard the difference between CapsNets and ConvNets is inconclusive.
-Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 data set, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
+Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 dataset, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
 
 
 \begin{figure}

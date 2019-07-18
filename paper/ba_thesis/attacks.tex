@@ -11,11 +11,12 @@ The \emph{adversarial perturbation} is the difference between the adversarial ex
 
 There are different attack scenarios differing in the knowledge, goals and abilities of the attacker.
 In white-box attacks, all information about the model architecture, training images and learned parameters is available to the attacker, while in the black-box scenario only the networks output can be observed.
+In particular, gradients can be computed in the white-box setting.
 These terms are in general not strictly defined and many intermediate stages are possible, including limited access to the models output, information about the architecture but not the learned parameters or knowledge about the training images but not the architecture etc.
 
 \emph{Targeted} and \emph{untargeted} describes the objective of the attacker.
 With an untargeted attack an adversarial example is just classified as any other label than the true label, while an adversarial example from a targeted attack has to be classified as a specific target label chosen by the attacker beforehand.
-Of course targeted attacks are strictly more difficult for the attacker, but also more useful \todo{ name examples}.
+Of course targeted attacks are strictly more difficult for the attacker, but also more useful.
 Furthermore, in some instances untargeted adversarial examples are easy to generate, or rather are near impossible to defend against, just because some classes may be conceptually very close to each other.
 For example, differentiating between a Golden Retriever and a Labrador Retriever in ImageNet \citep{imagenet} can even be for humans quite challenging.
 
@@ -75,7 +76,6 @@ This box-constrained problem can further be simplified by introducing the variab
 This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam optimizer \citep{adam}.
 
 The Carlini-Wagner attack is generally a quite strong attack and leads to almost undetectable adversarial examples.
-\todo{citation}
 In particular, it can find adversarial examples even when defensive techniques like distillation are utilized \citep{carlini}.
 However, due to the binary search it can often be quite slow.
 
@@ -116,7 +116,7 @@ The algorithm terminates once $\nu$ is close to zero.
 \subsection{DeepFool Attack}
 
 \citet{deepfool} developed the untargeted white-box attack \emph{DeepFool}.
-The authors calculated minimal adversarial perturbations for linear classifier, by projecting the original image to the nearest decision boundary.
+The authors calculate minimal adversarial perturbations for a linear classifier by projecting the original image to the nearest decision boundary.
 By approximating the network with its first order Taylor polynomial, these calculations can be applied to the nonlinear classifier.
 In detail, the perturbation is initialized as $\delta^{(0)} = 0$.
 For each class label $i \neq C^*(x)$ the distance to the decision boundary is estimated with
