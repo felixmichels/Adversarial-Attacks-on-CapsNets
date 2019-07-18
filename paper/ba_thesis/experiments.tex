@@ -46,9 +46,9 @@ While these accuracies do not reach the state of the art, the similarity between
 \end{table}
 
 For each of the data sets we compute adversarial examples using our four chosen attacks in the following manner:\\
-\todo{Make this less horrible}
-We randomly select $1000$ images from the test set and attack them with DeepFool and the boundary attack.
-For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels). \todo{explain choice of initial c}
+We randomly select $1000$ images each from the test set and attack them with DeepFool and the boundary attack.
+For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels).
+We make five steps with the binary search for the $c$ value in \Cref{eq:cwproblem}, but we determine a favorable initial value for $c$ by performing some runs with more iterations for each architecture and dataset combination.
 In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
 
 We do not restrict the maximal perturbation norm for any of the attacks and hence the Carlini-Wagner, the boundary and the DeepFool attack only generate valid adversarial examples.
@@ -221,7 +221,7 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 
 \subsection{Structural Analysis of Adversarial Examples}
 
-While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets. \todo{Write more?}
+While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
 \subsubsection{Universal Attack t-SNE}
 
