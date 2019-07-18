@@ -46,9 +46,9 @@ While these accuracies do not reach the state of the art, the similarity between
 \end{table}
 
 For each of the data sets we compute adversarial examples using our four chosen attacks in the following manner:\\
-\todo{Make this less horrible}
-We randomly select $1000$ images from the test set and attack them with DeepFool and the boundary attack.
-For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels). \todo{explain choice of initial c}
+We randomly select $1000$ images each from the test set and attack them with DeepFool and the boundary attack.
+For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels).
+We make five steps with the binary search for the $c$ value in \Cref{eq:cwproblem}, but we determine a favorable initial value for $c$ by performing some runs with more iterations for each architecture and dataset combination.
 In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
 
 We do not restrict the maximal perturbation norm for any of the attacks and hence the Carlini-Wagner, the boundary and the DeepFool attack only generate valid adversarial examples.
@@ -83,7 +83,7 @@ For more examples of adversarial images for this and the other data sets, see \C
 \subsection{Robustness to Adversarial Attacks}
 
 The most important aspect with respect to the dangers of adversarial attacks is how much an image has to be modified for an successful attack
-(i.e.\ the distance to the original image in some metric. In our case this is the euclidean norm, see \Cref{sec:attacks} \todo{check if ref is correct after I write introduction}).
+(i.e.\ the distance to the original image in some metric. In our case this is the euclidean norm, see \Cref{sec:attacks}).
 These results are displayed in \Cref{tab:norms}.
 On all data sets except MNIST the CapsNets is more susceptible to the Carlini-Wagner attack than the ConvNets.
 
@@ -127,7 +127,7 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 \definecolor{dblue}  {RGB}{20,66,129}
 \definecolor{norange}{RGB}{230,120,20}
 
-\begin{figure}
+\begin{wrapfigure}{O}{6.4cm}
 	\centering
 	%\scalebox{1}{%
 		\begin{tikzpicture}
@@ -184,7 +184,7 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 		\end{tikzpicture}%}
 	\caption[Evaluation procedure]{Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations used in \Cref{tab:norms} while the dark orange arrows show the application used in \Cref{tab:transfer}}
 	\label{fig:eval}
-\end{figure}
+\end{wrapfigure}
 
 To measure the transferability we evaluate the fooling rate of the adversarial examples calculated for CapsNets when applied to the ConvNets and vice versa (see \Cref{fig:eval}). We define an image to \emph{fool} a network in the case of the untargeted attacks (boundary, DeepFool, universal) if it is misclassified and in the case of targeted attacks (Carlini-Wagner) if it is classified as the target label for that the adversarial example was computed.
 
@@ -221,23 +221,30 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 
 \subsection{Structural Analysis of Adversarial Examples}
 
-While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets. \todo{Write more?}
+While we have found, that CapsNets are not necessarily more robust against adversarial attack, the low success rate of the transfer attacks suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
 \subsubsection{Universal Attack t-SNE}
 
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
-We discover, that for all data sets there is a clear distinction between the perturbations calculated for the different architectures.
+We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
 Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just a outcome of this phenomenon.
 By including another ConvNet in the diagram we find the clusters of the ConvNets almost perfectly matching while the cluster for the CapsNet is still separated.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
-In \Cref{fig:tsne} we can furthermore see subclusters based on the data set splits used to calculate the perturbations.
-These distinctions are however less pronounced with the other data sets besides CIFAR-10.
+In \Cref{fig:tsne} we can furthermore see subclusters based on the dataset splits used to calculate the perturbations.
+These distinctions are however less pronounced with the other datasets besides CIFAR-10.
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.75]{tsne.pdf}
-	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations on CIFAR-10 calculated using t-SNE \citep{tsne}. The upper right cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower left represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
+	\begin{subfigure}{.5\textwidth}
+	\includegraphics[scale=.5]{tsne_cifar10.pdf}
+	\caption{CIFAR-10}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+	\includegraphics[scale=.5]{tsne_svhn.pdf}
+	\caption{SVHN}
+	\end{subfigure}
+	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations calculated using t-SNE \citep{tsne}. The upper left cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower right represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
 	\label{fig:tsne}
 \end{figure}
 
@@ -257,7 +264,7 @@ We computed an additional $5000$ adversarial examples and plot the size of the s
 
 For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
 In this regard the difference between CapsNets and ConvNets is inconclusive.
-Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 data set, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
+Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 dataset, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
 
 
 \begin{figure}

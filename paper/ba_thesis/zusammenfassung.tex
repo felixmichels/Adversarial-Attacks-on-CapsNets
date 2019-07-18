@@ -2,6 +2,21 @@
 \section*{\ifthenelse{\equal{\sprache}{deutsch}}{Zusammenfassung}{Abstract}}
 %%% Zusammenfassung:
 
--Short description of adversarial attacks and capsule nets
--Description of experiments
--conclusion
+This bachelor thesis extensively evaluates the vulnerability of capsule network to various adversarial attacks.
+Capsule networks are a form of neural network in which neurons are grouped in capsules whose activity vectors describe different properties of the same entity.
+Recent work attributes them more robustness to adversarial attacks than other types of neural networks.
+
+To investigate those conjectures we train four pairs of capsule networks and convolutional neural networks discriminatively on different image datasets.
+Using multiple strong and diverse adversarial attack we compute adversarial examples for each combination of dataset and architecture.
+
+By comparing the euclidean norms of the generated perturbations we find that capsule networks are vulnerable to adversarial attacks in a similar level as convolutional networks.
+We discover in particular that capsule networks show no robustness to sufficiently strong white-box attacks.
+Additionally we demonstrate limited transferability of the adversarial examples between the two types of architectures.
+
+We study furthermore the structure of the adversarial perturbations and can observe that they seem to lie in a relatively low dimensional linear subspace in both cases.
+Despite those similarities, using dimensionality reduction we detect inherent differences between the perturbations constructed for the different network types.
+
+Finally we aim to identify the source of adversarial examples in the networks we trained.
+Since capsule networks and convolutional partially use the same of convolutional layer we focus on the disturbance on the activation of individual layers caused by adversarial attacks.
+We find that susceptibility to attacks is not just ascribable to the first layers in a network but a result of deeper layers as well.
+Specifically we find that the dynamic routing algorithm used in capsule networks does not establish capsule activation invariants to counteract adversarial attacks, as previously conjectured.

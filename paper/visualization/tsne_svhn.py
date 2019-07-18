@@ -3,15 +3,15 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
 
-postfixes = ['0-999', '1000-1999', '2000-2999', '3000-3999', '4000-4999',
-             '5000-5999', '6000-6999', '7000-7999', '8000-8999', '9000-9999']
-caps_perturbations = [np.load('cifar10/universal_perturbation/DCNet/adv_perts'+str(i)+'.npy').reshape(-1, 32*32*3) for i in postfixes]
+postfixes = ['0-2603', '2604-5207', '5208-7810', '7811-10413', '10414-13016',
+             '13017-15619', '15620-18222', '18223-20825', '20826-23428', '23429-26031']
+caps_perturbations = [np.load('svhn/universal_perturbation/CapsNetVariant/adv_perts'+str(i)+'.npy').reshape(-1, 32*32*3) for i in postfixes]
 
 caps_perturbations= np.vstack(caps_perturbations)
 print(caps_perturbations.shape)
 
 
-cnn_perturbations = [np.load('cifar10/universal_perturbation/ConvGood/adv_perts'+str(i)+'.npy').reshape(-1, 32*32*3) for i in postfixes]
+cnn_perturbations = [np.load('svhn/universal_perturbation/ConvBaseline/adv_perts'+str(i)+'.npy').reshape(-1, 32*32*3) for i in postfixes]
 
 cnn_perturbations= np.vstack(cnn_perturbations)
 print(cnn_perturbations.shape)
@@ -25,9 +25,8 @@ t = TSNE(n_components=2, random_state=1234)
 output = t.fit_transform(perturbations)
 print(output.shape)
 
-col = np.hstack([np.repeat(np.arange(0,10), 10),
-                 np.repeat(np.arange(0,10), 10)])
-print(col.shape)
+# Rotate to match image of cifar10 tsne
+output *= -1
 
 fig, ax = plt.subplots()
 ax.scatter(output[0:100,0], output[0:100,1],
@@ -36,4 +35,4 @@ ax.scatter(output[0:100,0], output[0:100,1],
 ax.scatter(output[100:200,0], output[100:200,1],
             c=np.repeat(np.arange(0,10), 10), marker='^')
 
-plt.savefig('tsne.pdf')
+plt.savefig('tsne_svhn.pdf')
