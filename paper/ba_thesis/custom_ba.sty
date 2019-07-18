@@ -14,6 +14,16 @@
 \usepackage{capt-of}
 \usepackage{braket}
 
+
+% Non copyable line numbers in appendix code
+\usepackage{accsupp}
+\newcommand{\noncopynumber}[1]{%
+	\BeginAccSupp{method=escape,ActualText={}}%
+	#1%
+	\EndAccSupp{}%
+}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \usepackage{listings}
 \lstset
 { %Formatting for code in appendix
@@ -25,6 +35,7 @@
 	tabsize=1,
 	breaklines=true,
 	breakatwhitespace=false,
+	numberstyle=\color{codegray}\noncopynumber
 }
 
 % Automatic FloatBarrier at and of section and subsection
