@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 19 20:36:17 2019
-
-@author: felix
+Boundary attack
 """
 
-## Eager mode
-
-import tensorflow as tf
 import numpy as np
 import numpy.linalg as la
 
 
-def boundary_attack(original, is_adv, eps_min, max_steps):
+def boundary_attack(original, is_adv, eps_min, max_steps, dtype=np.float32):
+    """
+    Computes an adversarial example using the boundary attack
+    Args:
+        original: original image as numpy array
+        is_adv: objective function. is_adv(x) == True iff x is adversarial
+        eps_min: tolerance for termination of algorithm
+        max_steps: maximum number of iterations
+        dtype: dtype of adversarial example
+
+    Returns: valid adversarial example as numpy array
+
+    """
     epsilon = 0.5
-    delta = 1
+    gamma = 1
     min_orth = 0.4
     max_orth = 0.6
     min_perp = 0.17
@@ -39,11 +46,11 @@ def boundary_attack(original, is_adv, eps_min, max_steps):
         # Orthogonal step
         pert_norm_old = la.norm(original-adv)
         eta = np.random.normal(size=shape)
-        eta *= delta * pert_norm_old / la.norm(eta)
-        #adv_new = np.clip(adv+eta, 0,1)
+        eta *= gamma * pert_norm_old / la.norm(eta)
+
         pert = adv + eta - original
         pert *= pert_norm_old / la.norm(pert)
-        adv_orth = np.clip(original+pert,0,1)        
+        adv_orth = np.clip(original+pert, 0, 1)
         
         orth_success = is_adv(adv_orth)
         steps += 1
@@ -60,15 +67,14 @@ def boundary_attack(original, is_adv, eps_min, max_steps):
         orth_rate = mov_avg_rate*orth_success + (1-mov_avg_rate)*orth_rate
         perp_rate = mov_avg_rate*perp_success + (1-mov_avg_rate)*perp_rate
         
-        # Update epsilon, delta
+        # Update epsilon, gamma
         if orth_rate < min_orth:
-            delta *= 0.7
+            gamma *= 0.7
         if orth_rate > max_orth:
-            delta *= 1.3
+            gamma *= 1.3
         if perp_rate < min_perp:
             epsilon *= 0.7
         if perp_rate > max_perp:
             epsilon = 0.3 + 0.7*epsilon
 
-            
-    return adv.astype('float32')
+    return adv.astype(dtype)

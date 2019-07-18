@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar 17 16:08:06 2019
-
-@author: felix
+Universal adversarial perturbations
 """
 
 import numpy as np
@@ -16,7 +14,13 @@ def _clip(img, norm):
     if norm is not None and la.norm(img) >= norm:
         img *= norm / la.norm(img)
 
+
 class UniversalPerturbation():
+    """
+    Class for computing a universal perturbation for a specific
+    image data subset. The resulting perturbation after running the 
+    fit method will be in the perturbation attribute
+    """
     
     def __init__(self,
                  attack,
@@ -28,7 +32,10 @@ class UniversalPerturbation():
         """
 
         Args:
-            attack: FastAttack instance
+            attack: FastAttack instance,
+                    i.e. a class than can compute adversarial examples
+                    for a whole batch of images on a specific model.
+                    Usually FGSM is used
             img: numpy array of originals
             label: original labels
             batch_size: used in FastAttack
@@ -51,7 +58,8 @@ class UniversalPerturbation():
         self._work_pert = None
         
     def _feed(self, idx):
-        return {self.attack.model.img: np.clip(self.img[idx] + self._work_pert, 0, 1),
+        img = np.clip(self.img[idx] + self._work_pert, 0, 1)
+        return {self.attack.model.img: img,
                 self.attack.model.label: self.label[idx]}
             
     def _not_fooled(self, sess):
@@ -66,7 +74,13 @@ class UniversalPerturbation():
         return preds == self.label
             
     def fit(self, sess):
-        self._work_pert = np.random.normal(size=self.perturbation.shape).astype('float32')
+        """
+        Compute a universal perturbation for the given images/labels
+        Args:
+            sess: Tensorflow session
+        """
+        self._work_pert = np.random.normal(size=self.perturbation.shape)\
+                          .astype(np.float32)
         if self.max_norm is None:
             init_norm = np.mean([la.norm(img) for img in self.img]) / 100
         else:
@@ -78,7 +92,8 @@ class UniversalPerturbation():
         for it in range(self.max_it):
             
             idx = np.random.choice(np.where(correct)[0], self.batch_size)
-            pert = sess.run(self.attack.perturbation, feed_dict=self._feed(idx))
+            pert = sess.run(self.attack.perturbation,
+                            feed_dict=self._feed(idx))
             pert = pert.mean(axis=0)
             self._work_pert += pert
                       
@@ -91,9 +106,12 @@ class UniversalPerturbation():
                 self._best_fool_rate = acc
                 self.perturbation = self._work_pert
 
-            if self.target_rate is not None and self._best_fool_rate < self.target_rate:
+            if self.target_rate is not None and \
+            self._best_fool_rate < self.target_rate:
                 break
             
-            tf.logging.debug('it: %d, acc: %1.3f, norm: %1.3f', it, acc, la.norm(self._work_pert))
+            tf.logging.debug('it: %d, acc: %1.3f, norm: %1.3f',
+                             it, acc, la.norm(self._work_pert))
             
-        tf.logging.info('Reached acc %1.3f with norm %2.3f', self._best_fool_rate, la.norm(self.perturbation))
+        tf.logging.info('Reached acc %1.3f with norm %2.3f',
+                        self._best_fool_rate, la.norm(self.perturbation))

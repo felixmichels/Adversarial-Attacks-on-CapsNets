@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr 13 15:30:24 2019
-
-@author: felix
+Attacks for whole batches.
+Can be used in the universal perturbations
 """
 
 import tensorflow as tf
 from abc import ABC, abstractmethod
 from util.lazy import lazy_property
+
 
 class FastAttack(ABC):
     
@@ -32,7 +32,6 @@ class FGSM(FastAttack):
     def __init__(self, model, epsilon):
         self.epsilon = epsilon
         super(self.__class__, self).__init__(model)
-        
         
     def _unclipped_pert(self):
         grad = tf.gradients(self.model.loss, self.model.img)[0]

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr  4 19:15:51 2019
-
-@author: felix
+Carlini-Wagner attack
 """
 
 import tensorflow as tf
+
 
 class CWAttackOp():
     def __init__(self,
@@ -15,31 +14,45 @@ class CWAttackOp():
                  shape,
                  num_classes,
                  kappa,
-                 rand_start_std=0.0
-                 ):
-        """Builds a optimize op for the carlini wagner attack."""
+                 rand_start_std=0.0):
+        """
+        Builds a optimize op for the carlini wagner attack.
+
+        Args:
+            model_class: The class of the model to construct.
+                         Expects subclass of BasicModel
+            model_params: Additional parameter for the model init
+            shape: Shape of the images
+            num_classes: Number of classes
+            kappa: Confidence parameter
+            rand_start_std: std if we want to start from a
+                            randomly disturbed image
+        """
 
         self.original = tf.placeholder(dtype=tf.float32, shape=shape)
         self.target = tf.placeholder(dtype=tf.int64, shape=())
         self.lagrangian = tf.placeholder(dtype=tf.float32, shape=())
-        
+
         initial_im = tf.clip_by_value(
-            self.original + tf.random_normal(self.original.get_shape(), mean=0.0, stddev=rand_start_std),
+            self.original + tf.random_normal(self.original.get_shape(),
+                                             mean=0.0, stddev=rand_start_std),
             clip_value_min=0.001,
             clip_value_max=0.999)
-        w = tf.get_variable('w', trainable=True, initializer=tf.atanh(2*initial_im - 1))
+        w = tf.get_variable('w', trainable=True,
+                            initializer=tf.atanh(2*initial_im - 1))
 
         image = (0.5 + 1e-8) * (tf.tanh(w) + 1)
 
         self.model = model_class(
             tf.expand_dims(image, axis=0),
-            tf.expand_dims(self.target, axis=0),  # label matters because of acc check
+            tf.expand_dims(self.target, axis=0),
             num_classes=num_classes,
             trainable=False,
             **model_params)
 
         logits = tf.squeeze(self.model.logits)
-        mask = tf.logical_not(tf.cast(tf.one_hot(self.target, num_classes), tf.bool))
+        mask = tf.logical_not(
+                tf.cast(tf.one_hot(self.target, num_classes), tf.bool))
 
         target_logits = logits[self.target]
         others_logits = tf.reduce_max(tf.boolean_mask(logits, mask))
@@ -54,7 +67,8 @@ class CWAttackOp():
             var_list=[w],
             global_step=tf.train.get_or_create_global_step())
 
-        init = tf.variables_initializer(opt.variables() + [w, tf.train.get_global_step()])
+        init = tf.variables_initializer(
+                opt.variables() + [w, tf.train.get_global_step()])
         target_reached = self.model.accuracy > 0.5
         
         self.loss = loss
@@ -84,7 +98,7 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter, c_prop):
     """
       
     def test_func(c):
-        tf.logging.info('Testing adv img with c=%f',c)
+        tf.logging.info('Testing adv img with c=%f', c)
         sess.run(attack.init, feed_dict={attack.original: orig})
         loss_prev = 1e6
         for it in range(max_opt_iter):
@@ -97,6 +111,7 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter, c_prop):
                 })
             if it % (max_opt_iter // 10) == 0:
                 tf.logging.debug('Loss: %f', loss)
+                # Check if improvement is made
                 if loss > 0.999 * loss_prev:
                     tf.logging.debug('Stopped early')
                     break
@@ -106,7 +121,8 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter, c_prop):
                         feed_dict = {attack.target: target})
         
     tf.logging.debug('Starting binary search')
-    c = _binary_search_min(test_func, init_c=c_prop.fget(), max_iter = max_bin_iter)
+    c = _binary_search_min(test_func, init_c=c_prop.fget(),
+                           max_iter=max_bin_iter)
     if c is None:
         return None
 
@@ -118,21 +134,20 @@ def cw_attack(sess, orig, target, attack, max_opt_iter, max_bin_iter, c_prop):
     for it in range(max_opt_iter):
         _ = sess.run(
             attack.optimizer,
-            feed_dict = {
+            feed_dict={
                 attack.original: orig,
                 attack.target: target,
                 attack.lagrangian: c,
             })
         if it % (max_opt_iter // 10) == 0 or it == max_opt_iter-1:
             success, adv = sess.run([attack.target_reached, attack.image],
-                                    feed_dict = {attack.target: target})
+                                    feed_dict={attack.target: target})
             if success:
                 good_adv = adv
             elif good_adv is not None:
                 tf.logging.debug('Early stopping in final run')
                 break
     return good_adv
-
 
 
 def _binary_search_min(func, init_c, max_iter=10):
