@@ -41,7 +41,7 @@ While these accuracies do not reach the state of the art, the similarity between
 		CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
 		\bottomrule\\
 	\end{tabular}
-	\caption{Test accuracies achieved by our networks.}
+	\caption[Test accuracies]{Test accuracies achieved by our networks}
 	\label{tab:accuracies}
 \end{table}
 
@@ -78,7 +78,7 @@ For more examples of adversarial images for this and the other datasets, see \Cr
 \end{longtable*}
 % This should count as a figure and not as a table
 %\addtocounter{table}{-1}
-\captionof{figure}[Adversarial Examples on CIFAR-10]{Original images from the CIFAR-10 dataset (left), adversarial examples and perturbations for CapsNet (middle) and adversarial examples and perturbations for ConvNet (right). Pixel values of perturbation images are scaled for visibility.}
+\captionof{figure}[Adversarial examples on CIFAR-10]{Original images from the CIFAR-10 dataset (left), adversarial examples and perturbations for CapsNet (middle) and adversarial examples and perturbations for ConvNet (right). Pixel values of perturbation images are scaled for visibility.}
 \label{fig:images}
 \end{center}
 
@@ -108,7 +108,7 @@ On all datasets except MNIST the CapsNets is more susceptible to the Carlini-Wag
 		& CapsNet           & $11.45$ & $5.31$ & $8.59$ & $2.70$ \\
 		\bottomrule\\
 	\end{tabular}
-	\caption[Average Perturbation Norms]{Average perturbation norms for each attack and architecture.}
+	\caption[Average perturbation norms]{Average perturbation norms for each attack and architecture}
 	\label{tab:norms}
 \end{table}
 
@@ -184,7 +184,7 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 		\draw[arrow](pertcaps) to [bend right,looseness=1.2] node[above] {evaluate} (convnet);
 		\draw[arrow](pertconv) to [bend right,looseness=1.2] node[below] {evaluate} (capsnet);
 		\end{tikzpicture}%}
-	\caption[Evaluation procedure]{Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations used in \Cref{tab:norms} while the dark orange arrows show the application used in \Cref{tab:transfer}}
+	\caption[Evaluation procedure]{Our evaluation procedure. The light orange arrows show the usual application of adversarial perturbations used in \Cref{tab:norms} while the dark orange arrows show the application used in \Cref{tab:transfer}.}
 	\label{fig:eval}
 \end{wrapfigure}
 
@@ -213,7 +213,7 @@ This is not the case for the Boundary attack with MNIST and the DeepFool attack 
 		& CapsNet           & $38.2\%$ & $25.7\%$ & $53.4\%$ & $47.2\%$ \\
 		\bottomrule\\
 	\end{tabular}
-	\caption[Transfer Fooling Rates]{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
+	\caption[Transfer fooling rates]{Fooling rates of adversarial examples calculated for a CapsNet and evaluated on a ConvNet and vice versa. For the universal attack we report the accuracy on the whole test set.}
 	\label{tab:transfer}
 \end{table}
 
@@ -246,7 +246,7 @@ These distinctions are however less pronounced with the other datasets besides C
 	\includegraphics[scale=.5]{tsne_svhn.pdf}
 	\caption{SVHN}
 	\end{subfigure}
-	\caption[t-SNE Plot of Universal Perturbations]{Two dimensional embedding of the universal perturbations calculated using t-SNE \citep{tsne}. The upper left cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower right represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
+	\caption[t-SNE Plot of universal perturbations]{Two dimensional embedding of the universal perturbations calculated using t-SNE \citep{tsne}. The upper left cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower right represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
 	\label{fig:tsne}
 \end{figure}
 
@@ -262,12 +262,16 @@ $ for some $x_1, ..., x_k$ in the test set with $k > n$. \\
 The perturbation vector $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of $N$ give us information about the decision boundary. For example, for an binary linear classifier, $N$ would have a rank of one, i.e.\ only one non-zero singular value.
 
 Accurately computing $\delta(x)$ is very challenging, so we use the result of the DeepFool attack as an approximation.
-We computed an additional $5000$ adversarial examples and plot the size of the singular values of the resulting Matrix $N$ together with a matrix containing columns randomly sampled from the unit sphere $S^{n-1}$ in \Cref{fig:svd}.
+We computed $6000$ adversarial examples and plot the size of the singular values of the resulting Matrix $N$ together with a matrix containing columns randomly sampled from the unit sphere $S^{n-1}$ in \Cref{fig:svd}.
 
 For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
 In this regard the difference between CapsNets and ConvNets is inconclusive.
 Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 dataset, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
 
+At first, it was believed that the cause of adversarial vulnerability is the somewhat discontinuous nature of neural networks, but \citet{fgsm} argued that linearity is at fault.
+No bounds for the Lipschitz constant of the routing-by-agreement algorithm are known.
+ConvNets with ReLU are actually piecewice linear, but CapsNet are not.
+This is evidence, that CapsNet behave somewhat linear.
 
 \begin{figure}
 	\centering
@@ -280,7 +284,7 @@ Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet i
 		\caption{MNIST}
 	\end{subfigure}
 	
-	\caption{Singular values of the matrix containing normal vectors to the decision boundary.}
+	\caption[Singular values of adversarial examples]{Singular values of the matrix containing normal vectors to the decision boundary}
 	\label{fig:svd}
 \end{figure}
 
