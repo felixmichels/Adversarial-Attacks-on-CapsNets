@@ -1,9 +1,10 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Capsule networks (CapsNets) are a novel form of artificial neural networks introduced by \citet{capsules,em} which partition the neurons of a layer into groups called \emph{capsules} and route their output dynamically.
+Capsule networks (CapsNets) are a novel form of artificial neural networks introduced by \citet{capsules,em}.
+CapsNets partition the neurons of a layer into groups called \emph{capsules} and route their output dynamically.
 This aims to preserve information about hierarchical spatial relationships between objects and thereby to generalize better to new viewpoints.
-In some computer vision tasks CapsNets have reached the state-of-the-art of convolutional neural networks (ConvNets), and have surpassed them in some particular functions like segmenting highly overlapping objects.
+In some computer vision tasks CapsNets have reached the state-of-the-art performance of convolutional neural networks (ConvNets), and have surpassed them in some particular functions like segmenting highly overlapping objects.
 As a possible alternative to ConvNets, they also face some of the same challenges.
 
 With the recent emergence of deep learning in many real-world applications, from face recognition to brain tumor detection and satellite imagery analysis, security in machine learning has become a growing concern.
@@ -19,7 +20,7 @@ We will investigate the robustness of CapsNets in comparison to ConvNets against
 We also look at the structural difference of the generated adversarial examples, the transferability of perturbations between architectures and unit activations between layers.
 We show that CapsNets are in general no less susceptible to adversarial examples than ConvNets.
 
-This thesis is structured as follows: In \Cref{sec:capsules} we reiterate the concept of capsule networks and the routing-by-agreement algorithm. In \Cref{sec:attacks} we describe the attacks we use to test the CapsNets. We present the results and interpretations of our experiments in \Cref{sec:experiments}.
+This thesis is structured as follows: in \Cref{sec:capsules} we reiterate the concept of capsule networks and the routing-by-agreement algorithm. In \Cref{sec:attacks} we describe the attacks we use to test the CapsNets. We present the results and interpretations of our experiments in \Cref{sec:experiments}.
 
 \section{Related Work}
 \label{sec:related}

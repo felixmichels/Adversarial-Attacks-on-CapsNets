@@ -7,17 +7,17 @@
 \subsection{Detailed Description of Neural Network Architectures}
 \label{lab:networks}
 
-The following tables describe the structure of the neural networks we used in detail. Each row represents a layer (for brevity's sake some types of layers are merged into a single row).
+The following tables describe the structure of the neural networks used for the experiments in detail. Each row represents a layer (for brevity's sake some types of layers are merged into a single row).
 The tables for the CapsNets are separated into two parts: The encoder network (top) and the decoder network (bottom).
 Some expressions may need further explanation:
 
 \begin{itemize}
 	\item BN: spatial batch normalization
-	\item Conv $K$ $F \times F$, \{valid,same\}: Convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e. no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
-	\item FC $n$: Fully connected with $n$ units
-	\item Densely Connected: A densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layer in this block.
-	\item (Primary) Conv Caps, dim=$d$: A convolutional ()primary) capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
-	\item Dense Caps, dim=$d$: A dense capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}.
+	\item Conv $K$ $F \times F$, \{valid,same\}: convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e. no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
+	\item FC $n$: fully connected with $n$ units
+	\item Densely Connected: a densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layer in this block.
+	\item (Primary) Conv Caps, dim=$d$: a (convolutional) primary capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
+	\item Dense Caps, dim=$d$: a dense capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}.
 \end{itemize}
 
 \begin{table}
@@ -35,14 +35,14 @@ Some expressions may need further explanation:
 		\midrule 
 		& \\
 		\midrule
-		FC 512, ReLU	& 512 \\
+		FC 512, ReLU	& $512$ \\
 		\midrule
-		FC 1024, ReLU	& 1024 \\
+		FC 1024, ReLU	& $1024$ \\
 		\midrule
-		FC 784, sigmoid	& 784 \\
+		FC 784, sigmoid	& $784$ \\
 		\bottomrule
 	\end{tabular} 
-	\caption{CapsNet on MNIST}
+	\caption{CapsNet architecture for MNIST}
 	\label{tab:capsnet:mnist}
 
 	\vspace{0.75cm}
@@ -68,7 +68,7 @@ Some expressions may need further explanation:
 		FC 10 & 10\\
 		\bottomrule
 	\end{tabular} 
-	\caption{ConvNet on MNIST}
+	\caption{ConvNet architecture for MNIST}
 	\label{tab:convnet:mnist}
 \end{table}
 
@@ -97,7 +97,7 @@ Some expressions may need further explanation:
 		FC 784, sigmoid	& 784 \\
 		\bottomrule
 	\end{tabular}
-	\caption{CapsNet on Fashion-MNIST}
+	\caption{CapsNet architecture for Fashion-MNIST}
 	\label{tab:capsnet:fashion}
 	
 	\vspace{0.75cm}
@@ -123,7 +123,7 @@ Some expressions may need further explanation:
 		FC 10 & 10\\
 		\bottomrule
 	\end{tabular} 
-	\caption{ConvNet on Fashion-MNIST}
+	\caption{ConvNet architecture for Fashion-MNIST}
 	\label{tab:convnet:fashion}
 \end{table}
 
@@ -152,7 +152,7 @@ Some expressions may need further explanation:
 		FC 3072, sigmoid	& 3072\\
 		\bottomrule
 	\end{tabular}
-	\caption{CapsNet on SVHN}
+	\caption{CapsNet architecture for SVHN}
 	\label{tab:capsnet:svhn}
 	
 	\vspace{0.75cm}
@@ -178,7 +178,7 @@ Some expressions may need further explanation:
 		FC 10 & 10\\
 		\bottomrule
 	\end{tabular}
-	\caption{ConvNet on SVHN}
+	\caption{ConvNet architecture for SVHN}
 	\label{tab:convnet:svhn}
 \end{table}
 
@@ -211,7 +211,7 @@ Some expressions may need further explanation:
 		FC 3072, sigmoid	& 3072 \\
 		\bottomrule
 	\end{tabular} 
-	\caption[CapsNet on CIFAR-10]{CapsNet on CIFAR-10
+	\caption[CapsNet architecture for CIFAR-10]{CapsNet architecture for CIFAR-10
 	(uses none-of-the-above category in dynamic routing between all capsule layers)}
 	\label{tab:capsnet:cifar10}
 	
@@ -242,7 +242,7 @@ Some expressions may need further explanation:
 		FC 10 & 10\\
 		\bottomrule
 	\end{tabular} 
-	\caption{ConvNet on CIFAR-10}
+	\caption{ConvNet architecture for CIFAR-10}
 	\label{tab:convnet:cifar10}
 \end{table}
 
@@ -252,7 +252,7 @@ Some expressions may need further explanation:
 The following pages display adversarial examples categorized by attack.
 The pixel values for the perturbations are scaled for visibility in the following way:
 \begin{equation*}
-\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em}\norm[\infty]{\delta}}
+\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em} \norm[\infty]{\delta}} .
 \end{equation*}
 Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$.
 
@@ -276,7 +276,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{carlini_wagner_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Carlini-Wagner Adversarial Examples]{Carlini-Wagner adversarial examples and perturbations.}
+	\caption[Carlini-Wagner Adversarial Examples]{Carlini-Wagner adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
 	\label{fig:carlini-wagner-img}
 	
 \end{figure}
@@ -323,7 +323,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{boundary_attack_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Boundary Attack Adversarial Examples]{Boundary Attack adversarial examples and perturbations.}
+	\caption[Boundary Attack Adversarial Examples]{Boundary attack adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
 	\label{fig:boundary-img}
 	
 \end{figure}
@@ -346,14 +346,14 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{universal_perturbation_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Universal Adversarial Perturbation Adversarial Examples]{Universal Perturbation adversarial examples and perturbations.}
+	\caption[Universal Adversarial Perturbation Adversarial Examples]{Universal adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
 	\label{fig:universal-img}
 	
 \end{figure}
 
 \subsection{ICML Paper}
 
-Our work resulted in a paper \citep*{mine} that was accepted as a poster presentation at ICML 2019.
+Our work resulted in a paper \citep*{mine} that was accepted as a poster presentation at the ICML 2019 Workshop on the Security and Privacy of Machine Learning.
 
 \includepdf[pages=-, scale=.95]{icml.pdf}
 
