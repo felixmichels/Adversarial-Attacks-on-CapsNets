@@ -31,15 +31,15 @@ Some expressions may need further explanation:
 		\midrule 
 		Primary Conv Caps, $32$ $9\times9$, dim=$8$, stride=2	&  $8\times8\times32\times8$ \\ 
 		\midrule 
-		Dense Caps, dim=16	& $10\times16$ \\ 
+		Dense Caps, dim=$16$	& $10\times16$ \\ 
 		\midrule 
 		& \\
 		\midrule
-		FC 512, ReLU	& $512$ \\
+		FC $512$, ReLU	& $512$ \\
 		\midrule
-		FC 1024, ReLU	& $1024$ \\
+		FC $1024$, ReLU	& $1024$ \\
 		\midrule
-		FC 784, sigmoid	& $784$ \\
+		FC $784$, sigmoid	& $784$ \\
 		\bottomrule
 	\end{tabular} 
 	\caption{CapsNet architecture for MNIST}
@@ -53,19 +53,19 @@ Some expressions may need further explanation:
 		\midrule 
 		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	&  $14\times14\times32$ \\ 
 		\midrule 
 		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	& $7\times7\times64$ \\
 		\midrule
 		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
 		\midrule
-		Dropout 0.15, BN	& $7\times7\times128$ \\
+		Dropout $0.15$, BN	& $7\times7\times128$ \\
 		\midrule
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		FC $1024$, ReLU, Dropout $0.5$ & $1024$ \\
 		\midrule
-		FC 10 & 10\\
+		FC $10$ & $10$\\
 		\bottomrule
 	\end{tabular} 
 	\caption{ConvNet architecture for MNIST}
@@ -90,11 +90,11 @@ Some expressions may need further explanation:
 		\midrule 
 		& \\
 		\midrule
-		FC 512, ReLU	& 512 \\
+		FC $512$, ReLU	& $512$ \\
 		\midrule
-		FC 1024, ReLU	& 1024 \\
+		FC $1024$, ReLU	& $1024$ \\
 		\midrule
-		FC 784, sigmoid	& 784 \\
+		FC $784$, sigmoid & $784$ \\
 		\bottomrule
 	\end{tabular}
 	\caption{CapsNet architecture for Fashion-MNIST}
@@ -108,19 +108,19 @@ Some expressions may need further explanation:
 		\midrule
 		Conv $32$ $5\times5$, same,	ReLU & $28\times28\times32$ \\ 
 		\midrule
-		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $14\times14\times32$ \\ 
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	&  $14\times14\times32$ \\ 
 		\midrule 
 		Conv $64$ $3\times3$, same, ReLU	& $14\times14\times64$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	& $7\times7\times64$ \\
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	& $7\times7\times64$ \\
 		\midrule
 		Conv $128$ $3\times3$, same, ReLU	& $7\times7\times128$ \\
 		\midrule
-		Dropout 0.15, BN	& $7\times7\times128$ \\
+		Dropout $0.15$, BN	& $7\times7\times128$ \\
 		\midrule
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		FC $1024$, ReLU, Dropout $0.5$ & $1024$ \\
 		\midrule
-		FC 10 & 10\\
+		FC $10$ & $10$\\
 		\bottomrule
 	\end{tabular} 
 	\caption{ConvNet architecture for Fashion-MNIST}
@@ -145,11 +145,11 @@ Some expressions may need further explanation:
 		\midrule
 		& \\
 		\midrule
-		FC 2048, ReLU	& 2048 \\
+		FC $2048$, ReLU	& $2048$ \\
 		\midrule
-		FC 4096, ReLU	& 4096 \\
+		FC $4096$, ReLU	& $4096$ \\
 		\midrule
-		FC 3072, sigmoid	& 3072\\
+		FC $3072$, sigmoid	& $3072$\\
 		\bottomrule
 	\end{tabular}
 	\caption{CapsNet architecture for SVHN}
@@ -163,19 +163,19 @@ Some expressions may need further explanation:
 		\midrule 
 		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	&  $16\times16\times32$ \\ 
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	&  $16\times16\times32$ \\ 
 		\midrule 
 		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.15, BN	& $8\times8\times64$ \\
+		Max-Pooling $2\times2$, Dropout $0.15$, BN	& $8\times8\times64$ \\
 		\midrule
 		Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
 		\midrule
-		Dropout 0.15, BN	& $8\times8\times128$ \\
+		Dropout $0.15$, BN	& $8\times8\times128$ \\
 		\midrule
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		FC $1024$, ReLU, Dropout $0.5$ & $1024$ \\
 		\midrule
-		FC 10 & 10\\
+		FC $10$ & $10$\\
 		\bottomrule
 	\end{tabular}
 	\caption{ConvNet architecture for SVHN}
@@ -191,24 +191,24 @@ Some expressions may need further explanation:
 		Layer	&  Output Shape \\ 
 		\midrule
 		Densely Connected with \\
-		$1$ Conv $29$ $3\times3$, ReLU and  & $32\times32\times256$ \\
-		$7$ BN, Conv $32$ $3\times3$, ReLU, BN \\ 
+		one Conv $29$ $3\times3$, ReLU and  & $32\times32\times256$ \\
+		seven BN, Conv $32$ $3\times3$, ReLU, BN \\ 
 		\midrule
-		Dropout 0.2, BN & $32\times32\times256$ \\
+		Dropout $0.2$, BN & $32\times32\times256$ \\
 		\midrule
-		Primary Conv Caps, $32$ $5\times5$, dim=$12$, stride=2	&  $14\times14\times32\times12$ \\ 
+		Primary Conv Caps, $32$ $5\times5$, dim=$12$, stride=$2$	&  $14\times14\times32\times12$ \\ 
 		\midrule
-		Conv Caps, $64$ $3\times3$, dim=$24$, stride=2	&  $6\times6\times64\times24$ \\ 
+		Conv Caps, $64$ $3\times3$, dim=$24$, stride=$2$	&  $6\times6\times64\times24$ \\ 
 		\midrule
-		Dense Caps, dim=48	& $10\times48$ \\ 
+		Dense Caps, dim=$48$ & $10\times48$ \\ 
 		\midrule
 		& \\
 		\midrule
-		Densely Connected with 2 FC 1024, ReLU	& 2048 \\
+		Densely Connected with two FC $1024$, ReLU & $2048$ \\
 		\midrule
-		FC 2048, ReLU	& 2048 \\
+		FC $2048$, ReLU	& $2048$ \\
 		\midrule
-		FC 3072, sigmoid	& 3072 \\
+		FC $3072$, sigmoid	& $3072$ \\
 		\bottomrule
 	\end{tabular} 
 	\caption[CapsNet architecture for CIFAR-10]{CapsNet architecture for CIFAR-10
@@ -225,21 +225,21 @@ Some expressions may need further explanation:
 		\midrule 
 		Conv $32$ $5\times5$, same,	ReLU & $32\times32\times32$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.1, BN	&  $16\times16\times32$ \\ 
+		Max-Pooling $2\times2$, Dropout $0.1$, BN	&  $16\times16\times32$ \\ 
 		\midrule 
 		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
 		\midrule 
 		Conv $64$ $3\times3$, same, ReLU	& $16\times16\times64$ \\ 
 		\midrule 
-		Max-Pooling $2\times2$, Dropout 0.1, BN	& $8\times8\times64$ \\
+		Max-Pooling $2\times2$, Dropout $0.1$, BN	& $8\times8\times64$ \\
 		\midrule
 		Conv $128$ $3\times3$, same, ReLU	& $8\times8\times128$ \\
 		\midrule
-		Max-Pooling $2\times2$, Dropout 0.1, BN	& $4\times4\times128$ \\
+		Max-Pooling $2\times2$, Dropout $0.1$, BN	& $4\times4\times128$ \\
 		\midrule
-		FC 1024, ReLU, Dropout 0.5 & 1024 \\
+		FC 1024, ReLU, Dropout $0.5$ & $1024$ \\
 		\midrule
-		FC 10 & 10\\
+		FC $10$ & $10$\\
 		\bottomrule
 	\end{tabular} 
 	\caption{ConvNet architecture for CIFAR-10}
@@ -252,7 +252,8 @@ Some expressions may need further explanation:
 The following pages display adversarial examples categorized by attack.
 The pixel values for the perturbations are scaled for visibility in the following way:
 \begin{equation*}
-\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em} \norm[\infty]{\delta}} .
+\delta_{visible} \gets \frac{1}{2}\frac{\delta + 1}{\hspace{0.6em} \norm[\infty]{\delta}}
+\text{ .}
 \end{equation*}
 Because of the restriction $x + \delta \in [0,1]^n$ we have $\delta \in [-1,1]^n$ and $\delta_{visible} \in [0,1]^n$.
 
@@ -276,7 +277,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{carlini_wagner_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Carlini-Wagner Adversarial Examples]{Carlini-Wagner adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
+	\caption[Carlini-Wagner adversarial examples]{Carlini-Wagner adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility.}
 	\label{fig:carlini-wagner-img}
 	
 \end{figure}
@@ -300,7 +301,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{deepfool_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[DeepFool Adversarial Examples]{DeepFool adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
+	\caption[DeepFool adversarial examples]{DeepFool adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility.}
 	\label{fig:deepfool-img}
 	
 \end{figure}
@@ -323,7 +324,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{boundary_attack_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Boundary Attack Adversarial Examples]{Boundary attack adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
+	\caption[Boundary attack adversarial examples]{Boundary attack adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility.}
 	\label{fig:boundary-img}
 	
 \end{figure}
@@ -346,7 +347,7 @@ All images are chosen at random.
 		\includegraphics[width=.95\textwidth, right]{universal_perturbation_conv_appendix.pdf}%
 		\caption{ConvNet}
 	\end{subfigure}
-	\caption[Universal Adversarial Perturbation Adversarial Examples]{Universal adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility}
+	\caption[Universal adversarial examples]{Universal adversarial examples and perturbations. Pixel values of perturbation images are scaled for visibility.}
 	\label{fig:universal-img}
 	
 \end{figure}

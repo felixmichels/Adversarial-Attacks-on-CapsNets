@@ -16,7 +16,7 @@ Additionally, we demonstrate limited transferability of the adversarial examples
 Furthermore, we study the structure of the adversarial perturbations and observe that they seem to lie in a relatively low dimensional linear subspace for both types of networks.
 Despite those similarities we detect inherent differences between the perturbations constructed for the different network types using dimensionality reduction.
 
-Finally, we aim to identify the \todo{better wording?}source of adversarial examples in the networks we trained.
-Since capsule networks and convolutional networks partially use the same type of convolutional layer we focus on the disturbance on the activation of individual layers caused by adversarial attacks.
+Finally, we aim to identify the cause of adversarial vulnerability in the networks we trained.
+Since capsule networks and convolutional networks partially use the same type of convolutional layer, we focus on the disturbance on the activation of individual layers caused by adversarial attacks.
 We find that susceptibility to attacks is not just ascribable to the first layers in a network but a result of deeper layers as well.
 Specifically, we find that the dynamic routing algorithm used in capsule networks does not establish capsule activation invariants to counteract adversarial attacks as previously conjectured.

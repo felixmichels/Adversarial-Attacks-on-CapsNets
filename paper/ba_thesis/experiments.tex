@@ -41,7 +41,7 @@ While these accuracies do not reach the state of the art, the similarity between
 		CapsNet           & $99.40\%$ & $92.65\%$ & $92.35\%$ & $88.21\%$ \\
 		\bottomrule\\
 	\end{tabular}
-	\caption[Test accuracies]{Test accuracies achieved by our networks}
+	\caption[Test accuracies]{Test accuracies achieved by our networks.}
 	\label{tab:accuracies}
 \end{table}
 
@@ -108,7 +108,7 @@ On all datasets except MNIST the CapsNets is more susceptible to the Carlini-Wag
 		& CapsNet           & $11.45$ & $5.31$ & $8.59$ & $2.70$ \\
 		\bottomrule\\
 	\end{tabular}
-	\caption[Average perturbation norms]{Average perturbation norms for each attack and architecture}
+	\caption[Average perturbation norms]{Average perturbation norms for each attack and architecture.}
 	\label{tab:norms}
 \end{table}
 
@@ -225,7 +225,7 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 
 While we have found, that CapsNets are not necessarily more robust against adversarial attacks, the low success rate of the transfer attacks and the radically different construction of the networks themselves suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
-\subsubsection{Universal Attack t-SNE}
+\subsubsection{Visualizing Universal Perturbations}
 
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
 We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
@@ -284,7 +284,7 @@ The linearity of the adversarial perturbations implied by their fast decaying si
 		\caption{MNIST}
 	\end{subfigure}
 	
-	\caption[Singular values of adversarial perturbations]{Singular values of the matrix containing normal vectors to the decision boundary}
+	\caption[Singular values of adversarial perturbations]{Singular values of the matrix containing normal vectors to the decision boundary.}
 	\label{fig:svd}
 \end{figure}
 
@@ -299,14 +299,16 @@ If an attack can perturb the leading convolutional layers in a considerable way,
 To test this, we examine the difference of the layer's activations in out network when applied to unaltered and adversarial images. As a dimension and scale invariant metric we define
 \begin{equation}
 	d(z, w) = \frac{\norm[\infty]{z - w}}{\enspace \norm[\infty]{z}}
-	\qquad \text{for original activation $z$ and perturbed activation $w$ .}
+	\qquad \text{for original activation $z$ and perturbed activation $w$.}
 \end{equation}
 This is related to the layer's Lipschitz constant.
-Let $\phi$ be then function modeled by some layer and $z$ and $w$ the original and perturbed activation of the previous layer, then we have a lower bound for the Lipschitz constant with respect to the $L_{\infty}$-norm $K$ of the layer
+Let $\phi$ be then function modeled by some layer $l$ and $z$ and $w$ the original and perturbed activations of the previous layer $l-1$.
+We then have a lower bound for the Lipschitz constant $K$ of the layer $l$ with respect to the $L^{\infty}$-norm:
 \begin{equation}
 K \geq \frac{d(\phi(z), \phi(w))}{d(z, w)} \cdot \frac{\norm[\infty]{\phi(z)}}{\norm[\infty]{z}}
+\text{ .}
 \end{equation}
-Low Lipschitz constants for every layer imply robustness to $L_p$ based attacks (in case $p \geq 1$).
+Low Lipschitz constants for every layer imply robustness to $L^p$ based attacks (in case $p \geq 1$).
 Upper bounds for Lipschitz constants of convolutional and other common layers are known \citep{intriguing},
 but have yet to be found for the routing-by-agreement algorithm.
 
