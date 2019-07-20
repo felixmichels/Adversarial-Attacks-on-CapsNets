@@ -13,10 +13,10 @@ Some expressions may need further explanation:
 
 \begin{itemize}
 	\item BN: spatial batch normalization
-	\item Conv $K$ $F \times F$, \{valid,same\}: convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e. no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
+	\item Conv $K$ $F \times F$, \{valid,same\}: convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e.\ no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
 	\item FC $n$: fully connected with $n$ units
 	\item Densely Connected: a densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layer in this block.
-	\item (Primary) Conv Caps, dim=$d$: a (convolutional) primary capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
+	\item (Primary) Conv Caps, dim=$d$: a convolutional (primary) capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
 	\item Dense Caps, dim=$d$: a dense capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}.
 \end{itemize}
 
@@ -362,7 +362,7 @@ Our work resulted in a paper \citep*{mine} that was accepted as a poster present
 All of our source code used for this thesis is available at \url{https://github.com/felixmichels/Adversarial-Attacks-on-CapsNets}
 
 We use Python 3.6 and Tensorflow 1.8.
-Below are some excerpt from our implementation of the adversarial attacks.
+Below are excerpts from our implementation of the adversarial attacks.
 
 \subsubsection{Carlini-Wagner Attack}
 \lstinputlisting[firstline=7]{../../code/attacks/cw.py}
@@ -375,3 +375,6 @@ Below are some excerpt from our implementation of the adversarial attacks.
 
 \subsubsection{Universal Adversarial Perturbation}
 \lstinputlisting[firstline=7]{../../code/attacks/universal_perturbation.py}
+
+\lstinputlisting[firstline=30]{../../code/attacks/fast_batch_attacks.py}
+

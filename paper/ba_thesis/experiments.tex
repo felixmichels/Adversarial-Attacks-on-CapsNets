@@ -64,16 +64,16 @@ For more examples of adversarial images for this and the other datasets, see \Cr
 
 \begin{center}
 \begin{longtable*}{m{1.6cm}m{2.2cm}m{4.2cm}m{4.2cm}}
-	
-	\begin{flushright} CW \end{flushright} & \includegraphics[height=2cm]{cifar10_carlini_wagner_orig.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_caps.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_conv.pdf}\\
+	\raggedleft CW & 
+	\includegraphics[height=2cm]{cifar10_carlini_wagner_orig.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_caps.pdf} & \includegraphics[height=2cm]{cifar10_carlini_wagner_conv.pdf}\\
 	\\
-	\begin{flushright} Boundary \end{flushright} &
+	\raggedleft Boundary &
 	\includegraphics[height=2cm]{cifar10_boundary_attack_orig.pdf} & \includegraphics[height=2cm]{cifar10_boundary_attack_caps.pdf} & \includegraphics[height=2cm]{cifar10_boundary_attack_conv.pdf}\\
 	\\
-	\begin{flushright} DeepFool \end{flushright} &
+	\raggedleft DeepFool&
 	\includegraphics[height=2cm]{cifar10_deepfool_orig.pdf} & \includegraphics[height=2cm]{cifar10_deepfool_caps.pdf} & \includegraphics[height=2cm]{cifar10_deepfool_conv.pdf}\\
 	\\
-	\begin{flushright} Universal \end{flushright} &
+	\raggedleft Universal&
 	\includegraphics[height=2cm]{cifar10_universal_perturbation_orig.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_caps.pdf} & \includegraphics[height=2cm]{cifar10_universal_perturbation_conv.pdf}
 \end{longtable*}
 % This should count as a figure and not as a table
@@ -251,7 +251,7 @@ These distinctions are however less pronounced with the other datasets besides C
 \end{figure}
 
 
-\subsubsection{Singular Values of Adversarial Examples}
+\subsubsection{Singular Values of Adversarial Perturbations}
 \citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace. \\
 For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
 and $ N = \begin{bmatrix}
@@ -266,12 +266,12 @@ We computed $6000$ adversarial examples and plot the size of the singular values
 
 For both the CapsNets and the ConvNets the singular values decay much more quickly than those of the random matrix, confirming the findings of \citet{universal}.
 In this regard the difference between CapsNets and ConvNets is inconclusive.
-Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 dataset, the opposite occurs for the other cases. \todo{talk about linearity hypothesis}
+Whilst the curve of the CapsNet decreases more slowly than that of the ConvNet in the case of the CIFAR-10 dataset, the opposite occurs for the other cases.
 
-At first, it was believed that the cause of adversarial vulnerability is the somewhat discontinuous nature of neural networks, but \citet{fgsm} argued that linearity is at fault.
-No bounds for the Lipschitz constant of the routing-by-agreement algorithm are known.
-ConvNets with ReLU are actually piecewice linear, but CapsNet are not.
-This is evidence, that CapsNet behave somewhat linear.
+\citet{fgsm} argue that the linear nature of neural networks is the cause for both their ability to generalize and their vulnerability to adversarial examples.
+Indeed, many ConvNets model piecewise linear functions: max pooling and the ReLU activation are piecewise linear, while convolutional operations are linear, as are batch normalization and dropout at test time.
+Due to the dynamic routing, CapsNets are generally not piecewise linear.
+The linearity of the adversarial perturbations implied by their fast decaying singular values is however evidence that CapsNets also exhibit linear behavior similarly to ConvNets.
 
 \begin{figure}
 	\centering
@@ -284,7 +284,7 @@ This is evidence, that CapsNet behave somewhat linear.
 		\caption{MNIST}
 	\end{subfigure}
 	
-	\caption[Singular values of adversarial examples]{Singular values of the matrix containing normal vectors to the decision boundary}
+	\caption[Singular values of adversarial perturbations]{Singular values of the matrix containing normal vectors to the decision boundary}
 	\label{fig:svd}
 \end{figure}
 
@@ -301,7 +301,17 @@ To test this, we examine the difference of the layer's activations in out networ
 	d(z, w) = \frac{\norm[\infty]{z - w}}{\enspace \norm[\infty]{z}}
 	\qquad \text{for original activation $z$ and perturbed activation $w$ .}
 \end{equation}
-Regarding CapsNets we can differentiate between the activation of the instantiation parameters and that of the probabilities of presence. Since we are using vector capsules, in our case the instantiation parameters is simply the complete output of a capsule layer and the probability of presence is given by the Euclidean norm of the capsules.
+This is related to the layer's Lipschitz constant.
+Let $\phi$ be then function modeled by some layer and $z$ and $w$ the original and perturbed activation of the previous layer, then we have a lower bound for the Lipschitz constant with respect to the $L_{\infty}$-norm $K$ of the layer
+\begin{equation}
+K \geq \frac{d(\phi(z), \phi(w))}{d(z, w)} \cdot \frac{\norm[\infty]{\phi(z)}}{\norm[\infty]{z}}
+\end{equation}
+Low Lipschitz constants for every layer imply robustness to $L_p$ based attacks (in case $p \geq 1$).
+Upper bounds for Lipschitz constants of convolutional and other common layers are known \citep{intriguing},
+but have yet to be found for the routing-by-agreement algorithm.
+
+Regarding CapsNets, we can differentiate between the activation of the instantiation parameters and that of the probabilities of presence.
+Since we are using vector capsules, in our case the instantiation parameters is simply the complete output of a capsule layer and the probability of presence is given by the Euclidean norm of the capsules.
 
 We compute the average activation error $d(z, w)$ for select layers over $128$ adversarial examples for our CIFAR-10 networks. Our CapsNet trained on CIFAR-10 begins with eight denseley connected convolutional layers and is therefore an apt choice for this comparison.
 The results appear in \Cref{fig:activation}.
@@ -315,7 +325,7 @@ The results appear in \Cref{fig:activation}.
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\includegraphics[scale=.5]{activation_error_caps.pdf}
-		\caption{CapsNet. Dashed lines are capsule norms}
+		\caption{CapsNet. Dashed lines are capsule norms.}
 	\end{subfigure}
 	\caption[Activation errors]{Activation errors of select layers. For the CapsNet we show the difference in the whole activation of each layer (instantiation parameters) and the difference of the capsule norms (probability of entity's presence).}
 	\label{fig:activation}
@@ -323,7 +333,7 @@ The results appear in \Cref{fig:activation}.
 
 For the ConvNet the activation errors of the DeepFool, Boundary and Carlini-Wagner attacks are almost monotonically increasing.
 This means, that not just a single layer is culpable for their deficiency to inhibit adversarial attacks, but instead the error accumulates over all the layers.
-Curiously the universal perturbation creates substantially higher errors in the internal layers, but not so much in the final layer.
+Curiously, the universal perturbations create substantially higher errors in the internal layers, but not so much in the final layer.
 This is most likely the case, because a universal adversarial example not only has to disturb the activations of few features that are used for a specific image, but of all possible features. 
 We want to mention that a high activation error in the last layer not necessarily corresponds to misclassifications of high confidence.
 It can merely signify a change in \emph{many} class scores, not just those of the true class and the actually assigned false class.
