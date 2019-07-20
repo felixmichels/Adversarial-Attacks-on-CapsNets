@@ -129,7 +129,7 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 \definecolor{dblue}  {RGB}{20,66,129}
 \definecolor{norange}{RGB}{230,120,20}
 
-\begin{wrapfigure}{O}{6.4cm}
+\begin{wrapfigure}{O}{6.7cm}
 	\centering
 	%\scalebox{1}{%
 		\begin{tikzpicture}
@@ -223,32 +223,40 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 
 \subsection{Structural Analysis of Adversarial Examples}
 
-While we have found, that CapsNets are not necessarily more robust against adversarial attacks, the low success rate of the transfer attacks and the radically different construction of the networks themselves suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
+While we have found that CapsNets are not necessarily more robust against adversarial attacks, the low success rate of the transfer attacks and the radically different construction of the networks themselves suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
 \subsubsection{Visualizing Universal Perturbations}
 
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
 We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
 Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just an outcome of this phenomenon.
-By including another ConvNet in the diagram we find the clusters of the ConvNets almost perfectly matching while the cluster for the CapsNet is still separated.
+By including universal perturbations calculated for another ConvNet with a different architecture in \Cref{fig:tsnealt} we find the clusters of the two ConvNets still significantly separated from the cluster of the CapsNet.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
-In \Cref{fig:tsne} we can furthermore see subclusters based on the dataset splits used to calculate the perturbations.
-These distinctions are however less pronounced with the other datasets besides CIFAR-10.
+\begin{wrapfigure}{R}{7.1cm}
+	\centering
+	\includegraphics[scale=.5]{tsne_two_conv.pdf}
+	\caption[t-SNE plot with additional ConvNet]{t-SNE plot of universal perturbations for CIFAR-10 with additional ConvNet architecture. The two clusters of the ConvNets in the top left are close compared to the cluster of the CapsNet.}
+	\label{fig:tsnealt}
+\end{wrapfigure}
 
 \begin{figure}
 	\centering
 	\begin{subfigure}{.5\textwidth}
-	\includegraphics[scale=.5]{tsne_cifar10.pdf}
-	\caption{CIFAR-10}
+		\includegraphics[scale=.5]{tsne_cifar10.pdf}
+		\caption{CIFAR-10}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
-	\includegraphics[scale=.5]{tsne_svhn.pdf}
-	\caption{SVHN}
+		\includegraphics[scale=.5]{tsne_svhn.pdf}
+		\caption{SVHN}
 	\end{subfigure}
-	\caption[t-SNE Plot of universal perturbations]{Two dimensional embedding of the universal perturbations calculated using t-SNE \citep{tsne}. The upper left cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower right represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
+	\caption[t-SNE plot of universal perturbations]{Two dimensional embedding of the universal perturbations calculated using t-SNE \citep{tsne}. The upper left cluster represents perturbations computed on a ConvNet, whereas the cluster in the lower right represents those calculated on a CapsNet. Perturbations with the same color were created using the same subset of test data.}
 	\label{fig:tsne}
 \end{figure}
+
+In \Cref{fig:tsne} we can furthermore see subclusters based on the dataset splits used to calculate the perturbations, even though all universal perturbations perform very similarly on the whole test set.
+These distinctions are however less pronounced with the other datasets besides CIFAR-10.
+
 
 
 \subsubsection{Singular Values of Adversarial Perturbations}

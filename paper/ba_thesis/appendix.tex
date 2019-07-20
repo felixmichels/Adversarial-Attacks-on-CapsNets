@@ -12,10 +12,10 @@ The tables for the CapsNets are separated into two parts: The encoder network (t
 Some expressions may need further explanation:
 
 \begin{itemize}
-	\item BN: spatial batch normalization
+	\item BN: spatial batch normalization \citep{batchnorm}
 	\item Conv $K$ $F \times F$, \{valid,same\}: convolutional layer with $K$ filters of shape $F \times F$ and either valid padding (i.e.\ no padding) or same padding (appropriate padding, such that output height and width is equal to that of the input)
 	\item FC $n$: fully connected with $n$ units
-	\item Densely Connected: a densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layer in this block.
+	\item Densely Connected: a densely connected block \citep{denselyconnected} contains multiple layers in such a way that the input for each layer is the concatenated output of all previous layers in this block.
 	\item (Primary) Conv Caps, dim=$d$: a convolutional (primary) capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}. Takes same further arguments as an ordinary convolutional layer.
 	\item Dense Caps, dim=$d$: a dense capsule layer with capsules of dimension $d$ as explained in \Cref{sec:capsules}.
 \end{itemize}
@@ -84,7 +84,7 @@ Some expressions may need further explanation:
 		\midrule 
 		Conv $32$ $3\times3$, valid, Leaky ReLU, BN	&  $24\times24\times32$\\ 
 		\midrule 
-		Primary Conv Caps, $16$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times16\times8$\\ 
+		Primary Conv Caps $16$ $9\times9$, dim=$8$, stride=$2$ &  $8\times8\times16\times8$\\ 
 		\midrule 
 		Dense Caps, dim=$16$	&  $10\times16$\\ 
 		\midrule 
@@ -139,7 +139,7 @@ Some expressions may need further explanation:
 		\midrule 
 		Conv $256$ $5\times5$, valid, Leaky ReLU, BN	&  $24\times24\times256$\\ 
 		\midrule 
-		Primary Conv Caps, $64$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times64\times8$\\ 
+		Primary Conv Caps $64$ $9\times9$, dim=$8$	stride=$2$ &  $8\times8\times64\times8$\\ 
 		\midrule 
 		Dense Caps, dim=$16$	&  $10\times16$\\ 
 		\midrule
@@ -192,11 +192,11 @@ Some expressions may need further explanation:
 		\midrule
 		Densely Connected with \\
 		one Conv $29$ $3\times3$, ReLU and  & $32\times32\times256$ \\
-		seven BN, Conv $32$ $3\times3$, ReLU, BN \\ 
+		seven BN, Conv $32$ $3\times3$, ReLU \\ 
 		\midrule
 		Dropout $0.2$, BN & $32\times32\times256$ \\
 		\midrule
-		Primary Conv Caps, $32$ $5\times5$, dim=$12$, stride=$2$	&  $14\times14\times32\times12$ \\ 
+		Primary Conv Caps $32$ $5\times5$, dim=$12$, stride=$2$	&  $14\times14\times32\times12$ \\ 
 		\midrule
 		Conv Caps, $64$ $3\times3$, dim=$24$, stride=$2$	&  $6\times6\times64\times24$ \\ 
 		\midrule
