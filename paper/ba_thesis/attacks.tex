@@ -25,10 +25,10 @@ Most attacks compute a different adversarial perturbation for each input image, 
 Non-universal perturbations are easier to find, but universal perturbations are simpler for the attacker to apply in a realistic attack scenario.
 Additionally, the mere existence of universal perturbations reveals significant flaws in the used architecture, more so than that of normal adversarial examples.
 
-An important problem to consider is the definition of \emph{closeness} to the original image. Possibilities for such an image similarity metric include simple $L^p$ norms (including $p=0$),
+An important problem to consider is the definition of \emph{closeness} to the original image. Possibilities for such an image similarity metric include simple $L^p$ norms (including the quasinorms for $0 \leq p < 1$),
 or more sophisticated metrics, like entropy based metrics \citep{umbrella}.
 While no metric exists which reliable simulates human perception of image similarity, and $L^p$ norms may be insufficient in this regard \citep{lpnorms}, they still give us information about the robustness of the neural networks.
-Here we will examine adversarial perturbations optimized towards a small $L^2$ norm, since it is often used in discussion about adversarial attacks and is a good compromise between the other commonly used, but more specific scenario targeting $L^0$ and $L^\infty$ norms.
+Here we will examine adversarial perturbations optimized towards a small $L^2$-norm, since it is often used in discussion about adversarial attacks and is a good compromise between the other two commonly used, but more specific scenario targeting $L^0$ and $L^\infty$ norms.
 
 Throughout this work $x \in [0,1]^n$ will denote the (flattened) input image and $\delta \in [0,1]^n$ the perturbation.
 The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
@@ -41,8 +41,9 @@ Furthermore, any gradient in the following section refers to the gradient with r
 \citet{carlini} extensively evaluated a wide range of adversarial attacks.
 In particular they developed the following targeted white-box attack which will be referred to as the Carlini-Wagner (CW) attack.
 
-Starting with the general problem for targeted attacks for a given label t
+For a given label $t$, the Carlini-Wagner attack aims to solve the constrained optimization problem
 \begin{equation}
+\label{eq:generaltarget}
 \begin{aligned}
 & \minimize_{\delta} && \norm{\delta} \\
 & \text{subject to} && C(x + \delta) = t \\
@@ -50,7 +51,9 @@ Starting with the general problem for targeted attacks for a given label t
 \text{.}
 \end{aligned}
 \end{equation}
-Using Lagrangian relaxation, this is transformed to the following problem
+This is the general problem for targeted attacks.
+Due to the highly non-convex nature of deep neural networks it can be very difficult to solve directly.
+Using Lagrangian relaxation, \Cref{eq:generaltarget} is transformed to the following problem
 \begin{equation}
 \label{eq:cwproblem}
 \begin{aligned}
@@ -68,7 +71,7 @@ f(x') = \max \Set{ \max \Set{Z(x')_i | i \neq t } - Z(x')_t, -\kappa } \text{.}
 \end{equation}%
 
 The \emph{confidence parameter} $\kappa$ determines with how much confidence the adversarial example is classified as the target class, i.e.\ how close to the decision boundary it is.
-The optimal value for $c$ in \Cref{eq:cwproblem} is the smallest value, that results in an adversarial example and can be found using a binary search.
+The optimal value for $c$ in \Cref{eq:cwproblem} is the smallest value that results in an adversarial example and can be found using a binary search.
 
 This box-constrained problem can further be simplified by introducing the variable $w \in \mathbb{R}^n$ and setting $\delta_i = \frac{1}{2} (\tanh(w_i) + 1)$.
 This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam optimizer \citep{adam}.

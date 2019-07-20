@@ -10,7 +10,7 @@ Later \citet{transformingauto} coined the term \emph{capsule} for substructures 
 The idea was that properly working capsules should have equivariant instantiation parameters but invariant probability that the entity is present with respect to viewpoint changes.
 
 While conventional neural networks form a entangled representation of features in each layer, capsules aim to produce dedicated representations.
-CapsNets may utilize these separated representation to improve the information flow to the next layer.
+CapsNets may utilize these separated representations to improve the information flow to the next layer.
 Ordinary neural network with scalar valued units can control gradient routing in some limited way with max pooling or similar operations, but since the output of each capsule is a vector (or a matrix) some advanced \emph{routing algorithm} may be employed.
 
 \citet{capsules} first developed such a dynamic routing algorithm, routing-by-agreement, constructed a concrete CapsNet architecture and applied it for the segmentation of highly overlapping digits and other tasks with remarkable results.

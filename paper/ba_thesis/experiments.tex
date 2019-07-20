@@ -47,7 +47,7 @@ While these accuracies do not reach the state of the art, the similarity between
 
 For each of the data sets we compute adversarial examples using our four chosen attacks in the following manner:\\
 We randomly select $1000$ images each from the test set and attack them with DeepFool and the Boundary attack.
-For Carlini-Wagner (with hyperparameter $\kappa=1$) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels).
+For Carlini-Wagner (with hyperparameter $\kappa=1$ in \Cref{eq:cwobjective}) we calculate $500$ adversarial examples for randomly chosen images from the test set and randomly chosen target labels (that are different from the true labels).
 We make five steps with the binary search for the $c$ value in \Cref{eq:cwproblem}, but we determine a favorable initial value for $c$ by performing some runs with more iterations for each architecture and dataset combination.
 In the case of the universal perturbation we divide the test set into ten parts and compute on each part ten adversarial perturbations.
 
@@ -85,7 +85,7 @@ For more examples of adversarial images for this and the other datasets, see \Cr
 \subsection{Robustness to Adversarial Attacks}
 
 The most important aspect with respect to the dangers of adversarial attacks is how much an image has to be modified for an successful attack, i.e.\ the distance to the original image in some metric.
-In our case this is the Euclidean norm, see \Cref{sec:attacks}.
+In our case this is the Euclidean norm (see \Cref{sec:attacks}).
 These results are displayed in \Cref{tab:norms}.
 On all datasets except MNIST the CapsNets is more susceptible to the Carlini-Wagner attack than the ConvNets.
 
@@ -129,7 +129,7 @@ Such transfer attacks can be seen as black-box attacks where the first model fun
 \definecolor{dblue}  {RGB}{20,66,129}
 \definecolor{norange}{RGB}{230,120,20}
 
-\begin{wrapfigure}{O}{6.7cm}
+\begin{wrapfigure}{O}{.5\textwidth}
 	\centering
 	%\scalebox{1}{%
 		\begin{tikzpicture}
@@ -226,19 +226,19 @@ Especially for SVHN the universal perturbations of the ConvNet are much more eff
 While we have found that CapsNets are not necessarily more robust against adversarial attacks, the low success rate of the transfer attacks and the radically different construction of the networks themselves suggest that there may be some structural difference between adversarial examples computed for ConvNets and those computed for CapsNets.
 
 \subsubsection{Visualizing Universal Perturbations}
-
+\begin{wrapfigure}{R}{.5\textwidth}
+	\centering
+	\includegraphics[scale=.5]{tsne_two_conv.pdf}
+	\caption[t-SNE plot with additional ConvNet]{t-SNE plot of universal perturbations for CIFAR-10 with additional ConvNet architecture.}
+	\label{fig:tsnealt}
+\end{wrapfigure}
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
 We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
 Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just an outcome of this phenomenon.
 By including universal perturbations calculated for another ConvNet with a different architecture in \Cref{fig:tsnealt} we find the clusters of the two ConvNets still significantly separated from the cluster of the CapsNet.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
-\begin{wrapfigure}{R}{7.1cm}
-	\centering
-	\includegraphics[scale=.5]{tsne_two_conv.pdf}
-	\caption[t-SNE plot with additional ConvNet]{t-SNE plot of universal perturbations for CIFAR-10 with additional ConvNet architecture. The two clusters of the ConvNets in the top left are close compared to the cluster of the CapsNet.}
-	\label{fig:tsnealt}
-\end{wrapfigure}
+
 
 \begin{figure}
 	\centering
@@ -261,12 +261,14 @@ These distinctions are however less pronounced with the other datasets besides C
 
 \subsubsection{Singular Values of Adversarial Perturbations}
 \citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine, if adversarial examples lie in a low dimensional subspace. \\
-For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$,
-and $ N = \begin{bmatrix}
+For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$, and
+\begin{equation*}
+N = \begin{bmatrix}
 \frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
 \end{bmatrix}
 \in \mathbb{R}^{n \times k}
-$ for some $x_1, ..., x_k$ in the test set with $k > n$. \\
+\end{equation*}
+for some $x_1, ..., x_k$ in the test set with $k > n$. \\
 The perturbation vector $\delta(x)$ is orthogonal to the decision boundary, assuming it is reasonably smooth, therefore the singular values of $N$ give us information about the decision boundary. For example, for an binary linear classifier, $N$ would have a rank of one, i.e.\ only one non-zero singular value.
 
 Accurately computing $\delta(x)$ is very challenging, so we use the result of the DeepFool attack as an approximation.
