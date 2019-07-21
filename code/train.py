@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: felix
-Main script for training models based on the basicmodel class on cifar10
+Script for training and testing architectures in the model folder
 """
 
 import os

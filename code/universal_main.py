@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Apr 14 22:46:43 2019
-
-@author: felix
+Main script for computing universal adversarial perturbations
 """
 
 import os

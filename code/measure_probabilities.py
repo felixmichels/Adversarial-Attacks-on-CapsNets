@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Apr 15 14:28:14 2019
-
-@author: felix
+Script to measure and sve class scores of original and adversarial images
+assigned by the neural networks
 """
 
 import os
@@ -12,6 +11,7 @@ import tensorflow as tf
 from util.util import get_model, get_dir, get_params
 from util.config import cfg
 from util.imgdataset import dataset_by_name
+
 
 def batch_probabilities(model, sess, batch):
     return sess.run(

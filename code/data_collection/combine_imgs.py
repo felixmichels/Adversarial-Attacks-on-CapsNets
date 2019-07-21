@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jun 29 12:55:46 2019
-
-@author: felix
+Combine some adversarial images to use in the appendix
 """
 
 import os

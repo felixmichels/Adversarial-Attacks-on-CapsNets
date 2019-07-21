@@ -1,3 +1,8 @@
+"""
+Script for saving the activations of hidden layers
+for original and adversarial images
+"""
+
 import os
 import sys
 import tensorflow as tf
@@ -9,6 +14,7 @@ from util.imgdataset import dataset_by_name
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tensorflow-capsules'))
 import tfcaps as tc
+
 
 _io_dict = {}
 

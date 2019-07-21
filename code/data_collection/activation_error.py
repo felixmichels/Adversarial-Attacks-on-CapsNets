@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
+"""
+This scripts measures activation errors for internal layers
+and generates plots
+"""
 
 import os
 import sys

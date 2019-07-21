@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Mar 31 22:02:25 2019
-
-@author: felix
+Main script for computing and saving adversarial examples
+using the Carlini-Wagner attack
 """
+
 import os
 import time
 import tensorflow as tf
