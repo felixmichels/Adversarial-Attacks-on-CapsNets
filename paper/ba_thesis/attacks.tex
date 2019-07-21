@@ -24,11 +24,13 @@ The last type of adversarial attacks that we will test are \emph{universal pertu
 Most attacks compute a different adversarial perturbation for each input image, but a universal perturbation aims to fool many images while using the same perturbation.
 Non-universal perturbations are easier to find, but universal perturbations are simpler for the attacker to apply in a realistic attack scenario.
 Additionally, the mere existence of universal perturbations reveals significant flaws in the used architecture, more so than that of normal adversarial examples.
+The presence of these particular perturbation hints at correlation of abstract features learned by the classifier.
+This is related to the notion that deep layers in neural networks do not disentangle variation factors across their units \citep{intriguing}.
 
 An important problem to consider is the definition of \emph{closeness} to the original image. Possibilities for such an image similarity metric include simple $L^p$ norms (including the quasinorms for $0 \leq p < 1$),
 or more sophisticated metrics, like entropy based metrics \citep{umbrella}.
 While no metric exists which reliable simulates human perception of image similarity, and $L^p$ norms may be insufficient in this regard \citep{lpnorms}, they still give us information about the robustness of the neural networks.
-Here we will examine adversarial perturbations optimized towards a small $L^2$-norm, since it is often used in discussion about adversarial attacks and is a good compromise between the other two commonly used, but more specific scenario targeting $L^0$ and $L^\infty$ norms.
+Here we will examine adversarial perturbations optimized towards a small $L^2$-norm (i.e.\ Euclidean norm), since it is often used in discussion about adversarial attacks and is a good compromise between the other two commonly used, but more specific scenario targeting $L^0$ and $L^\infty$ norms.
 
 Throughout this work $x \in [0,1]^n$ will denote the (flattened) input image and $\delta \in [0,1]^n$ the perturbation.
 The label assigned to $x$ by the neural network will be referred to as $C(x)$, while the correct label is $C^*(x)$.\\
@@ -53,7 +55,7 @@ For a given label $t$, the Carlini-Wagner attack aims to solve the constrained o
 \end{equation}
 This is the general problem for targeted attacks.
 Due to the highly non-convex nature of deep neural networks it can be very difficult to solve directly.
-Using Lagrangian relaxation, \Cref{eq:generaltarget} is transformed to the following problem
+Using Lagrangian relaxation, \Cref{eq:generaltarget} is transformed to the box-constrained problem
 \begin{equation}
 \label{eq:cwproblem}
 \begin{aligned}
@@ -62,7 +64,7 @@ Using Lagrangian relaxation, \Cref{eq:generaltarget} is transformed to the follo
 \text{,}
 \end{aligned}
 \end{equation}
-where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e.\ a function with the property, that
+where $c > 0$ is a suitable chosen constant and $f$ is an \emph{objective function}, i.e.\ a function with the property that
 $f(x + \delta) \leq 0$ if and only if $C(x + \delta) = t$.
 There are many possible objective functions, but a particularly good choice is
 \begin{equation}
@@ -73,8 +75,8 @@ f(x') = \max \Set{ \max \Set{Z(x')_i | i \neq t } - Z(x')_t, -\kappa } \text{.}
 The \emph{confidence parameter} $\kappa$ determines with how much confidence the adversarial example is classified as the target class, i.e.\ how close to the decision boundary it is.
 The optimal value for $c$ in \Cref{eq:cwproblem} is the smallest value that results in an adversarial example and can be found using a binary search.
 
-This box-constrained problem can further be simplified by introducing the variable $w \in \mathbb{R}^n$ and setting $\delta_i = \frac{1}{2} (\tanh(w_i) + 1)$.
-This substitution yields an unconstrained problem, which can be solved with various popular methods. We used the Adam optimizer \citep{adam}.
+The box-constrained problem can further be simplified by introducing the variable $w \in \mathbb{R}^n$ and setting $\delta_i = \frac{1}{2} (\tanh(w_i) + 1)$.
+This substitution yields an unconstrained problem, which can be solved with various popular methods. We use the Adam optimizer \citep{adam}.
 
 The Carlini-Wagner attack is generally a quite strong attack and leads to almost undetectable adversarial examples.
 In particular, it can find adversarial examples even when defensive techniques like distillation are utilized \citep{carlini}.

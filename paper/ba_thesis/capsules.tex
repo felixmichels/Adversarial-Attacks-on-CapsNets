@@ -7,7 +7,8 @@
 
 \citet{parse} introduced \emph{credibility networks} to combine image segmentation and recognition by representing images using parse trees.
 Later \citet{transformingauto} coined the term \emph{capsule} for substructures of neural network that learn to recognize implicitly defined entities by performing some\textemdash possibly quite complicated\textemdash internal computation and outputting not just the probability of the entity's presence but also a set of \emph{instantiation parameters} encoding the entity's attributes.
-The idea was that properly working capsules should have equivariant instantiation parameters but invariant probability that the entity is present with respect to viewpoint changes.
+The idea was that invariant unit activations with respect to viewpoint changes are impossible in conventional neural networks without losing spatial information, e.g.\ through the use of max pooling.
+Properly working capsules should instead achieve equivariance in their instantiation parameters and keep only the probability that the entity is present invariant.
 
 While conventional neural networks form a entangled representation of features in each layer, capsules aim to produce dedicated representations.
 CapsNets may utilize these separated representations to improve the information flow to the next layer.
@@ -16,7 +17,7 @@ Ordinary neural network with scalar valued units can control gradient routing in
 \citet{capsules} first developed such a dynamic routing algorithm, routing-by-agreement, constructed a concrete CapsNet architecture and applied it for the segmentation of highly overlapping digits and other tasks with remarkable results.
 Most actual CapsNets use a linear transformation as the internal action for each capsule, but there have been multiple other routing algorithm introduced, most notable EM routing \citep{em} but also scaled-distance-agreement \citep{scaledagreement}, cognitive consistency routing \citep{cognitive} and more.
 
-Given that routing-by-agreement is still the most commonly used method we will exclusively consider this approach in this thesis.
+Given that routing-by-agreement is still the most commonly used method, we will exclusively consider this approach in this thesis.
 
 \subsection{Routing-By-Agreement}
 
