@@ -3,7 +3,7 @@
 %%% Zusammenfassung:
 
 This bachelor thesis extensively evaluates the vulnerability of capsule network to various adversarial attacks.
-Capsule networks are a class of neural networks in which neurons are grouped in capsules whose activity vectors describe different properties of the same entity.
+Capsule networks are a class of artificial neural network in which neurons are grouped in capsules whose activity vectors describe different properties of the same entity.
 Recent work attributes them more robustness to adversarial attacks than other types of neural networks.
 
 To investigate those conjectures we train four pairs of capsule networks and convolutional neural networks to classify different image datasets.
@@ -19,4 +19,4 @@ Despite those similarities we detect inherent differences between the perturbati
 Finally, we aim to identify the cause of adversarial vulnerability in the networks we trained.
 Since capsule networks and convolutional networks partially use the same type of convolutional layer, we focus on the disturbance on the activation of individual layers caused by adversarial attacks.
 We find that susceptibility to attacks is not just ascribable to the first layers in a network but a result of deeper layers as well.
-Specifically, we find that the dynamic routing algorithm used in capsule networks does not establish capsule activation invariants to counteract adversarial attacks as previously conjectured.
+Specifically, we find that the dynamic routing algorithm used in capsule networks does not establish capsule activation invariance to counteract adversarial attacks as previously conjectured.

@@ -7,8 +7,8 @@
 
 \citet{parse} introduced \emph{credibility networks} to combine image segmentation and recognition by representing images using parse trees.
 Later \citet{transformingauto} coined the term \emph{capsule} for substructures of neural network that learn to recognize implicitly defined entities by performing some\textemdash possibly quite complicated\textemdash internal computation and outputting not just the probability of the entity's presence but also a set of \emph{instantiation parameters} encoding the entity's attributes.
-The idea was that invariant unit activations with respect to viewpoint changes are impossible in conventional neural networks without losing spatial information, e.g.\ through the use of max pooling.
-Properly working capsules should instead achieve equivariance in their instantiation parameters and keep only the probability that the entity is present invariant.
+The idea was that invariant unit activations with respect to viewpoint changes are impossible to achieve in conventional neural networks without losing spatial information, e.g.\ through the use of max pooling.
+Properly working capsules should instead establish equivariance in their instantiation parameters and keep only the probability that the entity is present invariant.
 
 While conventional neural networks form a entangled representation of features in each layer, capsules aim to produce dedicated representations.
 CapsNets may utilize these separated representations to improve the information flow to the next layer.
@@ -27,7 +27,7 @@ A capsule in the routing-by-agreement setting consists of a vector in the unit b
 Its direction encodes the instantiation parameters and its Euclidean length the probability that the attached entity is present.
 
 For a capsule $i$ of dimension $d_1$ let us designate the output with $u_i \in \Set{ \mathbb{R}^{d_1} | \norm{u} \leq 1}$.
-If $i$ is connected to a capsule $j$ in the next layer with dimension $d_2$ the network includes a learned transformation matrix $W_{ij} \in \mathbb{R}^{d_1 \times d_2}$.
+If $i$ is connected to a capsule $j$ in the next layer with dimension $d_2$, the network includes a learned transformation matrix $W_{ij} \in \mathbb{R}^{d_1 \times d_2}$.
 Thus we can compute $\uhat = W_{ij} u_i$.
 The vector $\uhat$ can be seen as a prediction of the feature's parameters modeled by capsule $j$ given the information of the feature in capsule $i$.
 The output for the capsule $j$ then is a linear combination with dynamically computed coupling coefficients of these predictions over all connected capsules in the previous layer as described in \Cref{alg:routing}.
@@ -38,7 +38,7 @@ The transformation matrices $W_{ij}$ can be trained by backpropagation through t
 The $b_{ij}$ used in \Cref{alg:routing} are logits for the coupling coefficients, therefore their initial value can be seen as a bias for the routing algorithm and can also be trained.
 This seems to offer little benefit, so we initialize them as zero (as done by \cite{capsules}).
 
-Like in conventional neural networks there are multiple types of layers depending on the possible connections to the units in the lower layer.
+As in conventional neural networks there are multiple types of layers depending on the possible connections to the units in the lower layer.
 If each capsule in a layer is connected to every capsule in the layer before it, we call it a \emph{dense capsule layer}.
 Like in a convolutional layer, capsule can also be arranged in a spatial grid (in the shape of $height \times width \times types \times dimension$) where each capsule is only connected to those in it's receptive field and capsules of the same type share weights.
 Such a configuration is called a \emph{convolutional capsule layer}.
@@ -48,9 +48,10 @@ These layers either apply a fully connected or a convolutional layer to their in
 
 A typical CapsNet for image classification begins with one or more convolutional layers, followed by a primary convolutional layer, optionally some number of convolutional capsule layers and finally a dense capsule layer with one capsule per class.
 In a fully trained CapsNet those class capsules should contain all instantiation parameters necessary to recreate the input image.
-Thus a \emph{reconstruction network} that takes the capsule of the class capsule with largest norm as input and tries to reconstruct the input image can be trained simultaneously.
+Thus a \emph{reconstruction network} that takes the output of the class capsule with largest norm as input and tries to reconstruct the input image can be trained simultaneously.
 The Euclidean distance between the original image and reconstruction, the \emph{reconstruction loss}, may be minimized as a regularization technique.
-Since images also often contain some unneeded information that cannot be sensibly linked to a capsule in the next layer, an additional capsule may be used to serve as a dead end, which is referred to as the \emph{none-of-the-above} category \citep{capsules}.
+Since images also often contain some unneeded information that cannot be sensibly linked to a capsule in the next layer, an additional capsule may be used to serve as a dead end.
+This is referred to as the \emph{none-of-the-above} category \citep{capsules}.
 
 \algtext*{EndFor} % Remove end for text
 \algtext*{EndProcedure}
