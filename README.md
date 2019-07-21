@@ -1,5 +1,9 @@
 # Adversarial-Attacks-on-CapsNets
 
+This repository contains code for my bachelor thesis "Adversarial Attacks on Capsule Networks" as well as for the paper that was created in the process (https://arxiv.org/abs/1906.03612).
+
+All code for defining and training the models, generating adversarial examples and extracting data is in the 'code' folder.
+
 ### Accuracies and model names
 
 | Model/Dataset | mnist               | fashion               | svhn                  | cifar10          |
@@ -7,19 +11,6 @@
 | ConvNet       | conv_baseline<br>99.4% | conv_baseline<br>92.9%   | conv_baseline<br>92.6%   | conv_good<br>88.2%  |
 | CapsNet       | capsnet_small<br>99.4% | capsnet_variant<br>92.7% | capsnet_variant<br>92.4% | dcnet<br>88.2%      |
 
-
-### Results (old)
-| Avg. Pert Norm | CapsNet | ConvNet |
-|----------------|---------|---------|
-| Carlini-Wagner | 0.371   | 0.556   | 
-| Boundary       | 0.989   | 1.757   |
-| Deepfool       | 0.190   | 0.261   |
-
-| Fooling Rate   | CapsNet | ConvNet |
-|----------------|---------|---------|
-| Carlini-Wagner | 94.8%   | 95.6%   |
-| Boundary       | 100%    | 100%    |
-| Deepfool       | 100%    | 94.5%   |
 
 ### Example images:  
 Left original, middle adversarial example, right magnified perturbation  
@@ -67,10 +58,3 @@ Top Capsule Network, bottom Convolutional Network
 ![alt text](resources/img/zoomed/universal_orig_bird.png)
 ![alt text](resources/img/zoomed/universal_conv_adv.png)
 ![alt text](resources/img/zoomed/universal_conv_pert.png)
-
-
-## TODO
-Test on different datasets
-Compare confidence
-Test transferability
-Test Decoder error
