@@ -120,6 +120,8 @@ Only the universal perturbations on CIFAR-10 have similar norms for the CapsNet 
 However, we have to mention that while the existence of adversarial perturbations with small norms shows the lack of robustness, proving resistance to adversarial attacks is vastly more difficult.
 After all, adversarial perturbations with large norms can just be the result of an inadequate attack.
 
+\subsection{Transferability of Adversarial Examples}
+
 \citet{transfer} demonstrated the existence of \emph{cross-technique transferability} for a wide variety of machine learning techniques.
 This means that adversarial examples constructed for a specific classifier may also be able to fool another classifier using a vastly different machine learning model.
 Such transfer attacks can be seen as black-box attacks where the first model functions as a oracle (or substitute) for the second one.
@@ -220,7 +222,7 @@ Although the norms of the CapsNet universal perturbations were much larger (see 
 Especially for SVHN the universal perturbations of the ConvNet are much more effective on the CapsNet than the perturbations computed on the CapsNet itself.
 This shows that CapsNets are even vulnerable to black-box universal perturbations.
 
-\subsection{Structural Analysis of Adversarial Examples}
+\subsection{Structural Analysis of Adversarial Perturbations}
 
 We have found that CapsNets exhibit comparable behavior to ConvNets for adversarial perturbations with regard to their norms.
 The low success rate of the transfer attacks and the radically different construction of the networks themselves however suggest that there may be some structural differences between adversarial examples computed for ConvNets and those computed for CapsNets.
@@ -230,13 +232,13 @@ Understanding these difference could help to find specialized attacks and defens
 \begin{wrapfigure}{R}{.5\textwidth}
 	\centering
 	\includegraphics[scale=.5]{tsne_two_conv.pdf}
-	\caption[t-SNE plot with additional ConvNet]{t-SNE plot of universal perturbations for CIFAR-10 with additional ConvNet architecture.}
+	\caption[t-SNE plot with additional ConvNet]{Two dimensional embedding of universal perturbations for CIFAR-10 with additional ConvNet architecture calculated using t-SNE \citep{tsne}.}
 	\label{fig:tsnealt}
 \end{wrapfigure}
 We use t-SNE \citep{tsne} to visualize the normalized universal perturbations created for the CapsNet and the ConvNet (see \Cref{fig:tsne}).
 We discover that for all datasets there is a clear distinction between the perturbations calculated for the different architectures.
 Although t-SNE can often distinguish the perturbations of models that are trained slightly differently, this is not just an outcome of this phenomenon.
-By including universal perturbations calculated for another ConvNet with a different architecture in \Cref{fig:tsnealt}, we find the clusters of the two ConvNets still significantly separated from the cluster of the CapsNet.
+By including universal perturbations calculated for another ConvNet with a different architecture in the embedding (see \Cref{fig:tsnealt}), we find the clusters of the two ConvNets still significantly separated from the cluster of the CapsNet.
 This means, that the universal perturbation of CapsNets and ConvNets are intrinsically different.
 
 
@@ -260,7 +262,8 @@ These distinctions are however less pronounced with the other datasets besides C
 
 \subsubsection{Singular Values of Adversarial Perturbations}
 \citet{universal} considered singular values of the matrix containing normalized adversarial examples to determine if adversarial examples lie in a low dimensional subspace. \\
-For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$, and
+For this purpose, let us denote with $\delta(x)$ the minimal adversarial perturbation for the input $x \in [0,1]^n$, and define the Matrix $N$ as
+
 \begin{equation*}
 N = \begin{bmatrix}
 \frac{\delta(x_1)} {\norm{\delta(x_1)}},  ...,  \frac{\delta(x_k)} {\norm{\delta(x_k)}} 
